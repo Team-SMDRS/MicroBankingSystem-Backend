@@ -1,3 +1,5 @@
+ # password hash/verify, JWT encode/decode
+
 from sqlalchemy.orm import Session
 from app.models import User
 from app.utils import hash_password, verify_password
