@@ -1,19 +1,22 @@
  # password hash/verify, JWT encode/decode
 
-from sqlalchemy.orm import Session
-from app.models import User
-from app.utils import hash_password, verify_password
+from app.utils import hash_password, verify_password, create_access_token
+from fastapi import HTTPException
 
-def create_user(db: Session, username: str, email: str, password: str) -> User:
-    hashed_password = hash_password(password)
-    user = User(username=username, email=email, hashed_password=hashed_password)
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+class UserService:
 
-def authenticate_user(db: Session, username: str, password: str) -> User:
-    user = db.query(User).filter(User.username == username).first()
-    if not user or not verify_password(password, user.hashed_password):
-        return None
-    return user
+    def __init__(self, repo):
+        self.repo = repo
+
+    def register_user(self, user_data):
+        hashed = hash_password(user_data.password)
+        user_id = self.repo.create_user(user_data, hashed)
+        return {"msg": "User registered", "user_id": user_id}
+
+    def login_user(self, login_data):
+        row = self.repo.get_login_by_username(login_data.username)
+        if not row or not verify_password(login_data.password, row["hashed_password"]):
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+
+        token = create_access_token({"sub": row["username"], "user_id": str(row["user_id"])})
+        return {"access_token": token, "token_type": "Bearer"}
