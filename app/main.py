@@ -1,23 +1,27 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from .middleware.custom_middleware import CustomMiddleware
-from .routers import customer ,user  # your existing router import
+from app.api import auth_routes
+from app.middleware.auth_middleware import AuthMiddleware
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
+# Middleware
+app.add_middleware(AuthMiddleware)
 
-# Add built-in CORS middleware (optional)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # change to your allowed origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Add your custom middleware
-app.add_middleware(CustomMiddleware)
 
-# Include your routers
-app.include_router(customer.router)
-app.include_router(user.router)
+# Routes
+app.include_router(auth_routes.router)
+
+
+
+
+
+
+
+
+
+
+
+@app.get("/")
+async def root():
+    return "Hello, Team SMTDS !"
