@@ -1,6 +1,6 @@
  # password hash/verify, JWT encode/decode
 
-from app.utils import hash_password, verify_password, create_access_token
+from app.core.utils import hash_password, verify_password, create_access_token
 from fastapi import HTTPException
 
 class UserService:

@@ -15,11 +15,15 @@ def register(user: RegisterUser, db=Depends(get_db)):
     return service.register_user(user)
 
 @router.post("/login")
-def login(user: LoginUser, db=Depends(get_db)):
+def logins(user: LoginUser, db=Depends(get_db)):
     repo = UserRepository(db)
+    print(user)
     service = UserService(repo)
     return service.login_user(user)
 
-@router.get("/protected")
-def protected(request: Request):
-    return {"user": request.state.user}
+
+
+
+# @router.get("/protected")
+# def protected(request: Request):
+#     return {"user": request.state.user}

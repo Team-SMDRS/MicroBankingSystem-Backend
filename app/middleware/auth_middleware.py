@@ -1,22 +1,23 @@
- # JWT verification + role check
-
-from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.utils import decode_access_token
+from starlette.responses import JSONResponse
+from fastapi import Request
+from app.core.utils import decode_access_token
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path in ["/login", "/register", "/docs", "/openapi.json","/","/favicon.ico","/redoc"]:
+        # Allow public paths
+        public_paths = ["/login", "/register", "/docs", "/openapi.json","/","/favicon.ico","/redoc"]
+        if request.url.path in public_paths:
             return await call_next(request)
 
         token = request.headers.get("Authorization")
         if not token or not token.startswith("Bearer "):
-            raise HTTPException(status_code=401, detail="Missing token")
+            return JSONResponse(status_code=401, content={"detail": "Missing token"})
 
         token = token.split(" ")[1]
         payload = decode_access_token(token)
         if not payload:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            return JSONResponse(status_code=401, content={"detail": "Invalid token"})
 
-        request.state.user = payload  # contains username + user_id
+        request.state.user = payload
         return await call_next(request)
