@@ -11,34 +11,37 @@ RETURNS UUID AS
 $$
 DECLARE
     new_user_id UUID;
-    new_login_id UUID;
+    new_activity_id UUID;
 BEGIN
-    -- Generate UUIDs
-    new_user_id := gen_random_uuid();
-    new_login_id := gen_random_uuid();
-    new_activity_id := gen_random_uuid();
-    -- Insert into users
-    INSERT INTO users (
-        user_id, nic, first_name, last_name, address, phone_number, activity_id
-    )
-    VALUES (
-        new_user_id, p_nic, p_first_name, p_last_name, p_address, p_phone_number, new_activity_id
-    );
+    BEGIN
+        -- 1. Create activity log first
+        INSERT INTO activity (logs)
+        VALUES ('New user created')
+        RETURNING activity_id INTO new_activity_id;
 
-    Insert into activity ( activity_id, logs )
-    VALUES ( new_activity_id, ' new User created ' );
+        -- 2. Insert into users (UUID auto)
+        INSERT INTO users (
+            nic, first_name, last_name, address, phone_number, activity_id
+        )
+        VALUES (
+            p_nic, p_first_name, p_last_name, p_address, p_phone_number, new_activity_id
+        )
+        RETURNING user_id INTO new_user_id;
 
+        -- 3. Insert into login (UUID auto)
+        INSERT INTO login (
+            user_id, username, hashed_password, password_last_update, activity_id
+        )
+        VALUES (
+            new_user_id, p_username, p_hashed_password, NOW(), new_activity_id
+        );
 
-    -- Insert into login
-    INSERT INTO login (
-        login_id, user_id, username, hashed_password, password_last_update,activity_id
-    )
-    VALUES (
-        new_login_id, new_user_id, p_username, p_hashed_password, NOW(), new_activity_id
-    );
+        RETURN new_user_id;
 
-    -- Return the new user_id
-    RETURN new_user_id;
+    EXCEPTION
+        WHEN OTHERS THEN
+            RAISE EXCEPTION 'Error creating user: %', SQLERRM;
+    END;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -47,10 +50,4 @@ $$ LANGUAGE plpgsql;
 
 
 
-
-
--- Second function here
-
-
-
-
+-- Add your other functions from  here
