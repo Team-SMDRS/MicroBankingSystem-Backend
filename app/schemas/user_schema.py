@@ -1,4 +1,5 @@
-# manage users (view, create)
+# manage users (view, create) 
+# this schema is used for validation
 
 from pydantic import BaseModel
 from typing import Optional
