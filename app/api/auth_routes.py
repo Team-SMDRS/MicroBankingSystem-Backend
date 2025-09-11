@@ -17,7 +17,7 @@ def register(user: RegisterUser, db=Depends(get_db)):
 @router.post("/login")
 def logins(user: LoginUser, db=Depends(get_db)):
     repo = UserRepository(db)
-    print(user)
+  
     service = UserService(repo)
     return service.login_user(user)
 

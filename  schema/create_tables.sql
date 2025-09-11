@@ -100,7 +100,7 @@ CREATE TABLE transactions (
   type transaction_type
 );
 -- Roles
-CREATE TYPE role_type AS ENUM (
+CREATE TYPE permission_type AS ENUM (
   'admin',
   'branch_manager',
   'depositor',
@@ -112,17 +112,16 @@ CREATE TYPE role_type AS ENUM (
 );
 
 
-CREATE TABLE role (
-  role_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  role_name role_type,
-  activity_id UUID REFERENCES activity(activity_id)
+CREATE TABLE permission (
+  permission_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  permission_name permission_type
 );
 
 
-CREATE TABLE users_role (
+CREATE TABLE users_permission (
   user_id UUID REFERENCES users(user_id),
-  role_id UUID REFERENCES role(role_id),
-  PRIMARY KEY (user_id, role_id)
+  permission_id UUID REFERENCES permission(permission_id),
+  PRIMARY KEY (user_id, permission_id)
 );
 
 -- Customers

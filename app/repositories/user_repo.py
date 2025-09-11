@@ -51,3 +51,24 @@ class UserRepository:
             (user_id,)
         )
         self.conn.commit()
+
+    def insert_login_time (self,user_id):
+        self.cursor.execute(
+           "INSERT INTO login (user_id) VALUES (%s)",
+            (user_id,)
+        )
+        self.conn.commit()
+
+    def get_user_permissions(self, user_id):
+        self.cursor.execute(
+            """
+            SELECT p.permission_name
+            FROM users_permission up
+            JOIN permission p ON up.permission_id = p.permission_id
+            WHERE up.user_id = %s
+            """,
+            (user_id,)
+        )
+        rows = self.cursor.fetchall()
+        # Since you're using RealDictCursor, access by column name
+        return [row["permission_name"] for row in rows]

@@ -22,4 +22,6 @@ class UserService:
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
         token = create_access_token({"sub": row["username"], "user_id": str(row["user_id"])})
+        self.repo.insert_login_time(row["user_id"])
+   
         return {"access_token": token, "token_type": "Bearer"}
