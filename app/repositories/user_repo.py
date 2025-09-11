@@ -40,7 +40,14 @@ class UserRepository:
         Fetch a login row by username.
         """
         self.cursor.execute(
-            "SELECT * FROM login WHERE username = %s",
+            "SELECT * FROM user_login WHERE username = %s",
             (username,)
         )
         return self.cursor.fetchone()
+    
+    def update_login_success (self,user_id):
+        self.cursor.execute(
+           "INSERT INTO login (user_id) VALUES (%s)",
+            (user_id,)
+        )
+        self.conn.commit()

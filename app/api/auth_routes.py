@@ -24,6 +24,6 @@ def logins(user: LoginUser, db=Depends(get_db)):
 
 
 
-# @router.get("/protected")
-# def protected(request: Request):
-#     return {"user": request.state.user}
+@router.get("/protected")
+def protected(request: Request):
+    return {"user": request.state.user}

@@ -18,8 +18,8 @@ class UserService:
 
     def login_user(self, login_data):
         row = self.repo.get_login_by_username(login_data.username)
-        if not row or not verify_password(login_data.password, row["hashed_password"]):
+        if not row or not verify_password(login_data.password, row["password"]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
-
+        
         token = create_access_token({"sub": row["username"], "user_id": str(row["user_id"])})
         return {"access_token": token, "token_type": "Bearer"}

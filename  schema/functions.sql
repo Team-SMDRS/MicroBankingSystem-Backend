@@ -29,11 +29,11 @@ BEGIN
         RETURNING user_id INTO new_user_id;
 
         -- 3. Insert into login (UUID auto)
-        INSERT INTO login (
-            user_id, username, hashed_password, password_last_update, activity_id
+        INSERT INTO user_login (
+            user_id, username, password, password_last_update
         )
         VALUES (
-            new_user_id, p_username, p_hashed_password, NOW(), new_activity_id
+            new_user_id, p_username, p_hashed_password, NOW()
         );
 
         RETURN new_user_id;

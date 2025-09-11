@@ -14,8 +14,8 @@ app = FastAPI()
 app.add_middleware(AuthMiddleware)
 
 # Routes
-app.include_router(auth_routes.router)
-app.include_router(account_routes.router)
+app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
+app.include_router(account_routes.router,prefix="/api/auth",tags=["Accounts"])
 
 
 
