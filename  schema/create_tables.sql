@@ -100,21 +100,12 @@ CREATE TABLE transactions (
   type transaction_type
 );
 -- Roles
-CREATE TYPE permission_type AS ENUM (
-  'admin',
-  'branch_manager',
-  'depositor',
-  'withdrawer',
-  'account_creator',
-  'fd_creator',
-  'plan_manager'
 
-);
 
 
 CREATE TABLE permission (
   permission_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  permission_name permission_type
+  permission_name VARCHAR(50)
 );
 
 
