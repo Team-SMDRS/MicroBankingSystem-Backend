@@ -1,27 +1,158 @@
- # All buisness logics put here
+ # All business logics put here
 
-from app.core.utils import hash_password, verify_password, create_access_token
-from fastapi import HTTPException
+from app.core.utils import (
+    hash_password, 
+    verify_password, 
+    create_tokens, 
+    hash_refresh_token, 
+    create_access_token_from_refresh
+)
+from fastapi import HTTPException, Request
 
 class UserService:
 
     def __init__(self, repo):
         self.repo = repo
 
-    def register_user(self, user_data):
+    def register_user(self, user_data, created_by_user_id=None):
+        """Register a new user"""
         existing = self.repo.get_login_by_username(user_data.username)
         if existing:
             raise HTTPException(status_code=400, detail="Username already exists")
+        
         hashed = hash_password(user_data.password)
-        user_id = self.repo.create_user(user_data, hashed)
+        user_id = self.repo.create_user(user_data, hashed, created_by_user_id)
         return {"msg": "User registered", "user_id": user_id}
 
-    def login_user(self, login_data):
+    def login_user(self, login_data, request: Request = None):
+        """Login user and create both access and refresh tokens"""
+        # Validate credentials
         row = self.repo.get_login_by_username(login_data.username)
         if not row or not verify_password(login_data.password, row["password"]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
-        token = create_access_token({"sub": row["username"], "user_id": str(row["user_id"])})
-        self.repo.insert_login_time(row["user_id"])
-   
-        return {"access_token": token, "token_type": "Bearer"}
+        # Create tokens (both access and refresh)
+        user_data = {"sub": row["username"], "user_id": str(row["user_id"])}
+        tokens = create_tokens(user_data)
+        
+        # Extract device and IP info from request
+        device_info = None
+        ip_address = None
+        if request:
+            device_info = request.headers.get("User-Agent", "Unknown")
+            ip_address = request.client.host if request.client else None
+        
+        try:
+            # Store refresh token in database
+            token_id = self.repo.store_refresh_token(
+                user_id=row["user_id"],
+                token_hash=tokens["refresh_token_hash"],
+                expires_at=tokens["refresh_token_expires_at"],
+                device_info=device_info,
+                ip_address=ip_address
+            )
+            
+            # Log login activity
+            self.repo.insert_login_time(row["user_id"])
+            
+            return {
+                "access_token": tokens["access_token"],
+                "refresh_token": tokens["refresh_token"],
+                "token_type": tokens["token_type"],
+                "expires_in": 1800,  # 30 minutes in seconds
+                "user_id": str(row["user_id"]),
+                "username": row["username"]
+            }
+            
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Failed to create session")
+
+    def refresh_access_token(self, refresh_token: str):
+        """Create new access token using refresh token"""
+        if not refresh_token:
+            raise HTTPException(status_code=400, detail="Refresh token required")
+        
+        # Hash the provided refresh token
+        token_hash = hash_refresh_token(refresh_token)
+        
+        # Get token data from database
+        token_data = self.repo.get_refresh_token(token_hash)
+        if not token_data:
+            raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+        
+        # Get user data
+        user = self.repo.get_user_by_id(token_data["user_id"])
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        # Create new access token
+        user_data = {"sub": user["username"], "user_id": str(user["user_id"])}
+        new_access_token = create_access_token_from_refresh(user_data)
+        
+        return {
+            "access_token": new_access_token,
+            "token_type": "bearer",
+            "expires_in": 1800  # 30 minutes
+        }
+
+    def logout_user(self, refresh_token: str, user_id: str):
+        """Logout user by revoking refresh token"""
+        if not refresh_token:
+            raise HTTPException(status_code=400, detail="Refresh token required")
+        
+        token_hash = hash_refresh_token(refresh_token)
+        success = self.repo.revoke_refresh_token(token_hash, user_id)
+        
+        if not success:
+            raise HTTPException(status_code=400, detail="Failed to logout")
+        
+        return {"msg": "Successfully logged out"}
+
+    def logout_all_devices(self, user_id: str):
+        """Logout user from all devices by revoking all refresh tokens"""
+        revoked_count = self.repo.revoke_all_user_tokens(user_id, user_id)
+        return {"msg": f"Logged out from {revoked_count} devices"}
+
+    def get_user_sessions(self, user_id: str):
+        """Get all active sessions for a user"""
+        active_tokens = self.repo.get_user_active_tokens(user_id)
+        
+        sessions = []
+        for token in active_tokens:
+            sessions.append({
+                "token_id": str(token["token_id"]),
+                "device_info": token["device_info"],
+                "ip_address": str(token["ip_address"]) if token["ip_address"] else None,
+                "created_at": token["created_at"].isoformat(),
+                "expires_at": token["expires_at"].isoformat()
+            })
+        
+        return {"sessions": sessions, "total_count": len(sessions)}
+
+    def get_user_profile(self, user_id: str):
+        """Get user profile information"""
+        user = self.repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return {
+            "user_id": str(user["user_id"]),
+            "username": user["username"],
+            "first_name": user["first_name"],
+            "last_name": user["last_name"],
+            "nic": user["nic"],
+            "address": user["address"],
+            "phone_number": user["phone_number"],
+            "dob": user["dob"].isoformat() if user["dob"] else None,
+            "created_at": user["created_at"].isoformat()
+        }
+
+    def get_user_permissions(self, user_id: str):
+        """Get user permissions"""
+        permissions = self.repo.get_user_permissions(user_id)
+        return {"permissions": permissions}
+
+    def cleanup_expired_sessions(self):
+        """Clean up expired refresh tokens"""
+        deleted_count = self.repo.cleanup_expired_tokens()
+        return {"msg": f"Cleaned up {deleted_count} expired sessions"}

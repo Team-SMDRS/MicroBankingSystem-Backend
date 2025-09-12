@@ -4,6 +4,7 @@ from app.middleware.require_permission import require_permission
 router = APIRouter()    
 
 @router.get("/my_profile")
+@require_permission("admin")
 async def my_profile(request: Request):
     # Example: return some user info from JWT
     return {"message": "My Profile", "user": getattr(request.state, "user", {})}

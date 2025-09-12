@@ -10,9 +10,11 @@ class RegisterUser(BaseModel):
     last_name: str
     address: str
     phone_number: str
+    dob: str
     username: str
     password: str
 
 class LoginUser(BaseModel):
     username: str
     password: str
+

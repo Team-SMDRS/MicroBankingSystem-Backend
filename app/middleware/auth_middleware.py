@@ -4,37 +4,99 @@ from fastapi import Request
 from app.core.utils import decode_access_token
 from app.repositories.user_repo import UserRepository
 from app.database.db import get_db
+from datetime import datetime
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        public_paths = ["/api/auth/login", "/api/auth/register", "/docs", "/openapi.json", "/", "/favicon.ico", "/redoc"]
+        public_paths = [
+            "/api/auth/login", 
+            "/api/auth/register", 
+            "/api/auth/refresh",  # Add refresh endpoint to public paths
+            "/docs", 
+            "/openapi.json", 
+            "/", 
+            "/favicon.ico", 
+            "/redoc"
+        ]
         if request.url.path in public_paths:
             return await call_next(request)
 
-        token = request.headers.get("Authorization")
-        if not token or not token.startswith("Bearer "):
-            return JSONResponse(status_code=401, content={"detail": "Missing token"})
+        # Extract and validate Authorization header
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return JSONResponse(
+                status_code=401, 
+                content={"detail": "Missing or invalid authorization header"}
+            )
 
-        token = token.split(" ")[1]
+        # Extract token
+        token = auth_header.split(" ")[1]
+        
+        # Decode and validate access token
         payload = decode_access_token(token)
         if not payload:
-            return JSONResponse(status_code=401, content={"detail": "Invalid token"})
+            return JSONResponse(
+                status_code=401, 
+                content={
+                    "detail": "Invalid or expired access token",
+                    "error_code": "TOKEN_INVALID"
+                }
+            )
 
-        user_id = payload["user_id"]
+        # Check token expiration (additional safety check)
+        if "exp" in payload:
+            if datetime.utcnow().timestamp() > payload["exp"]:
+                return JSONResponse(
+                    status_code=401,
+                    content={
+                        "detail": "Access token has expired",
+                        "error_code": "TOKEN_EXPIRED"
+                    }
+                )
 
-        # fetch permissions from DB
+        user_id = payload.get("user_id")
+        if not user_id:
+            return JSONResponse(
+                status_code=401,
+                content={
+                    "detail": "Invalid token payload",
+                    "error_code": "TOKEN_INVALID"
+                }
+            )
+
+        # Fetch user permissions from database
+        conn = None
         try:
+            
             conn = get_db()
             repo = UserRepository(conn)
+            
             permissions = repo.get_user_permissions(user_id)
+            
+            
+            # Verify user still exists and is active
+            user_exists = repo.get_user_by_id(user_id)
+            if not user_exists:
+                return JSONResponse(
+                    status_code=401,
+                    content={
+                        "detail": "User no longer exists",
+                        "error_code": "USER_NOT_FOUND"
+                    }
+                )
+                
+        except Exception as e:
+            return JSONResponse(
+                status_code=500,
+                content={"detail": "Database error during authentication", "error": str(e)}
+            )
         finally:
-            conn.close()
+            if conn:
+                conn.close()
 
-        # Attach to request.state
+        # Attach user data to request state
         request.state.user = payload
-        print("User state:", getattr(request.state, "user", None))
-
         request.state.user["permissions"] = permissions or []
-        print("User state:", getattr(request.state, "user", None))
+        request.state.user["user_id"] = user_id
 
         return await call_next(request)
