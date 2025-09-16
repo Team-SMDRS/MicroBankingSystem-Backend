@@ -6,8 +6,8 @@ import hashlib
 
 SECRET_KEY = "supersecretkey"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_TOKEN_EXPIRE_DAYS = 7  # Refresh tokens last 7 days
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Standard 30 minutes
+REFRESH_TOKEN_EXPIRE_DAYS = 7  # Standard 7 days
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
