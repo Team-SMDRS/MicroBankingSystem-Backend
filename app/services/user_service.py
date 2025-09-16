@@ -8,21 +8,31 @@ from app.core.utils import (
     create_access_token_from_refresh
 )
 from fastapi import HTTPException, Request
-
 class UserService:
-
     def __init__(self, repo):
         self.repo = repo
 
-    def register_user(self, user_data, created_by_user_id=None):
+    def register_user(self, user_data, created_by_user_id, current_user):
+        print(created_by_user_id)
         """Register a new user"""
+        
+        # Debug print of inputs
+        print("User data received:", user_data)
+        print("Created by user_id:", created_by_user_id)
+        print("Current logged-in user:", current_user)
+
+        # Check if username already exists
         existing = self.repo.get_login_by_username(user_data.username)
         if existing:
             raise HTTPException(status_code=400, detail="Username already exists")
         
+        # Hash password
         hashed = hash_password(user_data.password)
+
+        # Save user
         user_id = self.repo.create_user(user_data, hashed, created_by_user_id)
         return {"msg": "User registered", "user_id": user_id}
+
 
     def login_user(self, login_data, request: Request = None):
         """Login user and create both access and refresh tokens"""
@@ -54,12 +64,12 @@ class UserService:
             
             # Log login activity
             self.repo.insert_login_time(row["user_id"])
-            
+           
             return {
                 "access_token": tokens["access_token"],
                 "refresh_token": tokens["refresh_token"],
                 "token_type": tokens["token_type"],
-                "expires_in": 1800,  # 30 minutes in seconds
+                "expires_in": tokens["refresh_token_expires_at"],  # 30 minutes in seconds
                 "user_id": str(row["user_id"]),
                 "username": row["username"]
             }
@@ -91,7 +101,7 @@ class UserService:
         
         return {
             "access_token": new_access_token,
-            "token_type": "bearer",
+            "token_type": "Bearer",
             "expires_in": 1800  # 30 minutes
         }
 

@@ -10,7 +10,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         public_paths = [
             "/api/auth/login", 
-            "/api/auth/register", 
+            # "/api/auth/register", 
             "/api/auth/refresh",  # Add refresh endpoint to public paths
             "/docs", 
             "/openapi.json", 

@@ -1,23 +1,23 @@
 #user repo .py
+
+
 from psycopg2.extras import RealDictCursor
 
 class UserRepository:
     def __init__(self, db_conn):
-
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
 
-    def create_user(self, user_data, hashed_password: str, created_by_user_id: str = None):
+    def create_user(self, user_data, hashed_password: str, created_by_user_id: str):
+      
         """
-        Calls the PostgreSQL function `create_user` to insert into
-        `users` and `user_login` automatically.
-        Returns the new user_id.
+        Calls the PostgreSQL function `create_user` to insert a new user
+        and their login information. Returns the new user_id.
         """
-        if created_by_user_id:
-            # Use regular create_user function when we have a creator
+        try:
             self.cursor.execute(
                 """
-                SELECT create_user(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                SELECT create_user(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     user_data.nic,
@@ -28,33 +28,28 @@ class UserRepository:
                     user_data.dob,
                     user_data.username,
                     hashed_password,
+                    created_by_user_id,
                     created_by_user_id
+                    
+                    
+                    
                 )
             )
-        else:
-            # Use create_initial_user for first admin user
-            self.cursor.execute(
-                """
-                SELECT create_initial_user(%s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                (
-                    user_data.nic,
-                    user_data.first_name,
-                    user_data.last_name,
-                    user_data.address,
-                    user_data.phone_number,
-                    user_data.dob,
-                    user_data.username,
-                    hashed_password
-                )
-            )
-        
-        row = self.cursor.fetchone()
-        self.conn.commit()
-        
-        # Access by column name because of RealDictCursor
-        user_id = row['create_user'] if 'create_user' in row else row['create_initial_user']
-        return user_id
+
+            row = self.cursor.fetchone()
+            if row is None:
+                raise Exception("User creation failed: no row returned from DB.")
+
+            user_id = row.get('create_user')
+            if not user_id:
+                raise Exception("User creation failed: returned row does not contain user_id.")
+
+            self.conn.commit()
+            return user_id
+
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error in create_user: {e}")
 
 
     def get_login_by_username(self, username: str):
@@ -67,14 +62,8 @@ class UserRepository:
         )
         return self.cursor.fetchone()
     
-    def update_login_success (self,user_id):
-        self.cursor.execute(
-           "INSERT INTO login (user_id) VALUES (%s)",
-            (user_id,)
-        )
-        self.conn.commit()
-
-    def insert_login_time (self,user_id):
+    def insert_login_time(self, user_id):
+        """Log user login activity"""
         self.cursor.execute(
            "INSERT INTO login (user_id) VALUES (%s)",
             (user_id,)
