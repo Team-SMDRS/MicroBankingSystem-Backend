@@ -1,5 +1,58 @@
-# Environment variables
-.env
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.log
+**/__pycache__/
 
-# Python virtual environment
+
+
+# Virtual environment
 venv/
+.env
+.venv/
+ENV/
+env/
+
+# FastAPI & Uvicorn
+*.db
+*.sqlite3
+instance/
+*.pid
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Pytest / Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.cache/
+
+# Alembic
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+
+# Docker
+*.pid
+*.seed
+*.bak
+*.tar
+*.gz
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local configs
+*.local
+*.ini
+*.toml
