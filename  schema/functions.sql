@@ -26,10 +26,10 @@ BEGIN
 
     -- 2. Insert into user_login table
     INSERT INTO user_login (
-        user_id, username, password, password_last_update
+        user_id, username, password, password_last_update, created_by, updated_by
     )
     VALUES (
-        new_user_id, p_username, p_hashed_password, NOW()
+        new_user_id, p_username, p_hashed_password, NOW(), p_created_by, p_updated_by
     );
 
     -- 3. Log to audit_log
