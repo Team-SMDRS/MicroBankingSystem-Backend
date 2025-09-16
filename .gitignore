@@ -56,3 +56,4 @@ Thumbs.db
 *.local
 *.ini
 *.toml
+.env

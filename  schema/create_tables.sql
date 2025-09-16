@@ -270,47 +270,47 @@ CREATE INDEX idx_user_refresh_tokens_expires_at ON user_refresh_tokens(expires_a
 CREATE INDEX idx_user_refresh_tokens_revoked ON user_refresh_tokens(is_revoked);
 
 
--- Function to create a new user with login credentials
-CREATE OR REPLACE FUNCTION create_user(
-    p_nic VARCHAR(12),
-    p_first_name VARCHAR(100),
-    p_last_name VARCHAR(100),
-    p_address VARCHAR(100),
-    p_phone_number VARCHAR(15),
-    p_dob DATE,
-    p_username VARCHAR(50),
-    p_password_hash TEXT,
-    p_created_by UUID DEFAULT NULL
-) RETURNS UUID AS $$
-DECLARE
-    new_user_id UUID;
-    new_login_id UUID;
-BEGIN
-    -- Insert into users table
-    INSERT INTO users (
-        nic, first_name, last_name, address, phone_number, dob, 
-        created_by, updated_by
-    ) VALUES (
-        p_nic, p_first_name, p_last_name, p_address, p_phone_number, p_dob,
-        p_created_by, p_created_by
-    ) RETURNING user_id INTO new_user_id;
+-- -- Function to create a new user with login credentials
+-- CREATE OR REPLACE FUNCTION create_user(
+--     p_nic VARCHAR(12),
+--     p_first_name VARCHAR(100),
+--     p_last_name VARCHAR(100),
+--     p_address VARCHAR(100),
+--     p_phone_number VARCHAR(15),
+--     p_dob DATE,
+--     p_username VARCHAR(50),
+--     p_password_hash TEXT,
+--     p_created_by UUID DEFAULT NULL
+-- ) RETURNS UUID AS $$
+-- DECLARE
+--     new_user_id UUID;
+--     new_login_id UUID;
+-- BEGIN
+--     -- Insert into users table
+--     INSERT INTO users (
+--         nic, first_name, last_name, address, phone_number, dob, 
+--         created_by, updated_by
+--     ) VALUES (
+--         p_nic, p_first_name, p_last_name, p_address, p_phone_number, p_dob,
+--         p_created_by, p_created_by
+--     ) RETURNING user_id INTO new_user_id;
 
-    -- Insert into user_login table
-    INSERT INTO user_login (
-        user_id, username, password, created_by, updated_by
-    ) VALUES (
-        new_user_id, p_username, p_password_hash, p_created_by, p_created_by
-    ) RETURNING login_id INTO new_login_id;
+--     -- Insert into user_login table
+--     INSERT INTO user_login (
+--         user_id, username, password, created_by, updated_by
+--     ) VALUES (
+--         new_user_id, p_username, p_password_hash, p_created_by, p_created_by
+--     ) RETURNING login_id INTO new_login_id;
 
-    -- Return the new user_id
-    RETURN new_user_id;
+--     -- Return the new user_id
+--     RETURN new_user_id;
     
-EXCEPTION
-    WHEN OTHERS THEN
-        -- Rollback will happen automatically
-        RAISE;
-END;
-$$ LANGUAGE plpgsql;
+-- EXCEPTION
+--     WHEN OTHERS THEN
+--         -- Rollback will happen automatically
+--         RAISE;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 -- Function to create a user without created_by (for initial admin user)
 CREATE OR REPLACE FUNCTION create_initial_user(
