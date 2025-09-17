@@ -41,6 +41,7 @@ alembic/versions/*.pyc
 alembic/versions/__pycache__/
 
 # Docker
+*.pid
 *.seed
 *.bak
 *.tar
@@ -55,3 +56,4 @@ Thumbs.db
 *.local
 *.ini
 *.toml
+.env
