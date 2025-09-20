@@ -16,7 +16,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/openapi.json", 
             "/", 
             "/favicon.ico", 
-            "/redoc"
+            "/redoc",
+            "/customer_data/login",
+            "/customer_data/my_profile"
         ]
         if request.url.path in public_paths:
             return await call_next(request)

@@ -3,6 +3,8 @@ from app.api import auth_routes
 from app.middleware.auth_middleware import AuthMiddleware
 from app.api import user_routes
 from fastapi.responses import JSONResponse
+from app.api import customer_routes
+
 
 from fastapi.openapi.utils import get_openapi
 from fastapi.security.api_key import APIKeyHeader
@@ -21,6 +23,10 @@ app.include_router(user_routes.router,prefix="/api/account",tags=["Accounts"])
 
 
 
+
+
+
+app.include_router(customer_routes.router, prefix="/customer_data", tags=["Customer Login & get data"])
 
 
 @app.get("/")

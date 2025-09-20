@@ -9,12 +9,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_db():
+    
+
+
     conn = psycopg2.connect(
-        dbname=os.getenv("DB_NAME", "bankdata"),
-        user=os.getenv("DB_USER", "microbank"),
-        password=os.getenv("DB_PASSWORD", "databus"),
-        host=os.getenv("DB_HOST", "localhost"),
-        port=os.getenv("DB_PORT", "5432"),
-        cursor_factory=RealDictCursor
+    dbname=os.getenv("POSTGRES_DB", "microbanking"),
+    user=os.getenv("POSTGRES_USER", "postgres"),
+    password=os.getenv("POSTGRES_PASSWORD", "postgres"),
+    host=os.getenv("POSTGRES_HOST", "db"),   # <-- IMPORTANT: 'db' is the service name
+    port=os.getenv("POSTGRES_PORT", "5432"),
+    cursor_factory=RealDictCursor
     )
+
     return conn
