@@ -1,6 +1,10 @@
 
+
+
+
 from pydantic import BaseModel
 from typing import Optional
+from pydantic import BaseModel
 
 
 # Input schema: only fields user should provide
@@ -9,6 +13,7 @@ class CustomerAccountInput(BaseModel):
     address: Optional[str] = None
     phone_number: Optional[str] = None
     nic: str
+    dob: str
     balance: float
     savings_plan_id: str
 
@@ -19,6 +24,18 @@ class CustomerCreate(BaseModel):
     address: Optional[str] = None
     phone_number: Optional[str] = None
     nic: str
+    dob: str
+
+# Input schema for updating account (savings_plan_id only)
+class UpdateAccountInput(BaseModel):
+    savings_plan_id: str
+
+# Input schema for updating customer details
+class UpdateCustomerInput(BaseModel):
+    full_name: Optional[str] = None
+    address: Optional[str] = None
+    phone_number: Optional[str] = None
+    nic: Optional[str] = None
 
 class CustomerLoginCreate(BaseModel):
     username: str
@@ -34,3 +51,9 @@ class RegisterCustomerWithAccount(BaseModel):
     customer: CustomerCreate
     login: CustomerLoginCreate
     account: AccountCreate
+
+# Input schema for existing customer opening new account
+class ExistingCustomerAccountInput(BaseModel):
+    nic: str
+    balance: float
+    savings_plan_id: str

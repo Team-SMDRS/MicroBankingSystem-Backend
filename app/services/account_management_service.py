@@ -7,6 +7,7 @@ from app.schemas.account_management_schema import CustomerAccountInput, Customer
 
 
 class AccountManagementService:
+    
     def __init__(self, repo):
         self.repo = repo
 
@@ -35,7 +36,8 @@ class AccountManagementService:
             full_name=input_data.full_name,
             address=input_data.address,
             phone_number=input_data.phone_number,
-            nic=input_data.nic
+            nic=input_data.nic,
+            dob=input_data.dob
         )
         login = CustomerLoginCreate(
             username=username,
@@ -56,6 +58,24 @@ class AccountManagementService:
             "acc_id": acc_id,
             "username": username,
             "password": password,
+            "account_no": account_no
+        }
+    
+    def open_account_for_existing_customer(self, input_data, created_by_user_id, branch_id):
+        # Generate new account number
+        account_no = self._generate_account_no()
+        account = AccountCreate(
+            account_no=account_no,
+            branch_id=branch_id,
+            savings_plan_id=input_data.savings_plan_id,
+            balance=input_data.balance
+        )
+        acc_id = self.repo.create_account_for_existing_customer_by_nic(account.dict(), input_data.nic, created_by_user_id)
+        if acc_id is None:
+            raise HTTPException(status_code=404, detail="Customer with this NIC not found")
+        return {
+            "msg": "Account created for existing customer",
+            "acc_id": acc_id,
             "account_no": account_no
         }
 
