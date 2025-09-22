@@ -159,6 +159,23 @@ class AccountManagementRepository:
             (account_no,)
         )
         return self.cursor.fetchone()
+    
+    def get_accounts_by_nic(self, nic):
+        """
+        Get all accounts for a given NIC number.
+        Returns: List of account records.
+        """
+        self.cursor.execute(
+            '''
+            SELECT a.* FROM account a
+            JOIN accounts_owner ao ON a.acc_id = ao.acc_id
+            JOIN customer c ON ao.customer_id = c.customer_id
+            WHERE c.nic = %s
+            ORDER BY a.created_at DESC
+            ''',
+            (nic,)
+        )
+        return self.cursor.fetchall()
 
     def update_account(self, account_no, update_data):
         # Only allow updating savings_plan_id

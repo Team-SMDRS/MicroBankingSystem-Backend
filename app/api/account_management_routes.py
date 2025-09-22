@@ -11,6 +11,8 @@ router = APIRouter()
 
 
 
+
+
 # Route for existing customer to open a new account using NIC
 @router.post("/existing_customer/open_account")
 def open_account_for_existing_customer(
@@ -77,6 +79,13 @@ def get_account_owner(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     owner = repo.get_account_owner(account_no)
     return owner if owner else {"detail": "Owner not found"}
+
+# Route to get all accounts for a given NIC number
+@router.get("/accounts/by-nic/{nic}")
+def get_accounts_by_nic(nic: str, db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    accounts = repo.get_accounts_by_nic(nic)
+    return accounts
 
 @router.put("/account/{account_no}")
 def update_account(account_no: str, update_data: UpdateAccountInput, db=Depends(get_db)):
