@@ -2,29 +2,54 @@ from fastapi import FastAPI , Request
 from app.api import auth_routes
 from app.middleware.auth_middleware import AuthMiddleware
 from app.api import user_routes
+<<<<<<< HEAD
 from app.api import account_management_routes
+=======
+>>>>>>> 0d4b7ce1306cffd591828a3d0cd0c7f3faa7c298
 from fastapi.responses import JSONResponse
+from app.api import customer_routes
+from fastapi.middleware.cors import CORSMiddleware 
 
 from fastapi.openapi.utils import get_openapi
 from fastapi.security.api_key import APIKeyHeader
 #from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
+origins = [
+    "http://localhost:5173",  # your frontend
+    "http://127.0.0.1:5173",  # sometimes needed
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Middleware
 app.add_middleware(AuthMiddleware)
 
 # Routes
+<<<<<<< HEAD
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(user_routes.router, prefix="/api/account", tags=["Accounts"])
 app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
 
 
+=======
+app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
+app.include_router(user_routes.router,prefix="/api/account",tags=["Accounts"])
+>>>>>>> 0d4b7ce1306cffd591828a3d0cd0c7f3faa7c298
 
 
 
 
 
+
+
+
+app.include_router(customer_routes.router, prefix="/customer_data", tags=["Customer Login & get data"])
 
 
 @app.get("/")

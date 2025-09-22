@@ -34,7 +34,10 @@ curl -X 'POST' \
 -response 
 
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYW5nZWV0aCIsInVzZXJfaWQiOiI1N2ZkOTI5Yi1mNzkyLTQwMzYtYWFiMy1lOWE5YWQyMmY4MWUiLCJleHAiOjE3NTc1NTc2MTF9.0NZedQZRyd-e34T_qIIIN-VLdf3gTJMpciGUEG7z0So",
-  "token_type": "Bearer"
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsInVzZXJfaWQiOiJkZTlkYzUzMS0xMWJmLTQ0ODEtODgyYS1kYzMyOTE1ODBmNjAiLCJleHAiOjE3NTg1MTUzMzF9.HV9HtQ75k9NZ7Hb199Lo6ddNnAHWDW92zrIjG0Q72Qk",
+  "refresh_token": "_DY5i-8Q9ErKKBMT-YH3wurg5EpPqBvIsgMhrwwZT4Y",
+  "token_type": "Bearer",
+  "expires_in": "2025-09-29T03:58:51.847145",
+  "user_id": "de9dc531-11bf-4481-882a-dc3291580f60",
+  "username": "user1"
 }
-

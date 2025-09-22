@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - "8000:8000"         # FastAPI exposed here
+    volumes:
+      - .:/app              # so code updates without rebuild
+    depends_on:
+      - db                  # wait until db is ready
+    environment:
+      POSTGRES_USER: microbank
+      POSTGRES_PASSWORD: databus
+      POSTGRES_DB: bankdata
+      POSTGRES_HOST: db     # IMPORTANT: use 'db', not localhost
+      POSTGRES_PORT: 5432
+
+
+  db:
+    image: postgres:17.5
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: microbank
+      POSTGRES_PASSWORD: databus
+      POSTGRES_DB: bankdata
+    ports:
+      - "5433:5432"         # exposes DB to your laptop (optional)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql
+
+volumes:
+  postgres_data:
