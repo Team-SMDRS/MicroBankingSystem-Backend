@@ -58,3 +58,5 @@ EXCEPTION
         RAISE EXCEPTION 'Error creating user: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+
+
