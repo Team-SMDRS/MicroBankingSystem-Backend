@@ -47,7 +47,8 @@ class AccountManagementService:
             account_no=account_no,
             branch_id=branch_id,
             savings_plan_id=input_data.savings_plan_id,
-            balance=input_data.balance
+            balance=input_data.balance,
+            status=input_data.status if hasattr(input_data, 'status') else 'active'
         )
         # Call the existing repo logic
         customer_id = self.repo.create_customer_with_login(customer.dict(), login.dict(), created_by_user_id)

@@ -87,8 +87,8 @@ class AccountManagementRepository:
         self.cursor.execute(
             """
             INSERT INTO account (
-                account_no, branch_id, savings_plan_id, balance, created_by, updated_by
-            ) VALUES (%s, %s, %s, %s, %s, %s)
+                account_no, branch_id, savings_plan_id, balance, status, created_by, updated_by
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING acc_id;
             """,
             (
@@ -96,6 +96,7 @@ class AccountManagementRepository:
                 account_data.get('branch_id'),
                 account_data.get('savings_plan_id'),
                 account_data.get('balance', 0.0),
+                account_data.get('status', 'active'),
                 created_by_user_id,
                 created_by_user_id
             )

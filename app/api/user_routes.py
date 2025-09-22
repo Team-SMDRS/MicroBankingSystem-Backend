@@ -13,8 +13,4 @@ async def my_profile(request: Request):
 @require_permission("account:view")
 async def get_accounts(request: Request):
 
-<<<<<<< HEAD
     return {"msg": "You can view accounts!", "permissions": request.state.user.get("permissions", [])}
-=======
-    return {"msg": "You can view accounts!", "permissions": request.state.user.get("permissions", [])}
->>>>>>> 0d4b7ce1306cffd591828a3d0cd0c7f3faa7c298

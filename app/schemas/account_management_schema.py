@@ -16,6 +16,7 @@ class CustomerAccountInput(BaseModel):
     dob: str
     balance: float
     savings_plan_id: str
+    status: Optional[str] = 'active'  # 'active', 'frozen', 'closed'
 
 
 # Internal use schemas (for service/repo, not direct user input)
@@ -46,6 +47,7 @@ class AccountCreate(BaseModel):
     branch_id: Optional[str] = None
     savings_plan_id: Optional[str] = None
     balance: float = 0.0
+    status: Optional[str] = 'active'  # 'active', 'frozen', 'closed'
 
 class RegisterCustomerWithAccount(BaseModel):
     customer: CustomerCreate
