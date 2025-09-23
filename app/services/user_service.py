@@ -8,7 +8,7 @@ from app.core.utils import (
     create_access_token_from_refresh
 )
 from fastapi import HTTPException, Request
-from app.repositories import user_repo
+
 class UserService:
     def __init__(self, repo):
         self.repo = repo
