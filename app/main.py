@@ -1,7 +1,7 @@
 from fastapi import FastAPI , Request
 from app.api import auth_routes
 from app.middleware.auth_middleware import AuthMiddleware
-from app.api import user_routes
+from app.api import test_account_routes
 from fastapi.responses import JSONResponse
 from app.api import customer_routes
 from fastapi.middleware.cors import CORSMiddleware 
@@ -28,7 +28,7 @@ app.add_middleware(AuthMiddleware)
 
 # Routes
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
-app.include_router(user_routes.router,prefix="/api/account",tags=["Accounts"])
+app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
 
 
 
