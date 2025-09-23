@@ -8,6 +8,7 @@ from app.core.utils import (
     create_access_token_from_refresh
 )
 from fastapi import HTTPException, Request
+
 class UserService:
     def __init__(self, repo):
         self.repo = repo
@@ -41,6 +42,7 @@ class UserService:
         if not row or not verify_password(login_data.password, row["password"]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
+        
         # Create tokens (both access and refresh)
         user_data = {"sub": row["username"], "user_id": str(row["user_id"])}
         tokens = create_tokens(user_data)
@@ -64,6 +66,7 @@ class UserService:
             
             # Log login activity
             self.repo.insert_login_time(row["user_id"])
+            permissions = self.repo.get_user_permissions(row["user_id"])
            
             return {
                 "access_token": tokens["access_token"],
@@ -71,7 +74,8 @@ class UserService:
                 "token_type": tokens["token_type"],
                 "expires_in": tokens["refresh_token_expires_at"],  # 30 minutes in seconds
                 "user_id": str(row["user_id"]),
-                "username": row["username"]
+                "username": row["username"],
+                 "permissions": permissions or []
             }
             
         except Exception as e:
