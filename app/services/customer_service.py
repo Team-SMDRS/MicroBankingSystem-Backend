@@ -31,7 +31,7 @@ class CustomerService:
             return {
                 "access_token": tokens["access_token"],
                 "token_type": tokens["token_type"],
-                "refesh_token": tokens["refresh_token"],
+                "refresh_token": tokens["refresh_token"],
                 "expires_in": tokens["refresh_token_expires_at"],  # 30 minutes in seconds
                 "user_id": str(row["customer_id"]),
                 "username": row["username"]
