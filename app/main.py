@@ -12,13 +12,13 @@ from fastapi.security.api_key import APIKeyHeader
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173",  # your frontend
-    "http://127.0.0.1:5173",  # sometimes needed
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:5173"],  # must match frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,6 +29,7 @@ app.add_middleware(AuthMiddleware)
 # Routes
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
 app.include_router(user_routes.router,prefix="/api/account",tags=["Accounts"])
+
 
 
 
