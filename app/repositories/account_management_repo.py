@@ -19,20 +19,42 @@ class AccountManagementRepository:
     
     def create_account_for_existing_customer_by_nic(self, account_data, nic, created_by_user_id):
         """
-        Create a new account for an existing customer using NIC.
-        Returns: acc_id if successful, None if customer not found.
+        Create a new account for an existing customer using NIC via PostgreSQL function.
+        Returns: (acc_id, account_no) if successful, None if customer not found.
         """
-        # Find customer_id by NIC
-        self.cursor.execute(
-            "SELECT customer_id FROM customer WHERE nic = %s",
-            (nic,)
-        )
-        row = self.cursor.fetchone()
-        if not row:
-            return None  # Customer not found
-        customer_id = row['customer_id']
-        # Create account and link to customer
-        return self.create_account_for_customer(account_data, customer_id, created_by_user_id)
+        try:
+            self.cursor.execute(
+                """
+                SELECT * FROM create_account_for_existing_customer_by_nic(
+                    %s, %s, %s, %s, %s, %s
+                )
+                """,
+                (
+                    nic,
+                    account_data.get('branch_id'),
+                    account_data.get('savings_plan_id'),
+                    created_by_user_id,
+                    account_data.get('balance', 0.0),
+                    account_data.get('status', 'active')
+                )
+            )
+            
+            result = self.cursor.fetchone()
+            self.conn.commit()
+            
+            if result:
+                return result['acc_id'], result['account_no']
+            else:
+                return None
+                
+        except Exception as e:
+            self.conn.rollback()
+            if "Customer not found" in str(e):
+                return None
+            raise e
+
+
+       
 
 
     def create_customer_with_login(self, customer_data, login_data, created_by_user_id, account_data):
@@ -82,42 +104,7 @@ class AccountManagementRepository:
             self.conn.rollback()
             raise e
 
-    def create_account_for_customer(self, account_data, customer_id, created_by_user_id):
-        """
-        Create an account and link it to a customer.
-        Returns: acc_id
-        """
-        # Insert account
-        self.cursor.execute(
-            """
-            INSERT INTO account (
-                account_no, branch_id, savings_plan_id, balance, status, created_by, updated_by
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING acc_id;
-            """,
-            (
-                account_data['account_no'],
-                account_data.get('branch_id'),
-                account_data.get('savings_plan_id'),
-                account_data.get('balance', 0.0),
-                account_data.get('status', 'active'),
-                created_by_user_id,
-                created_by_user_id
-            )
-        )
-        acc_row = self.cursor.fetchone()
-        acc_id = acc_row['acc_id']
-
-        # Link customer and account
-        self.cursor.execute(
-            """
-            INSERT INTO accounts_owner (acc_id, customer_id)
-            VALUES (%s, %s)
-            """,
-            (acc_id, customer_id)
-        )
-        self.conn.commit()
-        return acc_id
+  
 
     # You can add get/update methods as needed, following this pattern.
 

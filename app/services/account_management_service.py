@@ -60,46 +60,24 @@ class AccountManagementService:
     
     def open_account_for_existing_customer(self, input_data, created_by_user_id, branch_id):
         # Generate new account number
-        account_no = self._generate_account_no()
+    
         account = AccountCreate(
-            account_no=account_no,
+       
             branch_id=branch_id,
             savings_plan_id=input_data.savings_plan_id,
             balance=input_data.balance
         )
-        acc_id = self.repo.create_account_for_existing_customer_by_nic(account.dict(), input_data.nic, created_by_user_id)
+        acc_id,account_no = self.repo.create_account_for_existing_customer_by_nic(account.dict(), input_data.nic, created_by_user_id)
         if acc_id is None:
             raise HTTPException(status_code=404, detail="Customer with this NIC not found")
         return {
             "msg": "Account created for existing customer",
             "acc_id": acc_id,
-            "account_no": account_no
+            "account_no":account_no,
+        
         }
 
-    def register_customer_with_account(self, customer_data, login_data, account_data, created_by_user_id):
-        """
-        Register a new customer, create their login, and open an account for them.
-        """
-        # Optionally: Check if customer NIC or username already exists (implement in repo if needed)
-        # Example:
-        # existing_customer = self.repo.get_customer_by_nic(customer_data['nic'])
-        # if existing_customer:
-        #     raise HTTPException(status_code=400, detail="Customer with this NIC already exists")
-        # existing_login = self.repo.get_customer_login_by_username(login_data['username'])
-        # if existing_login:
-        #     raise HTTPException(status_code=400, detail="Username already exists for customer login")
-
-        # Hash password if needed (implement or import hash_password if required)
-        # login_data['password'] = hash_password(login_data['password'])
-
-        # Create customer and login
-        customer_id = self.repo.create_customer_with_login(customer_data, login_data, created_by_user_id)
-
-        # Create account and link to customer
-        acc_id = self.repo.create_account_for_customer(account_data, customer_id, created_by_user_id)
-
-        return {"msg": "Customer registered and account created", "customer_id": customer_id, "acc_id": acc_id}
-
+    
     def get_accounts_by_branch(self, branch_id):
         """
         Get all accounts for a specific branch.
