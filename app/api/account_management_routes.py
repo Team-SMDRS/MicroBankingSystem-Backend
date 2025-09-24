@@ -87,13 +87,6 @@ def get_accounts_by_nic(nic: str, db=Depends(get_db)):
     accounts = repo.get_accounts_by_nic(nic)
     return accounts
 
-@router.put("/account/{account_no}")
-def update_account(account_no: str, update_data: UpdateAccountInput, db=Depends(get_db)):
-    repo = AccountManagementRepository(db)
-    updated = repo.update_account(account_no, update_data.dict())
-    if updated is None:
-        return {"detail": "No valid fields to update."}
-    return updated if updated else {"detail": "Account not found or not updated."}
 
 # Route to update customer details
 @router.put("/customer/{customer_id}")

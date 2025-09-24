@@ -5,18 +5,18 @@ from app.api import user_routes
 from app.api import account_management_routes
 from fastapi.responses import JSONResponse
 from app.api import customer_routes
-from fastapi.middleware.cors import CORSMiddleware 
-
+# CORS setup for frontend dev URLs
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security.api_key import APIKeyHeader
-#from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
 
+# Allow local frontend dev URLs
 origins = [
-    "http://localhost:5173",  # your frontend
-    "http://127.0.0.1:5173",  # sometimes needed
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

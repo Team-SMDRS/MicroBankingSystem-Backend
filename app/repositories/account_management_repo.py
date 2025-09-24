@@ -177,14 +177,6 @@ class AccountManagementRepository:
         )
         return self.cursor.fetchall()
 
-    def update_account(self, account_no, update_data):
-        # Only allow updating savings_plan_id
-        if "savings_plan_id" not in update_data:
-            return None
-        sql = "UPDATE account SET savings_plan_id = %s WHERE account_no = %s RETURNING *"
-        self.cursor.execute(sql, (update_data["savings_plan_id"], account_no))
-        self.conn.commit()
-        return self.cursor.fetchone()
     
     def update_customer(self, customer_id, update_data):
         # Only allow updating certain fields
