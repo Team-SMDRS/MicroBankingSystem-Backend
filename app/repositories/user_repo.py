@@ -4,6 +4,10 @@
 from psycopg2.extras import RealDictCursor
 
 class UserRepository:
+    def __init__(self, db_conn):
+        self.conn = db_conn
+        self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+
 
     def get_user_branch_id(self, user_id):
         self.cursor.execute(

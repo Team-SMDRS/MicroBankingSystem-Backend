@@ -39,7 +39,7 @@ curl -X 'POST' \
   "balance": 310,
   "savings_plan_id": "3578bd55-8c57-4757-aa7b-0f37b859edd6"
 
-
+  }
   	
 Response body
 

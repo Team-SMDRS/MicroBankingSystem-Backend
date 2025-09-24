@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 from typing import Optional
-from pydantic import BaseModel
+
 
 
 # Input schema: only fields user should provide
