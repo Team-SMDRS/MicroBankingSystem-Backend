@@ -68,7 +68,7 @@ def logins(user: LoginUser, db=Depends(get_db)):
         value=refresh_token,
         httponly=True,
         secure=False,       # ✅ must be False on http://localhost
-        samesite="lax",     # ✅ allow sending cookie with localhost:5173 → localhost:8000
+        samesite="Lax",     # ✅ allow sending cookie with localhost:5173 → localhost:8000
         path="/",
         max_age=7*24*60*60
     )
