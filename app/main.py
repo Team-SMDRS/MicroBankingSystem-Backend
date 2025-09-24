@@ -1,21 +1,25 @@
 from fastapi import FastAPI , Request
 from app.api import auth_routes
 from app.middleware.auth_middleware import AuthMiddleware
+
+from app.api import account_management_routes
+
 from app.api import test_account_routes
+
 from fastapi.responses import JSONResponse
 from app.api import customer_routes
-from fastapi.middleware.cors import CORSMiddleware 
-
+# CORS setup for frontend dev URLs
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security.api_key import APIKeyHeader
-#from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
 
+# Allow local frontend dev URLs
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # must match frontend
@@ -27,8 +31,11 @@ app.add_middleware(
 app.add_middleware(AuthMiddleware)
 
 # Routes
+
+app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
 app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
+
 
 
 
