@@ -1,6 +1,5 @@
 import random
-import string
-import random
+
 import string
 from fastapi import HTTPException
 from app.schemas.account_management_schema import CustomerAccountInput, CustomerCreate, CustomerLoginCreate, AccountCreate, RegisterCustomerWithAccount
@@ -22,15 +21,12 @@ class AccountManagementService:
         chars = string.ascii_letters + string.digits
         return ''.join(random.choices(chars, k=length))
 
-    def _generate_account_no(self):
-        # Simple random account number generator
-        return ''.join(random.choices(string.digits, k=10))
 
     def register_customer_with_account_minimal(self, input_data: CustomerAccountInput, created_by_user_id, branch_id):
         # Auto-generate username, password, account_no
         username = self._generate_username(input_data.full_name)
         password = self._generate_password()
-        account_no = self._generate_account_no()
+     
 
         customer = CustomerCreate(
             full_name=input_data.full_name,
@@ -44,22 +40,22 @@ class AccountManagementService:
             password=password  # In production, hash this!
         )
         account = AccountCreate(
-            account_no=account_no,
+          
             branch_id=branch_id,
             savings_plan_id=input_data.savings_plan_id,
             balance=input_data.balance,
             status=input_data.status if hasattr(input_data, 'status') else 'active'
         )
         # Call the existing repo logic
-        customer_id = self.repo.create_customer_with_login(customer.dict(), login.dict(), created_by_user_id)
-        acc_id = self.repo.create_account_for_customer(account.dict(), customer_id, created_by_user_id)
+        customer_id , account_no = self.repo.create_customer_with_login(customer.dict(), login.dict(), created_by_user_id, account.dict())
+        # acc_id = self.repo.create_account_for_customer(account.dict(), customer_id, created_by_user_id)
         return {
             "msg": "Customer registered and account created",
             "customer_id": customer_id,
-            "acc_id": acc_id,
-            "username": username,
-            "password": password,
-            "account_no": account_no
+            "username":username,
+            "password":password,
+            "account_no":account_no,
+          
         }
     
     def open_account_for_existing_customer(self, input_data, created_by_user_id, branch_id):

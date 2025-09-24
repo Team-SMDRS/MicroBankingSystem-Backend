@@ -40,7 +40,7 @@ class CustomerLoginCreate(BaseModel):
     password: str
 
 class AccountCreate(BaseModel):
-    account_no: str
+  
     branch_id: Optional[str] = None
     savings_plan_id: Optional[str] = None
     balance: float = 0.0

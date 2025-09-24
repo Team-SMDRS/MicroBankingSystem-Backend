@@ -70,13 +70,17 @@ CREATE TABLE savings_plan (
 );
 
 
+
+CREATE TYPE account_status AS ENUM ('active', 'frozen', 'closed');
 -- Account
+
 CREATE TABLE account (
   acc_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_no VARCHAR(20) UNIQUE,
   branch_id UUID REFERENCES branch(branch_id),
   savings_plan_id UUID REFERENCES savings_plan(savings_plan_id),
-  balance NUMERIC(12,12),
+  balance NUMERIC(24,12),
+  status account_status DEFAULT 'active',
   opened_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -87,7 +91,7 @@ CREATE TABLE account (
 -- Fixed Deposit
 CREATE TABLE fixed_deposit (
   fd_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  balance NUMERIC(18,12),
+  balance NUMERIC(24,12),
   acc_id UUID REFERENCES account(acc_id),
   opened_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   maturity_date TIMESTAMP,
@@ -133,7 +137,7 @@ CREATE TABLE customer (
   full_name VARCHAR(150) NOT NULL,
   address VARCHAR(255),
   phone_number VARCHAR(15),
-  nic VARCHAR(12) UNIQUE,
+  nic VARCHAR(16) UNIQUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_by UUID REFERENCES users(user_id),
@@ -314,7 +318,7 @@ CREATE INDEX idx_user_refresh_tokens_revoked ON user_refresh_tokens(is_revoked);
 
 -- Function to create a user without created_by (for initial admin user)
 CREATE OR REPLACE FUNCTION create_initial_user(
-    p_nic VARCHAR(12),
+    p_nic VARCHAR(16),
     p_first_name VARCHAR(100),
     p_last_name VARCHAR(100),
     p_address VARCHAR(100),

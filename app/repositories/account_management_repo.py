@@ -1,5 +1,6 @@
 from psycopg2.extras import RealDictCursor
 
+import bcrypt
 
 class AccountManagementRepository:
     
@@ -33,50 +34,53 @@ class AccountManagementRepository:
         # Create account and link to customer
         return self.create_account_for_customer(account_data, customer_id, created_by_user_id)
 
-    def create_customer_with_login(self, customer_data, login_data, created_by_user_id):
-        """
-        Create a customer and customer_login.
-        Returns: customer_id
-        """
-        # Insert customer
-        self.cursor.execute(
-            """
-            INSERT INTO customer (
-                full_name, address, phone_number, nic, dob, created_by, updated_by
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING customer_id;
-            """,
-            (
-                customer_data['full_name'],
-                customer_data.get('address'),
-                customer_data.get('phone_number'),
-                customer_data['nic'],
-                customer_data['dob'],
-                created_by_user_id,
-                created_by_user_id
-            )
-        )
-        customer_row = self.cursor.fetchone()
-        customer_id = customer_row['customer_id']
 
-        # Insert customer_login
-        self.cursor.execute(
-            """
-            INSERT INTO customer_login (
-                customer_id, username, password, created_by, updated_by
-            ) VALUES (%s, %s, %s, %s, %s)
-            RETURNING login_id;
-            """,
-            (
-                customer_id,
-                login_data['username'],
-                login_data['password'],  # should be hashed
-                created_by_user_id,
-                created_by_user_id
+    def create_customer_with_login(self, customer_data, login_data, created_by_user_id, account_data):
+        """
+        Calls the Postgres function to create account, customer, link, and login.
+        Returns: (customer_id, account_no)
+        """
+        try:
+            # Hash password before sending to DB
+           # hashed_password = bcrypt.hashpw(login_data['password'].encode('utf-8'), bcrypt.gensalt())
+
+            self.cursor.execute(
+                """
+                SELECT * FROM create_customer_with_login(
+                    %s, %s, %s, %s, %s,  -- customer
+                    %s, %s,              -- login
+                    %s, %s, %s, %s,      -- account
+                    %s                   -- created_by
+                );
+                """,
+                (
+                    customer_data['full_name'],
+                    customer_data.get('address'),
+                    customer_data.get('phone_number'),
+                    customer_data['nic'],
+                    customer_data['dob'],
+
+                    login_data['username'],
+                    login_data['password'],
+
+                    account_data.get('branch_id'),
+                    account_data.get('savings_plan_id'),
+                    account_data.get('balance', 0.0),
+                    
+
+                    created_by_user_id,
+                    account_data.get('status', 'active'),
+                )
             )
-        )
-        self.conn.commit()
-        return customer_id
+
+            row = self.cursor.fetchone()
+            self.conn.commit()
+
+            return row['customer_id'], row['account_no']
+
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def create_account_for_customer(self, account_data, customer_id, created_by_user_id):
         """
