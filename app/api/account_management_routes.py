@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, Request
 from app.middleware.require_permission import require_permission
 from app.schemas.account_management_schema import CustomerAccountInput, ExistingCustomerAccountInput, UpdateAccountInput, UpdateCustomerInput
@@ -102,3 +101,9 @@ def get_all_accounts(db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_all_accounts()
     return accounts
+
+@router.get("/account/details/{account_no}")
+def get_account_details(account_no: str, db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    service = AccountManagementService(repo)
+    return service.get_account_details_by_account_no(account_no)

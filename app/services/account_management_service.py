@@ -94,4 +94,14 @@ class AccountManagementService:
             raise HTTPException(status_code=404, detail="Account not found")
         return {"account_no": account_no, "balance": balance}
 
+    def get_account_details_by_account_no(self, account_no):
+        """
+        Get customer name, account id, branch name, branch id, and balance using account_no.
+        Returns: dict or None if not found.
+        """
+        details = self.repo.get_account_details_by_account_no(account_no)
+        if not details:
+            raise HTTPException(status_code=404, detail="Account not found")
+        return details
+
     # Add more methods as needed, following this pattern.

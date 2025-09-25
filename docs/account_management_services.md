@@ -1,3 +1,5 @@
+# Create account for a new customer with customer login
+
 http://127.0.0.1:8000/api/account-management/register_customer_with_account
 
 curl -X 'POST' \
@@ -27,7 +29,7 @@ curl -X 'POST' \
 
 
 
-
+# Create account for a exisiting customer
 
 curl -X 'POST' \
   'http://127.0.0.1:8000/api/account-management/existing_customer/open_account' \
@@ -47,4 +49,21 @@ Response body
   "msg": "Account created for existing customer",
   "acc_id": "376f166e-5ec9-4c54-a7b8-057b0c753dcb",
   "account_no": "9341035245"
+}
+
+# Get account details by account number
+curl -X 'GET' \
+  'http://127.0.0.1:8000/api/account-management/account/details/1111111111' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTg4MTIzODZ9.bpHFbCg-8qvUMnbf7RM12cXxPSCBBsnyKvAZR4RV2do'
+
+Response body
+Download
+{
+  "customer_name": "customer 4",
+  "account_id": "3337ad45-7e90-4c8f-9057-e38f3c43f196",
+  "branch_name": "Colombo",
+  "branch_id": "3dd6870c-e6f2-414d-9973-309ba00ce115",
+  "balance": 3000,
+  "account_type": "Adult"
 }
