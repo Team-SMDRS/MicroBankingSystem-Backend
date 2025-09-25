@@ -76,7 +76,7 @@ CREATE TABLE account (
   account_no VARCHAR(20) UNIQUE,
   branch_id UUID REFERENCES branch(branch_id),
   savings_plan_id UUID REFERENCES savings_plan(savings_plan_id),
-  balance NUMERIC(12,12),
+  balance NUMERIC(24,12),
   opened_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
