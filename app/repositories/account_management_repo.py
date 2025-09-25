@@ -173,10 +173,10 @@ class AccountManagementRepository:
             JOIN customer c ON ao.customer_id = c.customer_id
             JOIN account a ON ao.acc_id = a.acc_id
             WHERE a.account_no = %s
-            ''',
-            (account_no,)
+            '''
+            , (account_no,)
         )
-        return self.cursor.fetchone()
+        return self.cursor.fetchall()
     
     def get_accounts_by_nic(self, nic):
         """
