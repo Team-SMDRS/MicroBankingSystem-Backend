@@ -5,8 +5,9 @@ import secrets
 import hashlib
 
 SECRET_KEY = "supersecretkey"
+SECRET_KEY_FOR_CUSTOMER = "ALIBABA"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Standard 30 minutes
+ACCESS_TOKEN_EXPIRE_MINUTES = 300  # Standard 30 minutes
 REFRESH_TOKEN_EXPIRE_DAYS = 7  # Standard 7 days
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -23,12 +24,29 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+
+
+def create_access_token_for_customer(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY_FOR_CUSTOMER, algorithm=ALGORITHM)
+
+
 def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
         return None
+    
+def decode_access_token_for_customer(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY_FOR_CUSTOMER, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
 
 # Refresh Token Functions
 def generate_refresh_token() -> str:
