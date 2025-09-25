@@ -106,6 +106,33 @@ class AccountManagementRepository:
 
   
 
+
+    def get_account_details_by_account_no(self, account_no):
+        """
+        Get customer names, account id, branch name, branch id, balance, and account type using account_no.
+        Returns: dict with customer_names as comma-separated string or None if not found.
+        """
+        self.cursor.execute(
+            """
+            SELECT 
+                STRING_AGG(c.full_name, ', ') AS customer_names,
+                a.acc_id AS account_id,
+                b.name AS branch_name,
+                b.branch_id,
+                a.balance,
+                sp.plan_name AS account_type
+            FROM account a
+            JOIN accounts_owner ao ON a.acc_id = ao.acc_id
+            JOIN customer c ON ao.customer_id = c.customer_id
+            JOIN branch b ON a.branch_id = b.branch_id
+            JOIN savings_plan sp ON a.savings_plan_id = sp.savings_plan_id
+            WHERE a.account_no = %s
+            GROUP BY a.acc_id, b.name, b.branch_id, a.balance, sp.plan_name
+            """,
+            (account_no,)
+        )
+        return self.cursor.fetchone()
+
     # You can add get/update methods as needed, following this pattern.
 
     def get_accounts_by_branch(self, branch_id):
