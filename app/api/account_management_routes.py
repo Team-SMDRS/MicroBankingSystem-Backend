@@ -76,8 +76,10 @@ def get_account_balance(account_no: str, db=Depends(get_db)):
 @router.get("/account/{account_no}/owner")
 def get_account_owner(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
-    owner = repo.get_account_owner(account_no)
-    return owner if owner else {"detail": "Owner not found"}
+    owners = repo.get_account_owner(account_no)
+    if not owners:
+        return {"detail": "Owner not found"}
+    return owners
 
 # Route to get all accounts for a given NIC number
 @router.get("/accounts/by-nic/{nic}")

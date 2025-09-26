@@ -112,25 +112,40 @@ Response body
 # Get account owner details by account number
 
 curl -X 'GET' \
-  'http://127.0.0.1:8000/api/account-management/account/1111111111/owner' \
+  'http://127.0.0.1:8000/api/account-management/account/123456789/owner' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTg4MTIzODZ9.bpHFbCg-8qvUMnbf7RM12cXxPSCBBsnyKvAZR4RV2do'
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTg4NDU0NDZ9.qto9Sw3JqbQXe7SMjzH9_sJvLhc6wXWWVIYHzIOVE_s'
 
+	
 	
 Response body
 Download
-{
-  "customer_id": "97da5431-f39a-43e5-b0cd-9d185327b6e6",
-  "full_name": "customer 4",
-  "address": "colombo",
-  "phone_number": "0144545466",
-  "nic": "211454546587",
-  "created_at": "2025-09-18T14:41:28.403699",
-  "updated_at": "2025-09-18T14:41:28.403699",
-  "created_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5",
-  "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5",
-  "dob": "2001-02-06"
-}
+[
+  {
+    "customer_id": "96a6ea17-b2d3-40d0-9c5b-903da6280f50",
+    "full_name": "customer 1",
+    "address": "jafna",
+    "phone_number": "0724548799",
+    "nic": "200454546545",
+    "created_at": "2025-09-18T14:29:18.039149",
+    "updated_at": "2025-09-18T14:33:26.652769",
+    "created_by": "780ba9d3-3c4d-40d6-b1a1-c0132f89df09",
+    "updated_by": "780ba9d3-3c4d-40d6-b1a1-c0132f89df09",
+    "dob": "2001-02-06"
+  },
+  {
+    "customer_id": "f0bf0ef8-0015-4c79-bae4-bab26d897409",
+    "full_name": "customer 2",
+    "address": "jafna",
+    "phone_number": "0756548799",
+    "nic": "200725457898",
+    "created_at": "2025-09-18T14:29:55.137535",
+    "updated_at": "2025-09-18T14:33:26.654507",
+    "created_by": "780ba9d3-3c4d-40d6-b1a1-c0132f89df09",
+    "updated_by": "780ba9d3-3c4d-40d6-b1a1-c0132f89df09",
+    "dob": "2001-02-06"
+  }
+]
 
 
 # Get account balance by account number
