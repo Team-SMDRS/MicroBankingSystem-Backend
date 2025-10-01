@@ -1,5 +1,5 @@
 from fastapi import FastAPI , Request
-from app.api import auth_routes
+from app.api import auth_routes, customer_branch_routes
 from app.middleware.auth_middleware import AuthMiddleware
 
 from app.api import account_management_routes
@@ -35,9 +35,7 @@ app.add_middleware(AuthMiddleware)
 app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
 app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
-
-
-
+app.include_router(customer_branch_routes.router, prefix="/api/customer-branch", tags=["Customer Branch"])
 
 
 
