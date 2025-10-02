@@ -13,3 +13,6 @@ class FixedDepositService:
             return fixed_deposits
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits")
+
+
+
