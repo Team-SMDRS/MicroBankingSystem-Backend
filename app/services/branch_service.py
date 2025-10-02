@@ -10,10 +10,6 @@ class BranchService:
         """Get all branches from the database"""
         try:
             branches = self.repo.get_all_branches()
-            return {
-                "success": True,
-                "data": branches,
-                "message": "Branches retrieved successfully"
-            }
+            return branches
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve branches")

@@ -16,7 +16,7 @@ class BranchRepository:
                 branch_id,
                 name,
                 address,
-                created_at,
+                created_at
  
             FROM branch 
             ORDER BY name ASC"""

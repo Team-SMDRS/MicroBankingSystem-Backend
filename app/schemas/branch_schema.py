@@ -13,3 +13,9 @@ class BranchResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+
+
+
