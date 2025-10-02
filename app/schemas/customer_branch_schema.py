@@ -7,3 +7,12 @@ class CustomerNameID(BaseModel):
     customer_id: str
     name: str
     nic: str
+
+
+class CustomerCount(BaseModel):
+    count: int
+
+
+class CustomerCountByBranch(BaseModel):
+    branch_id: str
+    count: int

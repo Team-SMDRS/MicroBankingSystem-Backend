@@ -1,7 +1,7 @@
 
 import string
 from fastapi import HTTPException
-from app.schemas.customer_branch_schema import CustomerNameID
+from app.schemas.customer_branch_schema import CustomerCount, CustomerNameID
 
 
 class CustomerBranchService:
@@ -31,3 +31,15 @@ class CustomerBranchService:
             for item in data
         ]
 
+    def get_customers_count(self):
+        count = self.repo.get_customers_count()
+        if count is None:
+            raise HTTPException(status_code=404, detail="No customers found")
+        return CustomerCount(count=count)
+
+    def get_customers_count_by_branch(self, branch_id: str):
+        count = self.repo.get_customers_count_by_branch(branch_id)
+        if count is None:
+            raise HTTPException(
+                status_code=404, detail="No customers found in this branch")
+        return CustomerCount(count=count)

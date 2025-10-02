@@ -3,13 +3,11 @@
 
 from psycopg2.extras import RealDictCursor
 
+
 class CustomerBranchRepository:
     def __init__(self, db_conn):
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
-
-
-
 
     def get_all_customers(self):
         """
@@ -29,11 +27,25 @@ class CustomerBranchRepository:
             (branch_id,)
         )
         return self.cursor.fetchall()
-   
 
- 
+    def get_customers_count(self):
+        """
+        Fetch total customer count.
+        """
+        self.cursor.execute("SELECT COUNT(*) AS count FROM customer")
+        result = self.cursor.fetchone()
+        return result["count"] if result else 0
 
-  
-
-
-   
+    def get_customers_count_by_branch(self, branch_id: str):
+        self.cursor.execute(
+            """
+            SELECT COUNT(DISTINCT c.customer_id) AS count
+FROM customer AS c
+LEFT JOIN Accounts_owner ao ON c.customer_id = ao.customer_id
+LEFT JOIN account a ON ao.acc_id = a.acc_id
+WHERE a.branch_id = %s
+            """,
+            (branch_id,)
+        )
+        result = self.cursor.fetchone()
+        return result["count"] if result else 0
