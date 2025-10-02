@@ -25,3 +25,49 @@ def get_customers_by_branch(request: Request, db=Depends(get_db)):
     branch_id = user_repo.get_user_branch_id(current_user["user_id"])
     service = CustomerBranchService(repo)
     return service.get_customers_by_branch(branch_id)
+
+
+
+#get count of all users in users branch
+
+
+
+
+
+
+# get count of all users in branch_id
+
+
+
+
+
+
+
+
+#get all customers of branch id  
+
+
+
+
+
+#get all branches
+
+
+
+
+
+
+
+# get all accounts 
+
+
+
+
+
+
+# update branch name, address
+
+
+
+
+
