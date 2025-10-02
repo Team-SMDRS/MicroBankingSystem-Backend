@@ -222,18 +222,21 @@ class AccountManagementRepository:
     
     def get_account_count_by_branch(self, branch_id):
         """
-        Get the total number of accounts for a specific branch.
-        Returns: Integer count of accounts in the branch.
+        Get the total number of accounts for a specific branch, and the branch name.
+        Returns: dict with branch_name and account_count.
         """
         self.cursor.execute(
             """
-            SELECT COUNT(*) AS account_count FROM account
-            WHERE branch_id = %s
+            SELECT b.name AS branch_name, COUNT(a.acc_id) AS account_count
+            FROM branch b
+            LEFT JOIN account a ON a.branch_id = b.branch_id
+            WHERE b.branch_id = %s
+            GROUP BY b.name
             """,
             (branch_id,)
         )
         row = self.cursor.fetchone()
-        return row['account_count'] if row else 0
+        return row if row else {"branch_name": None, "account_count": 0}
     
     
     def get_total_account_count(self):
@@ -250,20 +253,17 @@ class AccountManagementRepository:
 
     def create_savings_plan(self, plan_data):
         """
-        Create a new savings plan.
+        Create a new savings plan using the SQL function.
         plan_data: dict with keys 'plan_name', 'interest_rate', 'user_id'
         Returns: savings_plan_id of the new plan
         """
         self.cursor.execute(
             """
-            INSERT INTO savings_plan (plan_name, interest_rate, created_by, updated_by)
-            VALUES (%s, %s, %s, %s)
-            RETURNING savings_plan_id
+            SELECT * FROM create_savings_plan(%s, %s, %s)
             """,
             (
                 plan_data['plan_name'],
                 plan_data['interest_rate'],
-                plan_data['user_id'],
                 plan_data['user_id']
             )
         )

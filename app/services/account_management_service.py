@@ -108,10 +108,10 @@ class AccountManagementService:
 
     def get_account_count_by_branch(self, branch_id):
         """
-        Get the total number of accounts for a specific branch.
+        Get the total number of accounts for a specific branch, and the branch name.
         """
-        count = self.repo.get_account_count_by_branch(branch_id)
-        return {"branch_id": branch_id, "account_count": count}
+        result = self.repo.get_account_count_by_branch(branch_id)
+        return result
     
     
     def get_total_account_count(self):

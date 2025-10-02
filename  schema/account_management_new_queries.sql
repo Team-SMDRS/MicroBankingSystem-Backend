@@ -113,3 +113,20 @@ BEGIN
     RETURN QUERY SELECT v_acc_id, v_account_no, v_customer_id;
 END;
 $$;
+
+
+
+-- Create PostgreSQL function for creating savings account plan
+CREATE OR REPLACE FUNCTION create_savings_plan(
+    p_plan_name VARCHAR,
+    p_interest_rate NUMERIC,
+    p_user_id UUID
+)
+RETURNS TABLE(savings_plan_id UUID) AS $$
+BEGIN
+    RETURN QUERY
+    INSERT INTO savings_plan (plan_name, interest_rate, created_by, updated_by)
+    VALUES (p_plan_name, p_interest_rate, p_user_id, p_user_id)
+    RETURNING savings_plan.savings_plan_id;
+END;
+$$ LANGUAGE plpgsql;

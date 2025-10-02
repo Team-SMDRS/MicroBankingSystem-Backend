@@ -318,3 +318,51 @@ Download
   "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5",
   "dob": "2003-01-02"
 }
+
+
+# Get account count for a branch 
+
+curl -X 'GET' \
+  'http://127.0.0.1:8000/api/account-management/accounts/branch/3dd6870c-e6f2-414d-9973-309ba00ce115/count' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTk0NTEyNDF9.h7OH00j4isR2Tifcf4JnoZz2MFS5z3FfkhCifGeXqKE'
+
+Response body
+Download
+{
+  "branch_name": "Colombo",
+  "account_count": 6
+}
+
+
+# Get all account count 
+
+curl -X 'GET' \
+  'http://127.0.0.1:8000/api/account-management/accounts/count' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTk0NTEyNDF9.h7OH00j4isR2Tifcf4JnoZz2MFS5z3FfkhCifGeXqKE'
+
+Response body
+Download
+{
+  "account_count": 7
+}
+
+
+# create a savings plan
+
+curl -X 'POST' \
+  'http://127.0.0.1:8000/api/account-management/savings_plan/create' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTk0NTEyNDF9.h7OH00j4isR2Tifcf4JnoZz2MFS5z3FfkhCifGeXqKE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "plan_name": "string",
+  "interest_rate": 0
+}'
+
+Response body
+Download
+{
+  "savings_plan_id": "edc304b9-e5ce-4bc0-8e0f-e015e6c7823c"
+}
