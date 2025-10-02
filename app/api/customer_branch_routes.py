@@ -49,6 +49,36 @@ def get_customers_count_by_branch(request: Request, db=Depends(get_db)):
     return service.get_customers_count_by_branch(branch_id)
 
 # get count of all users in branch_id
-# get all customers of branch id
+
+
+@router.get("/customers/branch/{branch_id}/count")
+def get_customers_count_by_branch_id(branch_id: str, db=Depends(get_db)):
+    repo = CustomerBranchRepository(db)
+    service = CustomerBranchService(repo)
+    return service.get_customers_count_by_branch(branch_id)
+
+
+# get all customers by branch id
+@router.get("/customers/branch/{branch_id}")
+def get_customers_by_branch_id(branch_id: str, db=Depends(get_db)):
+    repo = CustomerBranchRepository(db)
+    service = CustomerBranchService(repo)
+    return service.get_customers_by_branch(branch_id)
+
 # get count of all accounts in branch id
+
+
+@router.get("/accounts/branch/{branch_id}/count")
+def get_accounts_count_by_branch_id(branch_id: str, db=Depends(get_db)):
+    repo = CustomerBranchRepository(db)
+    service = CustomerBranchService(repo)
+    return service.get_accounts_count_by_branch_id(branch_id)
+
 # get total balance of all accounts in branch id
+
+
+@router.get("/accounts/branch/{branch_id}/total_balance")
+def get_total_balance_by_branch_id(branch_id: str, db=Depends(get_db)):
+    repo = CustomerBranchRepository(db)
+    service = CustomerBranchService(repo)
+    return service.get_total_balance_by_branch_id(branch_id)

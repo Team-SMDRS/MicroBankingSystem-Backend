@@ -16,3 +16,28 @@ class CustomerCount(BaseModel):
 class CustomerCountByBranch(BaseModel):
     branch_id: str
     count: int
+
+
+class CustomerCountByBranchID(BaseModel):
+    branch_id: str
+    count: int
+
+
+class CustomersByBranchID(BaseModel):
+    customer_id: str
+    name: str
+    nic: str
+
+# get count of all accounts in branch id
+
+
+class AccountsCountByBranchID(BaseModel):
+    branch_id: str
+    count: int
+
+# get total balance of all accounts in branch id
+
+
+class TotalBalanceByBranchID(BaseModel):
+    branch_id: str
+    total_balance: Optional[float] = 0.0

@@ -43,3 +43,38 @@ class CustomerBranchService:
             raise HTTPException(
                 status_code=404, detail="No customers found in this branch")
         return CustomerCount(count=count)
+
+    def get_customers_count_by_branch_id(self, branch_id: str):
+        count = self.repo.get_customers_count_by_branch_id(branch_id)
+        if count is None:
+            raise HTTPException(
+                status_code=404, detail="No customers found in this branch")
+        return CustomerCount(count=count)
+
+    # get all customers of branch id
+    def get_customers_by_branch_id(self, branch_id: str):
+        data = self.repo.get_customers_by_users_branch(branch_id)
+        return [
+            CustomerNameID(
+                name=item["full_name"],
+                customer_id=item["customer_id"],
+                nic=item["nic"]
+            )
+            for item in data
+        ]
+
+    # get count of all accounts in branch id
+    def get_accounts_count_by_branch_id(self, branch_id: str):
+        count = self.repo.get_accounts_count_by_branch_id(branch_id)
+        if count is None:
+            raise HTTPException(
+                status_code=404, detail="No accounts found in this branch")
+        return CustomerCount(count=count)
+
+    # get total balance of all accounts in branch id
+    def get_total_balance_by_branch_id(self, branch_id: str):
+        total_balance = self.repo.get_total_balance_by_branch_id(branch_id)
+        if total_balance is None:
+            raise HTTPException(
+                status_code=404, detail="No accounts found in this branch")
+        return {"branch_id": branch_id, "total_balance": total_balance}
