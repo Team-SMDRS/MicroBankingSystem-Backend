@@ -28,4 +28,4 @@ class CustomerRepository:
   
 
 
-        return self.cursor.fetchall()
+   

@@ -1,9 +1,9 @@
 from fastapi import FastAPI , Request
-from app.api import auth_routes
+from app.api import auth_routes, customer_branch_routes
 from app.middleware.auth_middleware import AuthMiddleware
 
 from app.api import account_management_routes
-
+from app.api import fixed_deposit_routes
 from app.api import test_account_routes
 
 from fastapi.responses import JSONResponse
@@ -12,7 +12,7 @@ from app.api import customer_routes
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security.api_key import APIKeyHeader
-
+from app.api import branch_routes
 app = FastAPI()
 
 # Allow local frontend dev URLs
@@ -35,11 +35,9 @@ app.add_middleware(AuthMiddleware)
 app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
 app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
-
-
-
-
-
+app.include_router(customer_branch_routes.router, prefix="/api/customer-branch", tags=["Customer Branch"])
+app.include_router(branch_routes.router, prefix="/api/branch", tags=["Branch"])
+app.include_router(fixed_deposit_routes.router, prefix="/api/fd" , tags=["Fixed Deposit"])
 
 
 
