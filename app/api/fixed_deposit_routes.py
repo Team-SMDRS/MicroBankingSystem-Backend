@@ -43,8 +43,6 @@ def get_fixed_deposits_by_customer_id(customer_id: str, db=Depends(get_db)):
 
 
 
-
-
 # create new fixed deposit account 
 @router.post("/fixed-deposits", response_model=FixedDepositResponse)
 def create_fixed_deposit(
