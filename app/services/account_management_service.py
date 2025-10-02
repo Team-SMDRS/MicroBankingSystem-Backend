@@ -6,18 +6,7 @@ from app.schemas.account_management_schema import CustomerAccountInput, Customer
 
 
 class AccountManagementService:
-    def get_total_account_count(self):
-        """
-        Get the total number of accounts in the system.
-        """
-        count = self.repo.get_total_account_count()
-        return {"account_count": count}
-    def get_account_count_by_branch(self, branch_id):
-        """
-        Get the total number of accounts for a specific branch.
-        """
-        count = self.repo.get_account_count_by_branch(branch_id)
-        return {"branch_id": branch_id, "account_count": count}
+    
     
     def __init__(self, repo):
         self.repo = repo
@@ -115,5 +104,29 @@ class AccountManagementService:
         if not details:
             raise HTTPException(status_code=404, detail="Account not found")
         return details
+    
+
+    def get_account_count_by_branch(self, branch_id):
+        """
+        Get the total number of accounts for a specific branch.
+        """
+        count = self.repo.get_account_count_by_branch(branch_id)
+        return {"branch_id": branch_id, "account_count": count}
+    
+    
+    def get_total_account_count(self):
+        """
+        Get the total number of accounts in the system.
+        """
+        count = self.repo.get_total_account_count()
+        return {"account_count": count}
+    
+    def create_savings_plan(self, plan_data):
+        """
+        Create a new savings plan.
+        """
+        # Only pass allowed fields
+        filtered = {k: plan_data[k] for k in ('plan_name', 'interest_rate', 'user_id') if k in plan_data}
+        return self.repo.create_savings_plan(filtered)
 
     # Add more methods as needed, following this pattern.

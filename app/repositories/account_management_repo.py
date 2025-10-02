@@ -3,30 +3,9 @@ from psycopg2.extras import RealDictCursor
 import bcrypt
 
 class AccountManagementRepository:
-    def get_total_account_count(self):
-        """
-        Get the total number of accounts in the system.
-        Returns: Integer count of all accounts.
-        """
-        self.cursor.execute(
-            "SELECT COUNT(*) AS account_count FROM account"
-        )
-        row = self.cursor.fetchone()
-        return row['account_count'] if row else 0
-    def get_account_count_by_branch(self, branch_id):
-        """
-        Get the total number of accounts for a specific branch.
-        Returns: Integer count of accounts in the branch.
-        """
-        self.cursor.execute(
-            """
-            SELECT COUNT(*) AS account_count FROM account
-            WHERE branch_id = %s
-            """,
-            (branch_id,)
-        )
-        row = self.cursor.fetchone()
-        return row['account_count'] if row else 0
+    
+    
+    
     
     
     def __init__(self, db_conn):
@@ -240,3 +219,54 @@ class AccountManagementRepository:
     def get_all_accounts(self):
         self.cursor.execute("SELECT * FROM account ORDER BY created_at DESC")
         return self.cursor.fetchall()
+    
+    def get_account_count_by_branch(self, branch_id):
+        """
+        Get the total number of accounts for a specific branch.
+        Returns: Integer count of accounts in the branch.
+        """
+        self.cursor.execute(
+            """
+            SELECT COUNT(*) AS account_count FROM account
+            WHERE branch_id = %s
+            """,
+            (branch_id,)
+        )
+        row = self.cursor.fetchone()
+        return row['account_count'] if row else 0
+    
+    
+    def get_total_account_count(self):
+        """
+        Get the total number of accounts in the system.
+        Returns: Integer count of all accounts.
+        """
+        self.cursor.execute(
+            "SELECT COUNT(*) AS account_count FROM account"
+        )
+        row = self.cursor.fetchone()
+        return row['account_count'] if row else 0
+    
+
+    def create_savings_plan(self, plan_data):
+        """
+        Create a new savings plan.
+        plan_data: dict with keys 'plan_name', 'interest_rate', 'user_id'
+        Returns: savings_plan_id of the new plan
+        """
+        self.cursor.execute(
+            """
+            INSERT INTO savings_plan (plan_name, interest_rate, created_by, updated_by)
+            VALUES (%s, %s, %s, %s)
+            RETURNING savings_plan_id
+            """,
+            (
+                plan_data['plan_name'],
+                plan_data['interest_rate'],
+                plan_data['user_id'],
+                plan_data['user_id']
+            )
+        )
+        row = self.cursor.fetchone()
+        self.conn.commit()
+        return row['savings_plan_id'] if row else None

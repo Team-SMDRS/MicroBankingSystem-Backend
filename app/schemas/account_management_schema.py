@@ -1,4 +1,5 @@
 
+
 from pydantic import BaseModel
 from typing import Optional
 
@@ -56,3 +57,8 @@ class ExistingCustomerAccountInput(BaseModel):
     nic: str
     balance: float
     savings_plan_id: str
+
+# Input schema for creating a savings plan
+class SavingsPlanCreate(BaseModel):
+    plan_name: str
+    interest_rate: float
