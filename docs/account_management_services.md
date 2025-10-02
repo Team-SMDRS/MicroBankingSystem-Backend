@@ -366,3 +366,23 @@ Download
 {
   "savings_plan_id": "edc304b9-e5ce-4bc0-8e0f-e015e6c7823c"
 }
+
+
+# Update savings plan interest rate
+
+curl -X 'PUT' \
+  'http://127.0.0.1:8000/api/account-management/savings_plan/909c7525-fce0-4d61-b496-678c92ec6b6c/interest_rate?new_interest_rate=12' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTk0NTU5OTF9.Ql-m2Rt3hbHxgc87odBmor5Lj4NFU0uGCJVSBjQg4xg'
+	
+Response body
+Download
+{
+  "savings_plan_id": "909c7525-fce0-4d61-b496-678c92ec6b6c",
+  "plan_name": "string",
+  "interest_rate": 12,
+  "created_at": "2025-10-03T02:25:09.104714",
+  "updated_at": "2025-10-03T02:25:23.593219",
+  "created_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5",
+  "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5"
+}
