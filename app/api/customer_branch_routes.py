@@ -28,6 +28,12 @@ def get_customers_by_branch(request: Request, db=Depends(get_db)):
 
 
 
+
+#get all customers count
+
+
+
+
 #get count of all users in users branch
 
 
@@ -50,22 +56,21 @@ def get_customers_by_branch(request: Request, db=Depends(get_db)):
 
 
 
-#get all branches
 
 
 
 
 
 
-
-# get all accounts 
-
+# get count of all accounts in branch id
 
 
 
 
 
-# update branch name, address
+# get total balance of all accounts in branch id
+
+
 
 
 

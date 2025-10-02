@@ -9,10 +9,42 @@ from app.repositories.branch_repo import BranchRepository
 from app.services.branch_service import BranchService
 
 router = APIRouter()
-
-@router.get("/branches", response_model=dict)
+#get all branches
+@router.get("/branches", response_model=List[BranchResponse])
 def get_all_branches(db=Depends(get_db)):
     """Get all branches"""
     repo = BranchRepository(db)
     service = BranchService(repo)
     return service.get_all_branches()
+
+
+#get branch by id
+
+
+
+
+
+
+#get branch by name ()
+
+
+
+
+
+
+# update branch details (name, address) by branch id PUT /branches/{branch_id} 
+
+
+
+
+
+
+
+# create new branch
+
+
+
+
+
+
+
