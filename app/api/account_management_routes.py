@@ -1,3 +1,5 @@
+
+
 from fastapi import APIRouter, Depends, Request
 from app.middleware.require_permission import require_permission
 from app.schemas.account_management_schema import CustomerAccountInput, ExistingCustomerAccountInput, UpdateAccountInput, UpdateCustomerInput
@@ -109,3 +111,15 @@ def get_account_details(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_details_by_account_no(account_no)
+
+@router.get("/accounts/branch/{branch_id}/count")
+def get_account_count_by_branch(branch_id: str, db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    service = AccountManagementService(repo)
+    return service.get_account_count_by_branch(branch_id)
+
+@router.get("/accounts/count")
+def get_total_account_count(db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    service = AccountManagementService(repo)
+    return service.get_total_account_count()

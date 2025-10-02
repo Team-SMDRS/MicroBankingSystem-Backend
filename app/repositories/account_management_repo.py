@@ -3,6 +3,30 @@ from psycopg2.extras import RealDictCursor
 import bcrypt
 
 class AccountManagementRepository:
+    def get_total_account_count(self):
+        """
+        Get the total number of accounts in the system.
+        Returns: Integer count of all accounts.
+        """
+        self.cursor.execute(
+            "SELECT COUNT(*) AS account_count FROM account"
+        )
+        row = self.cursor.fetchone()
+        return row['account_count'] if row else 0
+    def get_account_count_by_branch(self, branch_id):
+        """
+        Get the total number of accounts for a specific branch.
+        Returns: Integer count of accounts in the branch.
+        """
+        self.cursor.execute(
+            """
+            SELECT COUNT(*) AS account_count FROM account
+            WHERE branch_id = %s
+            """,
+            (branch_id,)
+        )
+        row = self.cursor.fetchone()
+        return row['account_count'] if row else 0
     
     
     def __init__(self, db_conn):

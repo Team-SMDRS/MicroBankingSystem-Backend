@@ -6,6 +6,18 @@ from app.schemas.account_management_schema import CustomerAccountInput, Customer
 
 
 class AccountManagementService:
+    def get_total_account_count(self):
+        """
+        Get the total number of accounts in the system.
+        """
+        count = self.repo.get_total_account_count()
+        return {"account_count": count}
+    def get_account_count_by_branch(self, branch_id):
+        """
+        Get the total number of accounts for a specific branch.
+        """
+        count = self.repo.get_account_count_by_branch(branch_id)
+        return {"branch_id": branch_id, "account_count": count}
     
     def __init__(self, repo):
         self.repo = repo
