@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
+
 class BranchResponse(BaseModel):
     branch_id: UUID
     name: Optional[str]
@@ -14,8 +15,7 @@ class BranchResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# get branch by id
 
 
-
-
-
+# get branch by name ()
