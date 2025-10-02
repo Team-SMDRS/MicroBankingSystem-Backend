@@ -1,4 +1,4 @@
-#customer branch repo .py
+# Customer branch repository
 
 
 from psycopg2.extras import RealDictCursor
