@@ -1,9 +1,9 @@
 # Fixed Deposit routes - API endpoints for fixed deposit operations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,Request
 from typing import List
 
-from app.schemas.fixed_deposit_schema import FixedDepositResponse
+from app.schemas.fixed_deposit_schema import FixedDepositResponse, FDPlanResponse, CreateFDPlanResponse
 from app.database.db import get_db
 from app.repositories.fixed_deposit_repo import FixedDepositRepository
 from app.services.fixed_deposit_service import FixedDepositService
@@ -47,16 +47,31 @@ def get_fixed_deposits_by_customer_id(customer_id: str, db=Depends(get_db)):
 
 # create new fixed deposit account 
 @router.post("/fixed-deposits", response_model=FixedDepositResponse)
-def create_fixed_deposit(
+async def create_fixed_deposit(request: Request,
     savings_account_no: str,
     amount: float,
     plan_id: str,
     db=Depends(get_db)
 ):
-
+    """
+    Create a new fixed deposit account.
+    
+    Requirements:
+    - Customer must have an active savings account
+    - Valid and active FD plan
+    
+    Args:
+        savings_account_no: The savings account number to link with FD
+        amount: Amount to deposit in the FD
+        plan_id: ID of the FD plan to use
+        
+    Returns:
+        Fixed deposit details with related information
+    """
+    current_user = getattr(request.state, "user", None)
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
-    return service.create_fixed_deposit(savings_account_no, amount, plan_id)
+    return service.create_fixed_deposit(savings_account_no, amount, plan_id, created_by_user_id=current_user["user_id"])
 
 # get fixed deposit by fd account number
 @router.get("/fixed-deposits/account/{fd_account_no}", response_model=FixedDepositResponse)
@@ -75,7 +90,7 @@ def get_fd_plan_by_fd_id(fd_id: str, db=Depends(get_db)):
     return service.get_fd_plan_by_fd_id(fd_id)
 
 # get all fd plans
-@router.get("/fd-plans")
+@router.get("/fd-plans", response_model=List[FDPlanResponse])
 def get_all_fd_plans(db=Depends(get_db)):
    
     repo = FixedDepositRepository(db)
@@ -83,17 +98,50 @@ def get_all_fd_plans(db=Depends(get_db)):
     return service.get_all_fd_plans()
 
 # create new fd plan
-@router.post("/fd-plans")
-def create_fd_plan(
+@router.post("/fd-plans", response_model=CreateFDPlanResponse)
+async def create_fd_plan(
+    request: Request,
     duration_months: int,
     interest_rate: float,
-    min_amount: float,
     db=Depends(get_db)
 ):
+    """
+    Create a new fixed deposit plan.
     
+    Args:
+        duration_months: Duration of the FD plan in months
+        interest_rate: Annual interest rate (percentage)
+        
+    Returns:
+        Success message with created FD plan details
+    """
+    current_user = getattr(request.state, "user", None)
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
-    return service.create_fd_plan(duration_months, interest_rate, min_amount)
+    return service.create_fd_plan(duration_months, interest_rate, created_by_user_id=current_user["user_id"])
+
+# update fd plan status
+@router.put("/fd-plans/{fd_plan_id}/status", response_model=FDPlanResponse)
+async def update_fd_plan_status(
+    request: Request,
+    fd_plan_id: str,
+    status: str,
+    db=Depends(get_db)
+):
+    """
+    Update the status of an FD plan.
+    
+    Args:
+        fd_plan_id: ID of the FD plan to update
+        status: New status for the FD plan (e.g., 'active', 'inactive')
+        
+    Returns:
+        Updated FD plan details
+    """
+    current_user = getattr(request.state, "user", None)
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.update_fd_plan_status(fd_plan_id, status, updated_by_user_id=current_user["user_id"])
 
 # get saving account by fd account number
 @router.get("/fixed-deposits/{fd_account_no}/savings-account")
