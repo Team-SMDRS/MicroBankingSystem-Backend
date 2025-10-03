@@ -86,3 +86,28 @@ class BranchRepository:
 
         result = self.cursor.fetchone()
         return dict(result) if result else None
+
+    def create_branch(self, branch_data, created_by):
+        """
+        Create a new branch.
+        """
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO branch (name, address, created_by, updated_by)
+                VALUES (%s, %s, %s, %s)
+                RETURNING branch_id, name, address, created_at, updated_at
+                """,
+                (
+                    branch_data.name,
+                    branch_data.address,
+                    str(created_by),   # 👈 ensure UUID is converted to string
+                    str(created_by)
+                )
+            )
+            branch = self.cursor.fetchone()
+            self.conn.commit()
+            return branch
+        except Exception as e:
+            self.conn.rollback()
+            raise e

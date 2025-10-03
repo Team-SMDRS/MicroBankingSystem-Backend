@@ -29,3 +29,7 @@ class UpdateBranch(BaseModel):
 
 
 # create new branch
+class CreateBranch(BaseModel):
+    branch_id: UUID
+    name: Optional[str]
+    address: Optional[str]

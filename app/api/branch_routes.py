@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request
 from typing import List
 
 # Add UpdateBranchInput import
-from app.schemas.branch_schema import BranchResponse, UpdateBranch
+from app.schemas.branch_schema import BranchResponse, UpdateBranch, CreateBranch
 from app.database.db import get_db
 from app.repositories.branch_repo import BranchRepository
 from app.services.branch_service import BranchService
@@ -52,3 +52,11 @@ def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, d
     return updated if updated else {"detail": "Branch not found or not updated."}
 
 # create new branch
+
+
+@router.post("/branches")
+def create_branch(branch_data: CreateBranch, request: Request, db=Depends(get_db)):
+    repo = BranchRepository(db)
+    current_user_id = request.state.user.get("user_id")
+    created_branch = repo.create_branch(branch_data, current_user_id)
+    return created_branch

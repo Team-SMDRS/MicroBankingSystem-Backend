@@ -55,3 +55,13 @@ class BranchService:
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail="Failed to update branch")
+
+    def create_branch(self, branch_data, current_user_id):
+        """Create a new branch"""
+        try:
+            created_branch = self.repo.create_branch(
+                branch_data, current_user_id)
+            return created_branch
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail="Failed to create branch")
