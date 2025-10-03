@@ -12,17 +12,73 @@ class FixedDepositResponse(BaseModel):
     balance: Decimal
     acc_id: UUID
     opened_date: datetime
-    maturity_date: Optional[datetime]
+    maturity_date: datetime
     fd_plan_id: UUID
-    created_at: datetime
-    updated_at: datetime
+    fd_created_at: datetime   # match SQL alias
+    fd_updated_at: datetime   # match SQL alias
+    account_no: int
+    branch_name: str
+    plan_duration: int
+    plan_interest_rate: Decimal
 
-    
-    # Related data
-    account_no: Optional[int] = None
-    branch_name: Optional[str] = None
-    plan_duration: Optional[int] = None
-    plan_interest_rate: Optional[Decimal] = None
 
     class Config:
         from_attributes = True
+
+class FDPlanResponse(BaseModel):
+    fd_plan_id: UUID
+    duration: int
+    interest_rate: Decimal
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    created_by: Optional[UUID] = None
+    updated_by: Optional[UUID] = None
+
+    class Config:
+        from_attributes = True
+
+class CreateFDPlanResponse(BaseModel):
+    message: str
+    fd_plan: FDPlanResponse
+
+    class Config:
+        from_attributes = True
+
+
+from pydantic import BaseModel
+from uuid import UUID
+from decimal import Decimal
+from datetime import datetime
+
+class FixedDepositDBResponse(BaseModel):
+    fd_id: UUID
+    fd_account_no: int
+    balance: Decimal
+    acc_id: UUID
+    opened_date: datetime
+    maturity_date: datetime
+    fd_plan_id: UUID
+    created_at: datetime      # DB key
+    updated_at: datetime      # DB key
+    account_no: int
+    branch_name: str
+    plan_duration: int
+    plan_interest_rate: Decimal
+
+
+
+class FixedDepositDBResponse1(BaseModel):
+    fd_id: UUID
+    fd_account_no: int
+    balance: Decimal
+    acc_id: UUID
+    opened_date: datetime
+    maturity_date: datetime
+    fd_plan_id: UUID
+    created_at: datetime      # DB key
+    updated_at: datetime      # DB key
+    account_no: int
+    branch_name: str
+    plan_duration: int
+    plan_interest_rate: Decimal
