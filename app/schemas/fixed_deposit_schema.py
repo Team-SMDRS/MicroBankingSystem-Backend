@@ -26,3 +26,23 @@ class FixedDepositResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class FDPlanResponse(BaseModel):
+    fd_plan_id: UUID
+    duration: int
+    interest_rate: Decimal
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    created_by: Optional[UUID] = None
+    updated_by: Optional[UUID] = None
+
+    class Config:
+        from_attributes = True
+
+class CreateFDPlanResponse(BaseModel):
+    message: str
+    fd_plan: FDPlanResponse
+
+    class Config:
+        from_attributes = True
