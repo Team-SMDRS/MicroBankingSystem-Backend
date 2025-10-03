@@ -174,6 +174,49 @@ def get_fixed_deposits_by_branch(branch_id: str, db=Depends(get_db)):
     service = FixedDepositService(repo)
     return service.get_fixed_deposits_by_branch(branch_id)
 
+# get fd plan by plan id
+@router.get("/fd-plans/{fd_plan_id}", response_model=FDPlanResponse)
+def get_fd_plan_by_id(fd_plan_id: str, db=Depends(get_db)):
+    """Get FD plan details by plan ID"""
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_fd_plan_by_fd_id(fd_plan_id)
+
+
+
+
+# get all active fd plans
+@router.get("/active-fd-plans", response_model=List[FDPlanResponse])
+def get_active_fd_plans(db=Depends(get_db)):
+    """Get all active FD plans only"""
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_active_fd_plans()
+
+# get fixed deposits by status
+@router.get("/fixed-deposits/status/{status}", response_model=List[FixedDepositResponse])
+def get_fixed_deposits_by_status(status: str, db=Depends(get_db)):
+    """Get all fixed deposits by status (active, matured, etc.)"""
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_fixed_deposits_by_status(status)
+
+# get matured fixed deposits
+@router.get("/fixed-deposits/matured", response_model=List[FixedDepositResponse])
+def get_matured_fixed_deposits(db=Depends(get_db)):
+    """Get all matured fixed deposits"""
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_matured_fixed_deposits()
+
+# get fixed deposits by plan id
+@router.get("/fd-plans/{fd_plan_id}/fixed-deposits", response_model=List[FixedDepositResponse])
+def get_fixed_deposits_by_plan_id(fd_plan_id: str, db=Depends(get_db)):
+    """Get all fixed deposit accounts for a given FD plan ID"""
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_fixed_deposits_by_plan_id(fd_plan_id)
+
 
 
 
