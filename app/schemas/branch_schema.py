@@ -11,6 +11,9 @@ class BranchResponse(BaseModel):
     name: Optional[str]
     address: Optional[str]
     created_at: datetime
+    updated_at: Optional[datetime] = None
+    created_by: Optional[str] = None
+    updated_by: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -19,3 +22,10 @@ class BranchResponse(BaseModel):
 
 
 # get branch by name ()
+# update branch details (name, address) by branch id PUT /branches/{branch_id}
+class UpdateBranch(BaseModel):
+    name: Optional[str]
+    address: Optional[str]
+
+
+# create new branch

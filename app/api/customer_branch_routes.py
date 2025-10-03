@@ -63,7 +63,7 @@ def get_customers_count_by_branch_id(branch_id: str, db=Depends(get_db)):
 def get_customers_by_branch_id(branch_id: str, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
-    return service.get_customers_by_branch(branch_id)
+    return service.get_customers_by_branch_id(branch_id)
 
 # get count of all accounts in branch id
 

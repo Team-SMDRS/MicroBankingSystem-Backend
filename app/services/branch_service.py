@@ -41,3 +41,17 @@ class BranchService:
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail="Failed to retrieve branch by name")
+
+    def update_branch(self, branch_id, update_data):
+        """Update branch details by branch ID"""
+        try:
+            Update_Branch = self.repo.update_branch(branch_id, update_data)
+            if not Update_Branch:
+                raise HTTPException(
+                    status_code=404, detail="Branch not found or not updated")
+            return Update_Branch
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail="Failed to update branch")

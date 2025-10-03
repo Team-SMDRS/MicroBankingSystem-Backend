@@ -64,18 +64,6 @@ class CustomerBranchRepository:
         result = self.cursor.fetchone()
         return result["count"] if result else 0
 
-    def get_accounts_count_by_branch_id(self, branch_id: str):
-        self.cursor.execute(
-            """
-            SELECT COUNT(*) AS count
-            FROM account
-            WHERE branch_id = %s
-            """,
-            (branch_id,)
-        )
-        result = self.cursor.fetchone()
-        return result["count"] if result else 0
-
     # get all customers by branch id
     def get_customers_by_branch_id(self, branch_id: str):
         """
@@ -83,7 +71,7 @@ class CustomerBranchRepository:
         """
         self.cursor.execute(
             """
-            SELECT DISTINCT c.customer_id, c.full_name, c.nic
+            SELECT DISTINCT c.customer_id, c.full_name, c.nic, c.address, c.phone_number          
             FROM customer c
             JOIN Accounts_owner ao ON c.customer_id = ao.customer_id
             JOIN account a ON ao.acc_id = a.acc_id

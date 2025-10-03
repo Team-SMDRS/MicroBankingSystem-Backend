@@ -1,9 +1,10 @@
 # Branch routes - API endpoints for branch operations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from typing import List
 
-from app.schemas.branch_schema import BranchResponse
+# Add UpdateBranchInput import
+from app.schemas.branch_schema import BranchResponse, UpdateBranch
 from app.database.db import get_db
 from app.repositories.branch_repo import BranchRepository
 from app.services.branch_service import BranchService
@@ -40,6 +41,14 @@ def get_branch_by_name(branch_name: str, db=Depends(get_db)):
 
 
 # update branch details (name, address) by branch id PUT /branches/{branch_id}
-
+@router.put("/branches/{branch_id}")
+def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, db=Depends(get_db)):
+    repo = BranchRepository(db)
+    current_user_id = request.state.user.get("user_id")
+    updated = repo.update_branch(
+        branch_id, update_data.dict(exclude_unset=True), current_user_id)
+    if updated is None:
+        return {"detail": "No valid fields to update."}
+    return updated if updated else {"detail": "Branch not found or not updated."}
 
 # create new branch

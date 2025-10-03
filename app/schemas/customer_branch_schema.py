@@ -25,8 +25,10 @@ class CustomerCountByBranchID(BaseModel):
 
 class CustomersByBranchID(BaseModel):
     customer_id: str
-    name: str
+    full_name: str
     nic: str
+    address: str
+    phone_number: str
 
 # get count of all accounts in branch id
 
