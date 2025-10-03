@@ -1,0 +1,60 @@
+from psycopg2.extras import RealDictCursor
+
+class SavingsPlanRepository:
+
+    def __init__(self, db_conn):
+        self.conn = db_conn
+        self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+
+    def create_savings_plan(self, plan_data):
+        """
+        Create a new savings plan using the SQL function.
+        Checks for duplicate plan name before creation.
+        plan_data: dict with keys 'plan_name', 'interest_rate', 'user_id'
+        Returns: savings_plan_id of the new plan or None if duplicate
+        """
+        # Check if a plan with the same name already exists
+        self.cursor.execute(
+            """
+            SELECT 1 FROM savings_plan WHERE plan_name = %s
+            """,
+            (plan_data['plan_name'],)
+        )
+        if self.cursor.fetchone():
+            return None  # Duplicate found
+
+        self.cursor.execute(
+            """
+            SELECT * FROM create_savings_plan(%s, %s, %s)
+            """,
+            (
+                plan_data['plan_name'],
+                plan_data['interest_rate'],
+                plan_data['user_id']
+            )
+        )
+        row = self.cursor.fetchone()
+        self.conn.commit()
+        return row['savings_plan_id'] if row else None
+    
+    def update_savings_plan(self, savings_plan_id, new_interest_rate, user_id):
+        """
+        Update the interest rate of a savings plan and set updated_by to the current user.
+        Args:
+            savings_plan_id: UUID of the savings plan to update
+            new_interest_rate: new interest rate (float)
+            user_id: UUID of the user making the update (should be set automatically by the service/API)
+        Returns: updated savings plan row or None if not found
+        """
+        self.cursor.execute(
+            """
+            UPDATE savings_plan
+            SET interest_rate = %s, updated_by = %s, updated_at = CURRENT_TIMESTAMP
+            WHERE savings_plan_id = %s
+            RETURNING *
+            """,
+            (new_interest_rate, user_id, savings_plan_id)
+        )
+        row = self.cursor.fetchone()
+        self.conn.commit()
+        return row

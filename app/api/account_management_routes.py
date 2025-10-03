@@ -10,7 +10,7 @@ from app.database.db import get_db
 from app.repositories.account_management_repo import AccountManagementRepository
 from app.repositories.user_repo import UserRepository
 from app.services.account_management_service import AccountManagementService
-from app.schemas.account_management_schema import SavingsPlanCreate
+
 
 router = APIRouter()
 
@@ -128,28 +128,3 @@ def get_total_account_count(db=Depends(get_db)):
     service = AccountManagementService(repo)
     return service.get_total_account_count()
 
-# Route to create a new savings plan
-@router.post("/savings_plan/create")
-def create_savings_plan(plan: SavingsPlanCreate, request: Request, db=Depends(get_db)):
-    repo = AccountManagementRepository(db)
-    service = AccountManagementService(repo)
-    current_user = getattr(request.state, "user", None)
-    if not current_user or "user_id" not in current_user:
-        return {"detail": "Authentication required to create a savings plan."}
-    plan_data = plan.dict()
-    plan_data["user_id"] = current_user["user_id"]
-    savings_plan_id = service.create_savings_plan(plan_data)
-    return {"savings_plan_id": savings_plan_id}
-
-# Route to update a savings plan's interest rate
-@router.put("/savings_plan/{savings_plan_id}/interest_rate")
-def update_savings_plan_interest_rate(savings_plan_id: str, new_interest_rate: float, request: Request, db=Depends(get_db)):
-    repo = AccountManagementRepository(db)
-    service = AccountManagementService(repo)
-    current_user = getattr(request.state, "user", None)
-    if not current_user or "user_id" not in current_user:
-        return {"detail": "Authentication required to update a savings plan."}
-    updated = service.update_savings_plan(savings_plan_id, new_interest_rate, current_user["user_id"])
-    if not updated:
-        return {"detail": "Savings plan not found or not updated."}
-    return updated

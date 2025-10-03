@@ -1,5 +1,5 @@
 from fastapi import FastAPI , Request
-from app.api import auth_routes
+from app.api import auth_routes, savings_plan_routes
 from app.middleware.auth_middleware import AuthMiddleware
 
 from app.api import account_management_routes
@@ -33,8 +33,10 @@ app.add_middleware(AuthMiddleware)
 # Routes
 
 app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
+app.include_router(savings_plan_routes.router, prefix="/api/savings-plan", tags=["Savings Plan Management"])
 app.include_router(auth_routes.router,prefix="/api/auth",tags=["Authentication"])
 app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
+
 
 
 
