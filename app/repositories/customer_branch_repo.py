@@ -50,19 +50,19 @@ class CustomerBranchRepository:
         result = self.cursor.fetchone()
         return result["count"] if result else 0
 
-    def get_customers_count_by_branch_id(self, branch_id: str):
-        self.cursor.execute(
-            """
-            SELECT COUNT(DISTINCT c.customer_id) AS count
-            FROM customer AS c
-            LEFT JOIN Accounts_owner ao ON c.customer_id = ao.customer_id
-            LEFT JOIN account a ON ao.acc_id = a.acc_id
-            WHERE a.branch_id = %s
-            """,
-            (branch_id,)
-        )
-        result = self.cursor.fetchone()
-        return result["count"] if result else 0
+    # def get_customers_count_by_branch_id(self, branch_id: str):
+    #     self.cursor.execute(
+    #         """
+    #         SELECT COUNT(DISTINCT c.customer_id) AS count
+    #         FROM customer AS c
+    #         LEFT JOIN Accounts_owner ao ON c.customer_id = ao.customer_id
+    #         LEFT JOIN account a ON ao.acc_id = a.acc_id
+    #         WHERE a.branch_id = %s
+    #         """,
+    #         (branch_id,)
+    #     )
+    #     result = self.cursor.fetchone()
+    #     return result["count"] if result else 0
 
     # get all customers by branch id
     def get_customers_by_branch_id(self, branch_id: str):

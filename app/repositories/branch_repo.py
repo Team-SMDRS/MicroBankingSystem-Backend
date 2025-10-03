@@ -96,18 +96,18 @@ class BranchRepository:
                 """
                 INSERT INTO branch (name, address, created_by, updated_by)
                 VALUES (%s, %s, %s, %s)
-                RETURNING branch_id, name, address, created_at, updated_at
+                RETURNING branch_id, name, address, created_at, updated_at, created_by, updated_by
                 """,
                 (
-                    branch_data.name,
-                    branch_data.address,
-                    str(created_by),   # 👈 ensure UUID is converted to string
+                    branch_data.name.strip(),
+                    branch_data.address.strip(),
+                    str(created_by),
                     str(created_by)
                 )
             )
             branch = self.cursor.fetchone()
             self.conn.commit()
-            return branch
+            return dict(branch) if branch else None
         except Exception as e:
             self.conn.rollback()
             raise e

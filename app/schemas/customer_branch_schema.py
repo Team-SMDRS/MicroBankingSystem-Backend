@@ -18,9 +18,9 @@ class CustomerCountByBranch(BaseModel):
     count: int
 
 
-class CustomerCountByBranchID(BaseModel):
-    branch_id: str
-    count: int
+# class CustomerCountByBranchID(BaseModel):
+#     branch_id: str
+#     count: int
 
 
 class CustomersByBranchID(BaseModel):

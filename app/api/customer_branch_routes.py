@@ -51,11 +51,11 @@ def get_customers_count_by_branch(request: Request, db=Depends(get_db)):
 # get count of all users in branch_id
 
 
-@router.get("/customers/branch/{branch_id}/count")
-def get_customers_count_by_branch_id(branch_id: str, db=Depends(get_db)):
-    repo = CustomerBranchRepository(db)
-    service = CustomerBranchService(repo)
-    return service.get_customers_count_by_branch(branch_id)
+# @router.get("/customers/branch/{branch_id}/count")
+# def get_customers_count_by_branch_id(branch_id: str, db=Depends(get_db)):
+#     repo = CustomerBranchRepository(db)
+#     service = CustomerBranchService(repo)
+#     return service.get_customers_count_by_branch(branch_id)
 
 
 # get all customers by branch id

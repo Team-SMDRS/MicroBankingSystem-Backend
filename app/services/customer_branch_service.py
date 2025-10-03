@@ -44,12 +44,12 @@ class CustomerBranchService:
                 status_code=404, detail="No customers found in this branch")
         return CustomerCountByBranch(branch_id=branch_id, count=count)
 
-    def get_customers_count_by_branch_id(self, branch_id: str):
-        count = self.repo.get_customers_count_by_branch_id(branch_id)
-        if count is None:
-            raise HTTPException(
-                status_code=404, detail="No customers found in this branch")
-        return CustomerCountByBranch(branch_id=branch_id, count=count)
+    # def get_customers_count_by_branch_id(self, branch_id: str):
+    #     count = self.repo.get_customers_count_by_branch_id(branch_id)
+    #     if count is None:
+    #         raise HTTPException(
+    #             status_code=404, detail="No customers found in this branch")
+    #     return CustomerCountByBranch(branch_id=branch_id, count=count)
 
     # get all customers of branch id
     def get_customers_by_branch_id(self, branch_id: str):

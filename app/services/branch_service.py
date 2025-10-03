@@ -59,9 +59,26 @@ class BranchService:
     def create_branch(self, branch_data, current_user_id):
         """Create a new branch"""
         try:
+            # Validate input data
+            if not branch_data.name or not branch_data.name.strip():
+                raise HTTPException(
+                    status_code=400, detail="Branch name is required")
+            
+            if not branch_data.address or not branch_data.address.strip():
+                raise HTTPException(
+                    status_code=400, detail="Branch address is required")
+            
+            # Check if branch with same name already exists
+            existing_branch = self.repo.get_branch_by_name(branch_data.name.strip())
+            if existing_branch:
+                raise HTTPException(
+                    status_code=400, detail="Branch with this name already exists")
+            
             created_branch = self.repo.create_branch(
                 branch_data, current_user_id)
             return created_branch
+        except HTTPException:
+            raise
         except Exception as e:
             raise HTTPException(
-                status_code=500, detail="Failed to create branch")
+                status_code=500, detail=f"Failed to create branch: {str(e)}")

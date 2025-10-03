@@ -49,7 +49,7 @@ def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, d
         branch_id, update_data.dict(exclude_unset=True), current_user_id)
     if updated is None:
         return {"detail": "No valid fields to update."}
-    return updated if updated else {"detail": "Branch not found or not updated."}
+    return updated if updated else {"detail": "Branch not CustomerCountByBranchIfound or not updated."}
 
 # create new branch
 
@@ -57,6 +57,7 @@ def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, d
 @router.post("/branches")
 def create_branch(branch_data: CreateBranch, request: Request, db=Depends(get_db)):
     repo = BranchRepository(db)
+    service = BranchService(repo)
     current_user_id = request.state.user.get("user_id")
-    created_branch = repo.create_branch(branch_data, current_user_id)
+    created_branch = service.create_branch(branch_data, current_user_id)
     return created_branch
