@@ -1,7 +1,6 @@
 from fastapi import FastAPI , Request
 
-
-from app.api import auth_routes, customer_branch_routes ,savings_plan_routes
+from app.api import auth_routes, customer_branch_routes ,savings_plan_routes,transaction_management_routes
 
 
 from app.middleware.auth_middleware import AuthMiddleware
@@ -43,6 +42,8 @@ app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accou
 app.include_router(customer_branch_routes.router, prefix="/api/customer-branch", tags=["Customer Branch"])
 app.include_router(branch_routes.router, prefix="/api/branch", tags=["Branch"])
 app.include_router(fixed_deposit_routes.router, prefix="/api/fd" , tags=["Fixed Deposit"])
+
+app.include_router(transaction_management_routes.router,prefix="/api/transactions",tags=["Transaction Management"])
 
 
 
