@@ -12,6 +12,9 @@ from datetime import datetime, date
 import math
 
 class TransactionManagementService:
+    # Class-level constants
+    MAX_TRANSFER_AMOUNT = 1000000.00  # Rs. 10 Lakhs daily limit
+    
     def __init__(self, transaction_repo: TransactionManagementRepository):
         self.transaction_repo = transaction_repo
 
@@ -137,11 +140,10 @@ class TransactionManagementService:
                 )
             
             # Business Logic 6: Apply transfer limits (example business rule)
-            MAX_TRANSFER_AMOUNT = 1000000.00  # Rs. 10 Lakhs daily limit
-            if request.amount > MAX_TRANSFER_AMOUNT:
+            if request.amount > self.MAX_TRANSFER_AMOUNT:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Transfer amount exceeds maximum limit of Rs.{MAX_TRANSFER_AMOUNT:.2f}"
+                    detail=f"Transfer amount exceeds maximum limit of Rs.{self.MAX_TRANSFER_AMOUNT:.2f}"
                 )
             
             # Business Logic 7: Check daily transfer limit (optional enhancement)

@@ -412,7 +412,7 @@ def get_all_transactions_report(
 # These APIs work with account_id (UUID) directly, bypassing account_no lookup
 # =============================================================================
 
-@router.get("/api/transactions/account/{account_id}", response_model=AccountTransactionHistory)
+@router.get("/accounttransactions/{account_id}", response_model=AccountTransactionHistory)
 def get_account_transactions_by_uuid(
     account_id: str,
     current_user: dict = Depends(get_current_user),

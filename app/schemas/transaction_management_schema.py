@@ -74,15 +74,6 @@ class TransactionStatusResponse(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.now)
     additional_info: Optional[Dict[str, Any]] = Field(None, description="Additional transaction information")
 
-class AccountBalanceResponse(BaseModel):
-    acc_id: str = Field(..., description="Account ID")
-    account_no: Optional[int] = Field(None, description="Account number (bigint)")
-    account_holder_name: Optional[str] = Field(None, description="Account holder's full name")
-    balance: float = Field(..., description="Current account balance")
-    message: str = Field(..., description="Response message")
-    
-    class Config:
-        from_attributes = True
 
 # Account transaction history
 class AccountTransactionHistory(BaseModel):

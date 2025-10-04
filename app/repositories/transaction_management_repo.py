@@ -21,8 +21,6 @@ class TransactionManagementRepository:
             )
             result = self.cursor.fetchone()
             self.conn.commit()
-
-            print("DEBUG RESULT:", result)  # 👈 Add this line to inspect DB response
             
             if result:
                 return {
@@ -35,7 +33,6 @@ class TransactionManagementRepository:
 
         except Exception as e:
             self.conn.rollback()
-            print("DEPOSIT ERROR:", e)  # 👈 Log error
             raise e
 
 
