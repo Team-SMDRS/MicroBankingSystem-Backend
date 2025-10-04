@@ -1,7 +1,7 @@
 # /login, /register
 
-from fastapi import APIRouter, Depends, Request
-from app.schemas.user_schema import RegisterUser, LoginUser
+from fastapi import APIRouter, Depends, Request, HTTPException
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -98,3 +98,66 @@ def logins(user: LoginUser, request: Request, db=Depends(get_db)):
 @router.get("/protected")
 def protected(request: Request):
     return {"user": request.state.user}
+
+
+
+
+
+@router.get("/roles/{user_id}")
+def get_user_roles(user_id: str, db=Depends(get_db)):
+    """Get all roles for a specific user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        roles = service.get_user_roles(user_id)
+        return {"user_id": user_id, "roles": roles}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.get("/api/all_users")
+def get_all_users(db=Depends(get_db)):
+    """Get all users with their roles"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        users = service.get_users_with_roles()
+        return {"users": users, "total_count": len(users)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.get("/api/all_roles")
+def get_all_roles(db=Depends(get_db)):
+    """Get all available roles"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        roles = service.get_all_roles()
+        return {"roles": roles, "total_count": len(roles)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.post("/user/manage_roles")
+def manage_user_roles(role_data: ManageUserRoles, request: Request, db=Depends(get_db)):
+    """Assign roles to a user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.manage_user_roles(role_data.user_id, role_data.role_ids)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+  
+
+   

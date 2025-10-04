@@ -41,3 +41,33 @@ curl -X 'POST' \
   "user_id": "de9dc531-11bf-4481-882a-dc3291580f60",
   "username": "user1"
 }
+
+
+
+
+
+
+
+# manage roles
+curl -X 'POST' \
+  'http://127.0.0.1:8000/api/auth/user/manage_roles' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTk1OTU5OTR9.pBB0ZwL8_zPnG3-2gDJLkgvV7I3CSSTMQnjkHuwzHhM' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5",
+  "role_ids": [
+    "6b116c56-efe7-45eb-883b-b3e7d5f68145","5d8461b9-9f7d-4c8e-8306-91760ef30a9b","34dbe9a4-95a3-4abb-9442-5a78ea632af9"
+  ]
+}'
+
+
+	
+Response body
+
+{
+  "message": "User roles updated successfully",
+  "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5"
+}
+
+

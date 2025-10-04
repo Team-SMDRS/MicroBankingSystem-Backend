@@ -189,3 +189,73 @@ class UserRepository:
             (user_id,)
         )
         return self.cursor.fetchall()
+
+    def get_user_roles(self, user_id: str):
+        """Get all roles for a specific user"""
+        self.cursor.execute("""
+            SELECT r.role_id, r.role_name 
+            FROM role r
+            JOIN users_role ur ON r.role_id = ur.role_id
+            WHERE ur.user_id = %s
+        """, (user_id,))
+        return self.cursor.fetchall()
+
+    def get_all_users(self):
+        """Get all users"""
+        self.cursor.execute("""
+            SELECT user_id, nic, first_name, last_name, address, 
+                   phone_number, dob, email, created_at
+            FROM users
+            ORDER BY first_name, last_name
+        """)
+        return self.cursor.fetchall()
+
+    def get_all_roles(self):
+        """Get all available roles"""
+        self.cursor.execute("""
+            SELECT role_id, role_name 
+            FROM role
+            ORDER BY role_name
+        """)
+        return self.cursor.fetchall()
+
+    def assign_user_roles(self, user_id: str, role_ids: list):
+        """Assign roles to a user (replaces existing roles)"""
+        try:
+            # First, remove existing roles
+            self.cursor.execute("""
+                DELETE FROM users_role WHERE user_id = %s
+            """, (user_id,))
+            
+            # Then add new roles
+            for role_id in role_ids:
+                self.cursor.execute("""
+                    INSERT INTO users_role (user_id, role_id)
+                    VALUES (%s, %s)
+                """, (user_id, role_id))
+            
+            self.conn.commit()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            raise e
+
+    def get_users_with_roles(self):
+        """Get all users with their roles"""
+        self.cursor.execute("""
+            SELECT u.user_id, u.nic, u.first_name, u.last_name, u.address,
+                   u.phone_number, u.dob, u.email, u.created_at,
+                   r.role_id, r.role_name
+            FROM users u
+            LEFT JOIN users_role ur ON u.user_id = ur.user_id
+            LEFT JOIN role r ON ur.role_id = r.role_id
+            ORDER BY u.first_name, u.last_name
+        """)
+        return self.cursor.fetchall()
+
+    def user_exists(self, user_id: str):
+        """Check if user exists"""
+        self.cursor.execute("""
+            SELECT 1 FROM users WHERE user_id = %s
+        """, (user_id,))
+        return self.cursor.fetchone() is not None

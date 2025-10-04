@@ -190,3 +190,96 @@ class UserService:
         """Clean up expired refresh tokens"""
         deleted_count = self.repo.cleanup_expired_tokens()
         return {"msg": f"Cleaned up {deleted_count} expired sessions"}
+    
+    def get_user_roles(self, user_id: str):
+        """Get roles for a specific user"""
+        from fastapi import HTTPException
+        
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        roles = self.repo.get_user_roles(user_id)
+        return [{"role_id": str(role["role_id"]), "role_name": role["role_name"]} for role in roles]
+
+    def get_all_users(self):
+        """Get all users"""
+        users = self.repo.get_all_users()
+        result = []
+        
+        for user in users:
+            result.append({
+                "user_id": str(user["user_id"]),
+                "nic": user["nic"],
+                "first_name": user["first_name"],
+                "last_name": user["last_name"],
+                "address": user["address"],
+                "phone_number": user["phone_number"],
+                "dob": user["dob"].isoformat() if user["dob"] else None,
+                "email": user["email"],
+                "created_at": user["created_at"].isoformat()
+            })
+        
+        return result
+
+    def get_all_roles(self):
+        """Get all available roles"""
+        roles = self.repo.get_all_roles()
+        return [{"role_id": str(role["role_id"]), "role_name": role["role_name"]} for role in roles]
+
+    def manage_user_roles(self, user_id: str, role_ids: list):
+        """Assign roles to a user"""
+        from fastapi import HTTPException
+        
+        # Validate user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Validate all role IDs exist
+        all_roles = self.repo.get_all_roles()
+        valid_role_ids = [str(role["role_id"]) for role in all_roles]
+        
+        for role_id in role_ids:
+            if role_id not in valid_role_ids:
+                raise HTTPException(status_code=400, detail=f"Role ID {role_id} does not exist")
+        
+        try:
+            success = self.repo.assign_user_roles(user_id, role_ids)
+            if success:
+                return {"message": "User roles updated successfully", "user_id": user_id}
+            else:
+                raise HTTPException(status_code=500, detail="Failed to update user roles")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+    def get_users_with_roles(self):
+        """Get all users with their roles grouped"""
+        users_data = self.repo.get_users_with_roles()
+        
+        # Group users and their roles
+        users_dict = {}
+        
+        for row in users_data:
+            user_id = str(row["user_id"])
+            
+            if user_id not in users_dict:
+                users_dict[user_id] = {
+                    "user_id": user_id,
+                    "nic": row["nic"],
+                    "first_name": row["first_name"],
+                    "last_name": row["last_name"],
+                    "address": row["address"],
+                    "phone_number": row["phone_number"],
+                    "dob": row["dob"].isoformat() if row["dob"] else None,
+                    "email": row["email"],
+                    "created_at": row["created_at"].isoformat(),
+                    "roles": []
+                }
+            
+            # Add role if it exists
+            if row["role_id"]:
+                users_dict[user_id]["roles"].append({
+                    "role_id": str(row["role_id"]),
+                    "role_name": row["role_name"]
+                })
+        
+        return list(users_dict.values())
