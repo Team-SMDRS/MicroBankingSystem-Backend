@@ -46,7 +46,6 @@ app.include_router(customer_branch_routes.router, prefix="/api/customer-branch",
 
 
 
-
 app.include_router(customer_routes.router, prefix="/customer_data", tags=["Customer Login & get data"])
 
 
