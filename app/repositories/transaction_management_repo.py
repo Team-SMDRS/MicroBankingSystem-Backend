@@ -62,6 +62,33 @@ class TransactionManagementRepository:
             self.conn.rollback()
             raise e
 
+    def process_transfer_transaction(self, from_acc_id: str, to_acc_id: str, amount: float, description: str, created_by: str) -> Dict[str, Any]:
+        """Process money transfer transaction using SQL function with auto-generated transaction_id and reference_no"""
+        try:
+            # Call SQL function to process transfer (auto-generates transaction_id and reference_no)
+            self.cursor.execute(
+                """
+                SELECT * FROM process_transfer_transaction(%s::UUID, %s::UUID, %s::NUMERIC, %s::TEXT, %s::UUID)
+                """,
+                (from_acc_id, to_acc_id, amount, description or f"Transfer of ${amount}", created_by)
+            )
+            result = self.cursor.fetchone()
+            self.conn.commit()
+            
+            if result:
+                return {
+                    'transaction_id': str(result.get('transaction_id')),
+                    'reference_no': int(result.get('reference_no')),
+                    'from_balance': float(result.get('from_balance')) if result.get('from_balance') is not None else 0.0,
+                    'to_balance': float(result.get('to_balance')) if result.get('to_balance') is not None else 0.0,
+                    'success': bool(result.get('success', False)),
+                    'error_message': result.get('error_message')
+                }
+            return {'transaction_id': None, 'reference_no': None, 'from_balance': 0, 'to_balance': 0, 'success': False, 'error_message': 'No result returned'}
+        except Exception as e:
+            self.conn.rollback()
+            raise e
+
     # Transaction history and retrieval
     def get_transaction_history_by_account(self, acc_id: str, limit: int = 50, offset: int = 0) -> Tuple[List[Dict], int]:
         """Get transaction history by account using SQL function"""
@@ -378,5 +405,52 @@ class TransactionManagementRepository:
             
             self.cursor.execute(base_query, params)
             return self.cursor.fetchall()
+        except Exception as e:
+            raise e
+
+    # New account-based repository methods
+    
+    def get_transaction_count_by_account(self, acc_id: str) -> int:
+        """Get total transaction count for an account"""
+        try:
+            self.cursor.execute(
+                "SELECT COUNT(*) as count FROM transactions WHERE acc_id = %s",
+                (acc_id,)
+            )
+            result = self.cursor.fetchone()
+            return result['count'] if result else 0
+        except Exception as e:
+            raise e
+
+    def get_account_details_by_account_no(self, account_no: int) -> Optional[Dict[str, Any]]:
+        """Get account details including balance by account number"""
+        try:
+            self.cursor.execute(
+                """
+                SELECT 
+                    a.acc_id,
+                    a.account_no,
+                    a.balance,
+                    c.full_name as account_holder,
+                    b.branch_name
+                FROM account a
+                LEFT JOIN accounts_owner ao ON a.acc_id = ao.acc_id
+                LEFT JOIN customer c ON ao.customer_id = c.customer_id
+                LEFT JOIN branch b ON a.branch_id = b.branch_id
+                WHERE a.account_no = %s
+                """,
+                (account_no,)
+            )
+            result = self.cursor.fetchone()
+            
+            if result:
+                return {
+                    'acc_id': str(result['acc_id']),
+                    'account_no': result['account_no'],
+                    'balance': result['balance'],
+                    'account_holder': result.get('account_holder'),
+                    'branch_name': result.get('branch_name')
+                }
+            return None
         except Exception as e:
             raise e

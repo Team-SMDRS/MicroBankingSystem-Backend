@@ -33,6 +33,22 @@ class WithdrawRequest(TransactionBase):
             raise ValueError('Withdrawal amount must be greater than 0')
         return v
 
+class TransferRequest(TransactionBase):
+    from_account_no: int = Field(..., description="Account number to transfer from")
+    to_account_no: int = Field(..., description="Account number to transfer to")
+    
+    @validator('amount')
+    def validate_transfer_amount(cls, v):
+        if v <= 0:
+            raise ValueError('Transfer amount must be greater than 0')
+        return v
+    
+    @validator('to_account_no')
+    def validate_different_accounts(cls, v, values):
+        if 'from_account_no' in values and v == values['from_account_no']:
+            raise ValueError('Cannot transfer to the same account')
+        return v
+
 
 # Transaction response models
 class TransactionResponse(BaseModel):
@@ -190,3 +206,12 @@ class TransactionExportResponse(BaseModel):
     file_size: Optional[int]
     record_count: int
     created_at: datetime
+
+# Account balance response
+class AccountBalanceResponse(BaseModel):
+    account_no: int = Field(..., description="Account number")
+    acc_id: str = Field(..., description="Account UUID")
+    balance: float = Field(..., description="Current account balance")
+    account_holder: Optional[str] = Field(None, description="Account holder name")
+    branch_name: Optional[str] = Field(None, description="Branch name")
+    message: str = Field(..., description="Response message")
