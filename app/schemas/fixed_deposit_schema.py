@@ -46,10 +46,6 @@ class CreateFDPlanResponse(BaseModel):
         from_attributes = True
 
 
-from pydantic import BaseModel
-from uuid import UUID
-from decimal import Decimal
-from datetime import datetime
 
 class FixedDepositDBResponse(BaseModel):
     fd_id: UUID
@@ -68,17 +64,10 @@ class FixedDepositDBResponse(BaseModel):
 
 
 
-class FixedDepositDBResponse1(BaseModel):
-    fd_id: UUID
-    fd_account_no: int
-    balance: Decimal
-    acc_id: UUID
-    opened_date: datetime
-    maturity_date: datetime
+class FixedDepositPlanResponse(BaseModel):
     fd_plan_id: UUID
-    created_at: datetime      # DB key
-    updated_at: datetime      # DB key
-    account_no: int
-    branch_name: str
-    plan_duration: int
-    plan_interest_rate: Decimal
+    duration: int
+    interest_rate: Decimal
+    status: str
+    created_at: datetime
+    updated_at: datetime
