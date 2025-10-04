@@ -50,58 +50,59 @@ class BranchRepository:
 
     def update_branch(self, branch_id, update_data, current_user_id):
         """
-        Update branch details by branch ID.
+        Update branch details by branch ID using database function.
         Only allows updating name and address.
-        updated_at is automatically handled by the DB trigger.
-        updated_by is set to current_user_id.
         """
-        allowed_fields = {"name", "address"}
-        fields = []
-        values = []
-
-        for key, value in update_data.items():
-            if key in allowed_fields and value is not None:
-                fields.append(f"{key} = %s")
-                values.append(value)
-
-        if not fields:
-            return None  # nothing to update
-
-        # updated_by must be set manually
-        fields.append("updated_by = %s")
-        values.append(current_user_id)
-
-        set_clause = ", ".join(fields)
-
-        query = f"""
-                UPDATE branch
-                SET {set_clause}
-                WHERE branch_id = %s
-                RETURNING branch_id, name, address, created_at, updated_at, created_by, updated_by
-            """
-        values.append(branch_id)
-
-        self.cursor.execute(query, tuple(values))
-        self.conn.commit()
-
-        result = self.cursor.fetchone()
-        return dict(result) if result else None
+        try:
+            # Extract only allowed fields
+            name = update_data.get('name')
+            address = update_data.get('address')
+            
+            # Check if there are any updates to make
+            if name is None and address is None:
+                return None
+            
+            self.cursor.execute(
+                """
+                SELECT * FROM update_branch(%s, %s, %s, %s)
+                """,
+                (
+                    branch_id,
+                    name,
+                    address,
+                    str(current_user_id)
+                )
+            )
+            
+            result = self.cursor.fetchone()
+            self.conn.commit()
+            return dict(result) if result else None
+            
+        except Exception as e:
+            self.conn.rollback()
+            # Handle database function exceptions
+            error_message = str(e)
+            if "not found" in error_message:
+                raise Exception("Branch not found")
+            elif "already exists" in error_message:
+                raise Exception(error_message)
+            elif "No valid fields to update" in error_message:
+                raise Exception("No valid fields to update")
+            else:
+                raise e
 
     def create_branch(self, branch_data, created_by):
         """
-        Create a new branch.
+        Create a new branch using database function.
         """
         try:
             self.cursor.execute(
                 """
-                INSERT INTO branch (name, address, created_by, updated_by)
-                VALUES (%s, %s, %s, %s)
-                RETURNING branch_id, name, address, created_at, updated_at, created_by, updated_by
+                SELECT * FROM create_branch(%s, %s, %s)
                 """,
                 (
-                    branch_data.name.strip(),
-                    branch_data.address.strip(),
-                    str(created_by),
+                    branch_data.name,
+                    branch_data.address,
                     str(created_by)
                 )
             )
@@ -110,4 +111,10 @@ class BranchRepository:
             return dict(branch) if branch else None
         except Exception as e:
             self.conn.rollback()
-            raise e
+            # Handle database function exceptions
+            if "already exists" in str(e):
+                raise Exception("Branch with this name already exists")
+            elif "cannot be empty" in str(e):
+                raise Exception(str(e))
+            else:
+                raise e

@@ -42,24 +42,47 @@ class BranchService:
             raise HTTPException(
                 status_code=500, detail="Failed to retrieve branch by name")
 
-    def update_branch(self, branch_id, update_data):
+    def update_branch(self, branch_id, update_data, current_user_id):
         """Update branch details by branch ID"""
         try:
-            Update_Branch = self.repo.update_branch(branch_id, update_data)
-            if not Update_Branch:
+            # Basic validation
+            if 'name' in update_data and update_data['name'] is not None:
+                if not update_data['name'].strip():
+                    raise HTTPException(
+                        status_code=400, detail="Branch name cannot be empty")
+            
+            if 'address' in update_data and update_data['address'] is not None:
+                if not update_data['address'].strip():
+                    raise HTTPException(
+                        status_code=400, detail="Branch address cannot be empty")
+            
+            # Call repository which uses database function
+            updated_branch = self.repo.update_branch(branch_id, update_data, current_user_id)
+            
+            if updated_branch is None:
                 raise HTTPException(
-                    status_code=404, detail="Branch not found or not updated")
-            return Update_Branch
+                    status_code=400, detail="No valid fields to update")
+            
+            return updated_branch
+            
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(
-                status_code=500, detail="Failed to update branch")
+            error_message = str(e)
+            if "not found" in error_message:
+                raise HTTPException(status_code=404, detail="Branch not found")
+            elif "already exists" in error_message:
+                raise HTTPException(status_code=400, detail=error_message)
+            elif "No valid fields to update" in error_message:
+                raise HTTPException(status_code=400, detail=error_message)
+            else:
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to update branch: {error_message}")
 
     def create_branch(self, branch_data, current_user_id):
         """Create a new branch"""
         try:
-            # Validate input data
+            # Basic validation (database function will handle detailed validation)
             if not branch_data.name or not branch_data.name.strip():
                 raise HTTPException(
                     status_code=400, detail="Branch name is required")
@@ -68,17 +91,19 @@ class BranchService:
                 raise HTTPException(
                     status_code=400, detail="Branch address is required")
             
-            # Check if branch with same name already exists
-            existing_branch = self.repo.get_branch_by_name(branch_data.name.strip())
-            if existing_branch:
-                raise HTTPException(
-                    status_code=400, detail="Branch with this name already exists")
-            
-            created_branch = self.repo.create_branch(
-                branch_data, current_user_id)
+            # Call repository which uses database function
+            created_branch = self.repo.create_branch(branch_data, current_user_id)
             return created_branch
+            
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(
-                status_code=500, detail=f"Failed to create branch: {str(e)}")
+            # Handle specific database errors
+            error_message = str(e)
+            if "already exists" in error_message:
+                raise HTTPException(status_code=400, detail=error_message)
+            elif "cannot be empty" in error_message:
+                raise HTTPException(status_code=400, detail=error_message)
+            else:
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to create branch: {error_message}")
