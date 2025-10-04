@@ -218,7 +218,7 @@ class TransactionManagementService:
         transaction_id=tx['transaction_id'],
         amount=float(tx['amount']),
         acc_id=tx['acc_id'],
-        type=tx['type'],  # no replace
+        type=tx['type'],
         description=tx['description'],
         reference_no=tx['reference_no'],
         created_at=tx['created_at'],

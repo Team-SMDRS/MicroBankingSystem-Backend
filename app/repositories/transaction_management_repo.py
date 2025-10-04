@@ -319,10 +319,7 @@ class TransactionManagementRepository:
         """Generate a unique transaction ID as UUID string"""
         return str(uuid.uuid4())
 
-    def generate_reference_number(self) -> int:
-        """Generate a unique reference number"""
-        import random
-        return random.randint(1000000000000000, 9999999999999999)
+  
 
     def get_transaction_by_id(self, transaction_id: str) -> Optional[Dict]:
         """Get transaction by ID"""
