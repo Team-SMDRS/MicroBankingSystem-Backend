@@ -18,6 +18,16 @@ class BranchResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
+class BranchSummary(BaseModel):
+    branch_id: UUID
+    name: Optional[str]
+    address: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 # get branch by id
 
 

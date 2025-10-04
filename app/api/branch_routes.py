@@ -41,21 +41,20 @@ def get_branch_by_name(branch_name: str, db=Depends(get_db)):
 
 
 # update branch details (name, address) by branch id PUT /branches/{branch_id}
-@router.put("/branches/{branch_id}")
+@router.put("/branches/{branch_id}", response_model=BranchResponse)
 def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, db=Depends(get_db)):
+    """Update branch details by branch ID"""
     repo = BranchRepository(db)
+    service = BranchService(repo)
     current_user_id = request.state.user.get("user_id")
-    updated = repo.update_branch(
-        branch_id, update_data.dict(exclude_unset=True), current_user_id)
-    if updated is None:
-        return {"detail": "No valid fields to update."}
-    return updated if updated else {"detail": "Branch not CustomerCountByBranchIfound or not updated."}
+    updated = service.update_branch(
+        branch_id, update_data.model_dump(exclude_unset=True), current_user_id)
+    return updated
 
 # create new branch
-
-
-@router.post("/branches")
+@router.post("/branches", response_model=BranchResponse)
 def create_branch(branch_data: CreateBranch, request: Request, db=Depends(get_db)):
+    """Create a new branch"""
     repo = BranchRepository(db)
     service = BranchService(repo)
     current_user_id = request.state.user.get("user_id")
