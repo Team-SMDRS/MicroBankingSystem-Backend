@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Depends,Request
 from typing import List
 
-from app.schemas.fixed_deposit_schema import FixedDepositResponse, FDPlanResponse, CreateFDPlanResponse,FixedDepositDBResponse1
+from app.schemas.fixed_deposit_schema import FixedDepositPlanResponse, FixedDepositResponse, FDPlanResponse, CreateFDPlanResponse,FixedDepositPlanResponse
 from app.database.db import get_db
 from app.repositories.fixed_deposit_repo import FixedDepositRepository
 from app.services.fixed_deposit_service import FixedDepositService
@@ -82,9 +82,8 @@ def get_fixed_deposit_by_account_number(fd_account_no: str, db=Depends(get_db)):
     return service.get_fixed_deposit_by_account_number(fd_account_no)
 
 # get fd_plan by fd_id
-@router.get("/fixed-deposits/{fd_id}/plan")
-def get_fd_plan_by_fd_id(fd_id: str, db=Depends(get_db), response_model=FixedDepositDBResponse1):
-
+@router.get("/fixed-deposits/{fd_id}/plan", response_model=FixedDepositPlanResponse)
+def get_fd_plan_by_fd_id(fd_id: str, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fd_plan_by_fd_id(fd_id)
@@ -175,12 +174,12 @@ def get_fixed_deposits_by_branch(branch_id: str, db=Depends(get_db)):
     return service.get_fixed_deposits_by_branch(branch_id)
 
 # get fd plan by plan id
-@router.get("/fd-plans/{fd_plan_id}", response_model=FDPlanResponse)
-def get_fd_plan_by_id(fd_plan_id: str, db=Depends(get_db)):
-    """Get FD plan details by plan ID"""
-    repo = FixedDepositRepository(db)
-    service = FixedDepositService(repo)
-    return service.get_fd_plan_by_fd_id(fd_plan_id)
+# @router.get("/fd-plans/{fd_plan_id}", response_model=FDPlanResponse)
+# def get_fd_plan_by_id(fd_plan_id: str, db=Depends(get_db)):
+#     """Get FD plan details by plan ID"""
+#     repo = FixedDepositRepository(db)
+#     service = FixedDepositService(repo)
+#     return service.get_fd_plan_by_fd_id(fd_plan_id)
 
 
 
