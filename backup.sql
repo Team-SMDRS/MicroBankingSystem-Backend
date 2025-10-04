@@ -5,7 +5,7 @@
 -- Dumped from database version 17.5
 -- Dumped by pg_dump version 17.5
 
--- Started on 2025-10-03 17:39:31 +0530
+-- Started on 2025-10-04 00:00:33 +0530
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -30,7 +30,7 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 3731 (class 0 OID 0)
+-- TOC entry 3744 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -47,7 +47,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- TOC entry 3732 (class 0 OID 0)
+-- TOC entry 3745 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
 --
@@ -56,8 +56,8 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- TOC entry 964 (class 1247 OID 26852)
--- Name: account_status; Type: TYPE; Schema: public; Owner: postgres
+-- TOC entry 972 (class 1247 OID 26852)
+-- Name: account_status; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.account_status AS ENUM (
@@ -67,11 +67,9 @@ CREATE TYPE public.account_status AS ENUM (
 );
 
 
-ALTER TYPE public.account_status OWNER TO postgres;
-
 --
--- TOC entry 955 (class 1247 OID 25912)
--- Name: audit_action; Type: TYPE; Schema: public; Owner: postgres
+-- TOC entry 963 (class 1247 OID 25912)
+-- Name: audit_action; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.audit_action AS ENUM (
@@ -84,8 +82,8 @@ CREATE TYPE public.audit_action AS ENUM (
 ALTER TYPE public.audit_action OWNER TO postgres;
 
 --
--- TOC entry 967 (class 1247 OID 26896)
--- Name: status_enum; Type: TYPE; Schema: public; Owner: postgres
+-- TOC entry 975 (class 1247 OID 26896)
+-- Name: status_enum; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.status_enum AS ENUM (
@@ -94,11 +92,9 @@ CREATE TYPE public.status_enum AS ENUM (
 );
 
 
-ALTER TYPE public.status_enum OWNER TO postgres;
-
 --
--- TOC entry 931 (class 1247 OID 25780)
--- Name: transaction_type; Type: TYPE; Schema: public; Owner: postgres
+-- TOC entry 939 (class 1247 OID 25780)
+-- Name: transaction_type; Type: TYPE; Schema: public; Owner: -
 --
 
 CREATE TYPE public.transaction_type AS ENUM (
@@ -112,8 +108,8 @@ CREATE TYPE public.transaction_type AS ENUM (
 ALTER TYPE public.transaction_type OWNER TO postgres;
 
 --
--- TOC entry 236 (class 1255 OID 26833)
--- Name: audit_user_login_update(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 237 (class 1255 OID 26833)
+-- Name: audit_user_login_update(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.audit_user_login_update() RETURNS trigger
@@ -155,8 +151,8 @@ $$;
 ALTER FUNCTION public.audit_user_login_update() OWNER TO postgres;
 
 --
--- TOC entry 288 (class 1255 OID 25954)
--- Name: cleanup_expired_user_refresh_tokens(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 296 (class 1255 OID 25954)
+-- Name: cleanup_expired_user_refresh_tokens(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.cleanup_expired_user_refresh_tokens() RETURNS integer
@@ -280,8 +276,184 @@ $$;
 ALTER FUNCTION public.create_customer_with_login(p_full_name text, p_address text, p_phone_number text, p_nic text, p_dob date, p_username text, p_password text, p_branch_id uuid, p_savings_plan_id uuid, p_balance numeric, p_created_by uuid, p_status public.account_status) OWNER TO postgres;
 
 --
--- TOC entry 235 (class 1255 OID 25987)
--- Name: create_initial_user(character varying, character varying, character varying, character varying, character varying, date, character varying, text); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 252 (class 1255 OID 26881)
+-- Name: create_account_for_existing_customer_by_nic(character varying, uuid, uuid, uuid, numeric, public.account_status); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_account_for_existing_customer_by_nic(p_nic character varying, p_branch_id uuid, p_savings_plan_id uuid, p_created_by_user_id uuid, p_balance numeric DEFAULT 0.00, p_status public.account_status DEFAULT 'active'::public.account_status) RETURNS TABLE(acc_id uuid, account_no character varying, customer_id uuid)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_customer_id UUID;
+    v_acc_id UUID;
+    v_account_no VARCHAR(20);
+BEGIN
+    -- Find customer_id by NIC
+    SELECT c.customer_id INTO v_customer_id
+    FROM customer c
+    WHERE c.nic = p_nic;
+
+    -- Check if customer exists
+    IF v_customer_id IS NULL THEN
+        RAISE EXCEPTION 'Customer not found with NIC: %', p_nic;
+    END IF;
+
+    -- Insert new account (account_no is auto-generated)
+    INSERT INTO account (
+        branch_id, 
+        savings_plan_id, 
+        balance, 
+        status, 
+        created_by, 
+        updated_by
+    ) VALUES (
+        p_branch_id,
+        p_savings_plan_id,
+        p_balance,
+        p_status,
+        p_created_by_user_id,
+        p_created_by_user_id
+    )
+    RETURNING account.acc_id, account.account_no INTO v_acc_id, v_account_no;
+
+    -- Link customer and account
+    INSERT INTO accounts_owner (acc_id, customer_id)
+    VALUES (v_acc_id, v_customer_id);
+
+    -- Return the results
+    RETURN QUERY SELECT v_acc_id, v_account_no, v_customer_id;
+END;
+$$;
+
+
+--
+-- TOC entry 251 (class 1255 OID 26875)
+-- Name: create_customer_with_login(text, text, text, text, date, text, text, uuid, uuid, numeric, uuid, public.account_status); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_customer_with_login(p_full_name text, p_address text, p_phone_number text, p_nic text, p_dob date, p_username text, p_password text, p_branch_id uuid, p_savings_plan_id uuid, p_balance numeric, p_created_by uuid, p_status public.account_status DEFAULT 'active'::public.account_status) RETURNS TABLE(customer_id uuid, account_no text)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_customer_id UUID;
+    v_account_id UUID;
+    v_account_no TEXT;
+BEGIN
+    -- Insert account
+    INSERT INTO account (
+        branch_id, savings_plan_id, balance, status, created_by, updated_by
+    ) VALUES (
+        p_branch_id, p_savings_plan_id, p_balance, COALESCE(p_status, 'active'), p_created_by, p_created_by
+    )
+    RETURNING account.acc_id, account.account_no INTO v_account_id, v_account_no;
+
+    -- Insert customer
+    INSERT INTO customer (
+        full_name, address, phone_number, nic, dob, created_by, updated_by
+    ) VALUES (
+        p_full_name, p_address, p_phone_number, p_nic, p_dob, p_created_by, p_created_by
+    )
+    RETURNING customer.customer_id INTO v_customer_id;
+
+    -- Link account and customer
+    INSERT INTO accounts_owner (acc_id, customer_id)
+    VALUES (v_account_id, v_customer_id);
+
+    -- Insert customer login (password passed in already hashed from Python)
+    INSERT INTO customer_login (
+        customer_id, username, password, created_by, updated_by
+    ) VALUES (
+        v_customer_id, p_username, p_password, p_created_by, p_created_by
+    );
+
+    RETURN QUERY SELECT v_customer_id, v_account_no;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Error: %', SQLERRM;
+        RAISE;
+END;
+$$;
+
+
+--
+-- TOC entry 253 (class 1255 OID 26916)
+-- Name: create_fd_plan(integer, numeric, uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_fd_plan(p_duration integer, p_interest numeric, p_created_by uuid) RETURNS TABLE(fd_plan_id uuid, duration integer, interest_rate numeric, status text, created_at timestamp without time zone, updated_at timestamp without time zone, created_by uuid, updated_by uuid)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    INSERT INTO fd_plan (duration, interest_rate, status, created_by, updated_by)
+    VALUES (p_duration, p_interest, 'active', p_created_by, p_created_by)
+    RETURNING fd_plan.fd_plan_id,
+              fd_plan.duration,
+              fd_plan.interest_rate,
+              fd_plan.status::TEXT,
+              fd_plan.created_at,
+              fd_plan.updated_at,
+              fd_plan.created_by,
+              fd_plan.updated_by;
+END;
+$$;
+
+
+--
+-- TOC entry 255 (class 1255 OID 26918)
+-- Name: create_fixed_deposit(uuid, numeric, uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.create_fixed_deposit(p_acc_id uuid, p_amount numeric, p_fd_plan_id uuid, p_created_by uuid) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, created_at timestamp without time zone, updated_at timestamp without time zone, status public.status_enum, created_by uuid, updated_by uuid)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    plan_duration INT;
+BEGIN
+    -- Fetch the FD plan duration
+    SELECT duration 
+    INTO plan_duration 
+    FROM fd_plan 
+    WHERE fd_plan.fd_plan_id = p_fd_plan_id;
+
+    IF plan_duration IS NULL THEN
+        RAISE EXCEPTION 'Invalid FD plan ID: %', p_fd_plan_id;
+    END IF;
+
+    -- Insert new fixed deposit and calculate maturity date
+    RETURN QUERY
+    INSERT INTO fixed_deposit (
+        balance, acc_id, fd_plan_id, maturity_date, status, created_by, updated_by
+    )
+    VALUES (
+        p_amount,
+        p_acc_id,
+        p_fd_plan_id,
+        CURRENT_TIMESTAMP + (plan_duration || ' months')::INTERVAL,
+        'active',
+        p_created_by,
+        p_created_by
+    )
+    RETURNING fixed_deposit.fd_id,
+              fixed_deposit.fd_account_no,
+              fixed_deposit.balance,
+              fixed_deposit.acc_id,
+              fixed_deposit.opened_date,
+              fixed_deposit.maturity_date,
+              fixed_deposit.fd_plan_id,
+              fixed_deposit.created_at,
+              fixed_deposit.updated_at,
+              fixed_deposit.status,
+              fixed_deposit.created_by,
+              fixed_deposit.updated_by;
+END;
+$$;
+
+
+--
+-- TOC entry 236 (class 1255 OID 25987)
+-- Name: create_initial_user(character varying, character varying, character varying, character varying, character varying, date, character varying, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.create_initial_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_password_hash text) RETURNS uuid
@@ -317,8 +489,8 @@ $$;
 ALTER FUNCTION public.create_initial_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_password_hash text) OWNER TO postgres;
 
 --
--- TOC entry 248 (class 1255 OID 26831)
--- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 249 (class 1255 OID 26831)
+-- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.create_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_hashed_password character varying, p_created_by uuid) RETURNS uuid
@@ -375,8 +547,8 @@ $$;
 ALTER FUNCTION public.create_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_hashed_password character varying, p_created_by uuid) OWNER TO postgres;
 
 --
--- TOC entry 249 (class 1255 OID 26832)
--- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid, uuid); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 250 (class 1255 OID 26832)
+-- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.create_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_hashed_password character varying, p_created_by uuid, p_updated_by uuid) RETURNS uuid
@@ -433,8 +605,176 @@ $$;
 ALTER FUNCTION public.create_user(p_nic character varying, p_first_name character varying, p_last_name character varying, p_address character varying, p_phone_number character varying, p_dob date, p_username character varying, p_hashed_password character varying, p_created_by uuid, p_updated_by uuid) OWNER TO postgres;
 
 --
--- TOC entry 289 (class 1255 OID 25955)
--- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 259 (class 1255 OID 26924)
+-- Name: get_fd_by_id(uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_fd_by_id(p_fd_id uuid) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, fd_created_at timestamp without time zone, fd_updated_at timestamp without time zone, account_no bigint, branch_name character varying, plan_duration integer, plan_interest_rate numeric)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        fd.fd_id,
+        fd.fd_account_no,
+        fd.balance,
+        fd.acc_id,
+        fd.opened_date,
+        fd.maturity_date,
+        fd.fd_plan_id,
+        fd.created_at AS fd_created_at,
+        fd.updated_at AS fd_updated_at,
+        a.account_no,
+        b.name AS branch_name,
+        fp.duration AS plan_duration,
+        fp.interest_rate AS plan_interest_rate
+    FROM fixed_deposit fd
+    LEFT JOIN account a ON fd.acc_id = a.acc_id
+    LEFT JOIN branch b ON a.branch_id = b.branch_id
+    LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+    WHERE fd.fd_id = p_fd_id;
+END;
+$$;
+
+
+--
+-- TOC entry 257 (class 1255 OID 26920)
+-- Name: get_fixed_deposit_by_fd_id(uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_fixed_deposit_by_fd_id(p_fd_id uuid) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, fd_created_at timestamp without time zone, fd_updated_at timestamp without time zone, account_no bigint, branch_name character varying, plan_duration integer, plan_interest_rate numeric)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        fd.fd_id,
+        fd.fd_account_no,
+        fd.balance,
+        fd.acc_id,
+        fd.opened_date,
+        fd.maturity_date,
+        fd.fd_plan_id,
+        fd.created_at AS fd_created_at,
+        fd.updated_at AS fd_updated_at,
+        a.account_no,
+        b.name AS branch_name,
+        fp.duration AS plan_duration,
+        fp.interest_rate AS plan_interest_rate
+    FROM fixed_deposit fd
+    LEFT JOIN account a ON fd.acc_id = a.acc_id
+    LEFT JOIN branch b ON a.branch_id = b.branch_id
+    LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+    WHERE fd.fd_id = p_fd_id;
+END;
+$$;
+
+
+--
+-- TOC entry 254 (class 1255 OID 26917)
+-- Name: get_fixed_deposit_with_details(uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_fixed_deposit_with_details(p_fd_id uuid) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, fd_created_at timestamp without time zone, fd_updated_at timestamp without time zone, account_no bigint, branch_name character varying, plan_duration integer, plan_interest_rate numeric)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        fd.fd_id,
+        fd.fd_account_no,
+        fd.balance,
+        fd.acc_id,
+        fd.opened_date,
+        fd.maturity_date,
+        fd.fd_plan_id,
+        fd.created_at,
+        fd.updated_at,
+        a.account_no,
+        b.name as branch_name,
+        fp.duration as plan_duration,
+        fp.interest_rate as plan_interest_rate
+    FROM fixed_deposit fd
+    LEFT JOIN account a ON fd.acc_id = a.acc_id
+    LEFT JOIN branch b ON a.branch_id = b.branch_id
+    LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+    WHERE fd.fd_id = p_fd_id;
+END;
+$$;
+
+
+--
+-- TOC entry 256 (class 1255 OID 26922)
+-- Name: get_fixed_deposits_by_customer_id(uuid); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_fixed_deposits_by_customer_id(p_customer_id uuid) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, fd_created_at timestamp without time zone, fd_updated_at timestamp without time zone, account_no bigint, branch_name character varying, plan_duration integer, plan_interest_rate numeric)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        fd.fd_id,
+        fd.fd_account_no,
+        fd.balance,
+        fd.acc_id,
+        fd.opened_date,
+        fd.maturity_date,
+        fd.fd_plan_id,
+        fd.created_at AS fd_created_at,
+        fd.updated_at AS fd_updated_at,
+        a.account_no,
+        b.name AS branch_name,
+        fp.duration AS plan_duration,
+        fp.interest_rate AS plan_interest_rate
+    FROM fixed_deposit fd
+    LEFT JOIN account a ON fd.acc_id = a.acc_id
+    LEFT JOIN branch b ON a.branch_id = b.branch_id
+    LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+    LEFT JOIN accounts_owner ao ON a.acc_id = ao.acc_id
+    WHERE ao.customer_id = p_customer_id
+    ORDER BY fd.opened_date DESC;
+END;
+$$;
+
+
+--
+-- TOC entry 258 (class 1255 OID 26921)
+-- Name: get_fixed_deposits_by_savings_account(bigint); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.get_fixed_deposits_by_savings_account(p_account_no bigint) RETURNS TABLE(fd_id uuid, fd_account_no bigint, balance numeric, acc_id uuid, opened_date timestamp without time zone, maturity_date timestamp without time zone, fd_plan_id uuid, fd_created_at timestamp without time zone, fd_updated_at timestamp without time zone, account_no bigint, branch_name character varying, plan_duration integer, plan_interest_rate numeric)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        fd.fd_id,
+        fd.fd_account_no,
+        fd.balance,
+        fd.acc_id,
+        fd.opened_date,
+        fd.maturity_date,
+        fd.fd_plan_id,
+        fd.created_at AS fd_created_at,
+        fd.updated_at AS fd_updated_at,
+        a.account_no,
+        b.name AS branch_name,
+        fp.duration AS plan_duration,
+        fp.interest_rate AS plan_interest_rate
+    FROM fixed_deposit fd
+    LEFT JOIN account a ON fd.acc_id = a.acc_id
+    LEFT JOIN branch b ON a.branch_id = b.branch_id
+    LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+    WHERE a.account_no = p_account_no
+    ORDER BY fd.opened_date DESC;
+END;
+$$;
+
+
+--
+-- TOC entry 297 (class 1255 OID 25955)
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
 --
 
 CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
@@ -601,8 +941,34 @@ CREATE TABLE public.fixed_deposit (
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     created_by uuid,
     updated_by uuid,
-    fd_account_no bigint DEFAULT (floor(((random() * (90000000)::double precision) + (10000000)::double precision)))::bigint
+    fd_account_no bigint DEFAULT (floor(((random() * (90000000)::double precision) + (10000000)::double precision)))::bigint,
+    status public.status_enum DEFAULT 'active'::public.status_enum NOT NULL
 );
+
+
+--
+-- TOC entry 235 (class 1259 OID 26909)
+-- Name: fixed_deposit_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.fixed_deposit_details AS
+ SELECT fd.fd_id,
+    fd.fd_account_no,
+    fd.balance,
+    fd.acc_id,
+    fd.opened_date,
+    fd.maturity_date,
+    fd.fd_plan_id,
+    fd.created_at,
+    fd.updated_at,
+    a.account_no,
+    b.name AS branch_name,
+    fp.duration AS plan_duration,
+    fp.interest_rate AS plan_interest_rate
+   FROM (((public.fixed_deposit fd
+     LEFT JOIN public.account a ON ((fd.acc_id = a.acc_id)))
+     LEFT JOIN public.branch b ON ((a.branch_id = b.branch_id)))
+     LEFT JOIN public.fd_plan fp ON ((fd.fd_plan_id = fp.fd_plan_id)));
 
 
 ALTER TABLE public.fixed_deposit OWNER TO postgres;
@@ -764,7 +1130,7 @@ CREATE TABLE public.users_role (
 ALTER TABLE public.users_role OWNER TO postgres;
 
 --
--- TOC entry 3715 (class 0 OID 25719)
+-- TOC entry 3728 (class 0 OID 25719)
 -- Dependencies: 224
 -- Data for Name: account; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -779,7 +1145,7 @@ INSERT INTO public.account VALUES ('820e7b5a-8b66-4242-b7e0-a49e9880b17e', 56415
 
 
 --
--- TOC entry 3723 (class 0 OID 25896)
+-- TOC entry 3736 (class 0 OID 25896)
 -- Dependencies: 232
 -- Data for Name: accounts_owner; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -795,7 +1161,7 @@ INSERT INTO public.accounts_owner VALUES ('820e7b5a-8b66-4242-b7e0-a49e9880b17e'
 
 
 --
--- TOC entry 3724 (class 0 OID 25919)
+-- TOC entry 3737 (class 0 OID 25919)
 -- Dependencies: 233
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -807,7 +1173,7 @@ INSERT INTO public.audit_log VALUES ('2469da8a-bac2-4709-9294-cbc8a8f6426c', 'us
 
 
 --
--- TOC entry 3712 (class 0 OID 25665)
+-- TOC entry 3725 (class 0 OID 25665)
 -- Dependencies: 221
 -- Data for Name: branch; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -817,7 +1183,7 @@ INSERT INTO public.branch VALUES ('57438d7f-184f-42fe-b0d6-91a2ef609beb', 'Jafna
 
 
 --
--- TOC entry 3720 (class 0 OID 25831)
+-- TOC entry 3733 (class 0 OID 25831)
 -- Dependencies: 229
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -831,7 +1197,7 @@ INSERT INTO public.customer VALUES ('4ab20e7b-e5c7-4331-b75d-2135c62c4ac7', 'cus
 
 
 --
--- TOC entry 3721 (class 0 OID 25851)
+-- TOC entry 3734 (class 0 OID 25851)
 -- Dependencies: 230
 -- Data for Name: customer_login; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -842,7 +1208,7 @@ INSERT INTO public.customer_login VALUES ('8c72a1ba-8252-4e9f-a0df-9d1491d8bcce'
 
 
 --
--- TOC entry 3713 (class 0 OID 25683)
+-- TOC entry 3726 (class 0 OID 25683)
 -- Dependencies: 222
 -- Data for Name: fd_plan; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -850,19 +1216,22 @@ INSERT INTO public.customer_login VALUES ('8c72a1ba-8252-4e9f-a0df-9d1491d8bcce'
 INSERT INTO public.fd_plan VALUES ('aba51ea9-6174-4a6e-8463-6d03dd717185', 6, 13.00, '2025-09-18 13:37:13.902794', '2025-09-18 13:37:13.902794', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
 INSERT INTO public.fd_plan VALUES ('f6248a43-7311-4741-bf69-9e3628df3cee', 12, 14.00, '2025-09-18 13:37:13.906323', '2025-09-18 13:37:13.906323', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
 INSERT INTO public.fd_plan VALUES ('fede8a9f-d3a5-4aee-a763-e43eae84397f', 36, 15.00, '2025-09-18 13:37:13.907726', '2025-09-18 13:37:13.907726', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
+INSERT INTO public.fd_plan VALUES ('b44091ce-db91-4597-bc76-d4964b6470b5', 25, 12.00, '2025-10-03 18:59:19.17747', '2025-10-03 19:02:32.16124', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
 
 
 --
--- TOC entry 3716 (class 0 OID 25750)
+-- TOC entry 3729 (class 0 OID 25750)
 -- Dependencies: 225
 -- Data for Name: fixed_deposit; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.fixed_deposit OVERRIDING SYSTEM VALUE VALUES ('11b6d2ad-ce98-48e2-a70f-0660d84247d0', 20000.000000000000, '3337ad45-7e90-4c8f-9057-e38f3c43f196', '2025-09-18 15:06:34.963377', '2026-03-18 15:06:34.963', 'aba51ea9-6174-4a6e-8463-6d03dd717185', '2025-09-18 15:06:34.963377', '2025-09-18 15:07:06.178408', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 96382071);
+INSERT INTO public.fixed_deposit OVERRIDING SYSTEM VALUE VALUES ('11b6d2ad-ce98-48e2-a70f-0660d84247d0', 20000.000000000000, '3337ad45-7e90-4c8f-9057-e38f3c43f196', '2025-09-18 15:06:34.963377', '2026-03-18 15:06:34.963', 'aba51ea9-6174-4a6e-8463-6d03dd717185', '2025-09-18 15:06:34.963377', '2025-09-18 15:07:06.178408', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 96382071, 'active');
+INSERT INTO public.fixed_deposit OVERRIDING SYSTEM VALUE VALUES ('4ed09562-a8c2-49c3-b3bc-8b4e98584c1e', 40000.000000000000, '58f8da96-a4c1-4071-8a8c-a195b70bb040', '2025-10-03 18:49:09.769087', '2028-10-03 18:49:09.769087', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-10-03 18:49:09.769087', '2025-10-03 18:49:09.769087', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 38665920, 'active');
+INSERT INTO public.fixed_deposit OVERRIDING SYSTEM VALUE VALUES ('cb591d9c-c63d-4228-824f-d0c8a54b3f73', 5000.000000000000, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', '2025-10-03 22:03:31.130479', '2028-10-03 22:03:31.130479', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-10-03 22:03:31.130479', '2025-10-03 22:03:31.130479', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 83370957, 'active');
 
 
 --
--- TOC entry 3711 (class 0 OID 25653)
+-- TOC entry 3724 (class 0 OID 25653)
 -- Dependencies: 220
 -- Data for Name: login; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -945,10 +1314,11 @@ INSERT INTO public.login VALUES ('b16487bf-83eb-4724-9d6a-a595655ad9f0', '6b9972
 INSERT INTO public.login VALUES ('40b64c3f-7444-4b73-ba56-ba6204e6a763', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-02 06:41:27.485645');
 INSERT INTO public.login VALUES ('d1a2e970-1de4-4504-8f17-1f7132422c36', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-02 06:45:00.681053');
 INSERT INTO public.login VALUES ('bf4c1b21-52cd-43b8-8958-83f1f1c93eb2', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 17:24:01.788872');
+INSERT INTO public.login VALUES ('82313efc-c0dd-419f-8b1d-a4059dd28a1a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 22:25:06.250304');
 
 
 --
--- TOC entry 3718 (class 0 OID 25808)
+-- TOC entry 3731 (class 0 OID 25808)
 -- Dependencies: 227
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -959,7 +1329,7 @@ INSERT INTO public.role VALUES ('05865b54-4591-4ccb-b1b8-bacf4c8771a2', 'account
 
 
 --
--- TOC entry 3714 (class 0 OID 25701)
+-- TOC entry 3727 (class 0 OID 25701)
 -- Dependencies: 223
 -- Data for Name: savings_plan; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -970,7 +1340,7 @@ INSERT INTO public.savings_plan VALUES ('75cb0dfb-be48-4b4c-ab13-9e01772f0332', 
 
 
 --
--- TOC entry 3717 (class 0 OID 25789)
+-- TOC entry 3730 (class 0 OID 25789)
 -- Dependencies: 226
 -- Data for Name: transactions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -979,7 +1349,7 @@ INSERT INTO public.transactions VALUES ('4d7972d3-31fc-4795-b42a-efec9c31303e', 
 
 
 --
--- TOC entry 3710 (class 0 OID 25623)
+-- TOC entry 3723 (class 0 OID 25623)
 -- Dependencies: 219
 -- Data for Name: user_login; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -992,7 +1362,7 @@ INSERT INTO public.user_login VALUES ('86295c07-2139-4499-9410-d729b012cfb7', '7
 
 
 --
--- TOC entry 3725 (class 0 OID 25933)
+-- TOC entry 3738 (class 0 OID 25933)
 -- Dependencies: 234
 -- Data for Name: user_refresh_tokens; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1075,10 +1445,11 @@ INSERT INTO public.user_refresh_tokens VALUES ('afe1da4a-5970-4f4e-8e61-0c9a1057
 INSERT INTO public.user_refresh_tokens VALUES ('775a1f86-ad43-4e75-add4-6889d135499d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2b241386768769145aec81f40960a132f51a8cf7bf661a2f8b1d1781810b2ab8', '2025-10-09 01:11:27.483771', false, NULL, NULL, '2025-10-02 06:41:27.227646', '2025-10-02 06:41:27.227646', NULL, NULL);
 INSERT INTO public.user_refresh_tokens VALUES ('9858aea0-f40c-4170-a340-1fa6b2429b21', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'bc4abceaf75d4dde1620c12701b85b550475372826d32dc3ff7ad289f7ccb423', '2025-10-09 01:15:00.679227', false, NULL, NULL, '2025-10-02 06:45:00.428995', '2025-10-02 06:45:00.428995', NULL, NULL);
 INSERT INTO public.user_refresh_tokens VALUES ('c786402e-e8a8-4690-8ee2-98c9ea1c79d0', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '27f40e16e24343662bd6a1c7edcb05bd4fa3989d1ae1332161ec6a48bae2723d', '2025-10-10 11:54:01.780459', false, NULL, NULL, '2025-10-03 17:24:01.505017', '2025-10-03 17:24:01.505017', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('de4ee8cd-2438-4aba-8a74-d9e65efa4772', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '329304329b77add51998aac4946d69baa02cfdbb1c2c45fa0c94d2d943a810b1', '2025-10-10 16:55:06.248696', false, NULL, NULL, '2025-10-03 22:25:05.998265', '2025-10-03 22:25:05.998265', NULL, NULL);
 
 
 --
--- TOC entry 3709 (class 0 OID 25603)
+-- TOC entry 3722 (class 0 OID 25603)
 -- Dependencies: 218
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1091,7 +1462,7 @@ INSERT INTO public.users VALUES ('75cf1bda-3240-41c5-8235-5a0f06d51fa7', '200135
 
 
 --
--- TOC entry 3722 (class 0 OID 25881)
+-- TOC entry 3735 (class 0 OID 25881)
 -- Dependencies: 231
 -- Data for Name: users_branch; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1101,7 +1472,7 @@ INSERT INTO public.users_branch VALUES ('780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 
 
 
 --
--- TOC entry 3719 (class 0 OID 25816)
+-- TOC entry 3732 (class 0 OID 25816)
 -- Dependencies: 228
 -- Data for Name: users_role; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1112,8 +1483,8 @@ INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '1
 
 
 --
--- TOC entry 3465 (class 2606 OID 26861)
--- Name: account account_account_no_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3477 (class 2606 OID 26861)
+-- Name: account account_account_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1121,8 +1492,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3467 (class 2606 OID 26872)
--- Name: account account_no_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3479 (class 2606 OID 26872)
+-- Name: account account_no_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1130,8 +1501,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3469 (class 2606 OID 25727)
--- Name: account account_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3481 (class 2606 OID 25727)
+-- Name: account account_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1139,8 +1510,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3504 (class 2606 OID 25900)
--- Name: accounts_owner accounts_owner_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3516 (class 2606 OID 25900)
+-- Name: accounts_owner accounts_owner_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.accounts_owner
@@ -1148,8 +1519,8 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3506 (class 2606 OID 25927)
--- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3518 (class 2606 OID 25927)
+-- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.audit_log
@@ -1157,8 +1528,8 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 3459 (class 2606 OID 25672)
--- Name: branch branch_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3471 (class 2606 OID 25672)
+-- Name: branch branch_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.branch
@@ -1166,8 +1537,8 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3496 (class 2606 OID 25863)
--- Name: customer_login customer_login_customer_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3508 (class 2606 OID 25863)
+-- Name: customer_login customer_login_customer_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1175,8 +1546,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3498 (class 2606 OID 25861)
--- Name: customer_login customer_login_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3510 (class 2606 OID 25861)
+-- Name: customer_login customer_login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1184,8 +1555,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3500 (class 2606 OID 25865)
--- Name: customer_login customer_login_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3512 (class 2606 OID 25865)
+-- Name: customer_login customer_login_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1193,8 +1564,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3490 (class 2606 OID 25840)
--- Name: customer customer_nic_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3502 (class 2606 OID 25840)
+-- Name: customer customer_nic_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer
@@ -1202,8 +1573,8 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3492 (class 2606 OID 25838)
--- Name: customer customer_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3504 (class 2606 OID 25838)
+-- Name: customer customer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer
@@ -1211,8 +1582,8 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3461 (class 2606 OID 25690)
--- Name: fd_plan fd_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3473 (class 2606 OID 25690)
+-- Name: fd_plan fd_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fd_plan
@@ -1220,8 +1591,8 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3473 (class 2606 OID 26889)
--- Name: fixed_deposit fixed_deposit_fd_account_no_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3485 (class 2606 OID 26889)
+-- Name: fixed_deposit fixed_deposit_fd_account_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1229,8 +1600,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3475 (class 2606 OID 25758)
--- Name: fixed_deposit fixed_deposit_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3487 (class 2606 OID 25758)
+-- Name: fixed_deposit fixed_deposit_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1238,8 +1609,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3457 (class 2606 OID 25659)
--- Name: login login_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3469 (class 2606 OID 25659)
+-- Name: login login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.login
@@ -1247,8 +1618,8 @@ ALTER TABLE ONLY public.login
 
 
 --
--- TOC entry 3484 (class 2606 OID 25813)
--- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3496 (class 2606 OID 25813)
+-- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.role
@@ -1256,8 +1627,8 @@ ALTER TABLE ONLY public.role
 
 
 --
--- TOC entry 3486 (class 2606 OID 25815)
--- Name: role role_role_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3498 (class 2606 OID 25815)
+-- Name: role role_role_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.role
@@ -1265,8 +1636,8 @@ ALTER TABLE ONLY public.role
 
 
 --
--- TOC entry 3463 (class 2606 OID 25708)
--- Name: savings_plan savings_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3475 (class 2606 OID 25708)
+-- Name: savings_plan savings_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.savings_plan
@@ -1274,8 +1645,8 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3480 (class 2606 OID 25797)
--- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3492 (class 2606 OID 25797)
+-- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.transactions
@@ -1283,8 +1654,8 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3482 (class 2606 OID 26839)
--- Name: transactions transactions_reference_no_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3494 (class 2606 OID 26839)
+-- Name: transactions transactions_reference_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.transactions
@@ -1292,8 +1663,8 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3449 (class 2606 OID 25633)
--- Name: user_login user_login_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3461 (class 2606 OID 25633)
+-- Name: user_login user_login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1301,8 +1672,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3451 (class 2606 OID 25635)
--- Name: user_login user_login_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3463 (class 2606 OID 25635)
+-- Name: user_login user_login_user_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1310,8 +1681,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3453 (class 2606 OID 25637)
--- Name: user_login user_login_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3465 (class 2606 OID 25637)
+-- Name: user_login user_login_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1319,8 +1690,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3515 (class 2606 OID 25943)
--- Name: user_refresh_tokens user_refresh_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3527 (class 2606 OID 25943)
+-- Name: user_refresh_tokens user_refresh_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_refresh_tokens
@@ -1328,8 +1699,8 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3502 (class 2606 OID 25885)
--- Name: users_branch users_branch_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3514 (class 2606 OID 25885)
+-- Name: users_branch users_branch_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_branch
@@ -1337,8 +1708,8 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3445 (class 2606 OID 25612)
--- Name: users users_nic_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3457 (class 2606 OID 25612)
+-- Name: users users_nic_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -1346,8 +1717,8 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3447 (class 2606 OID 25610)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3459 (class 2606 OID 25610)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -1355,8 +1726,8 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3488 (class 2606 OID 25820)
--- Name: users_role users_role_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3500 (class 2606 OID 25820)
+-- Name: users_role users_role_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_role
@@ -1364,248 +1735,248 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3470 (class 1259 OID 26862)
--- Name: idx_account_account_no; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3482 (class 1259 OID 26862)
+-- Name: idx_account_account_no; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_account_account_no ON public.account USING btree (account_no);
 
 
 --
--- TOC entry 3471 (class 1259 OID 25971)
--- Name: idx_account_branch_id; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3483 (class 1259 OID 25971)
+-- Name: idx_account_branch_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_account_branch_id ON public.account USING btree (branch_id);
 
 
 --
--- TOC entry 3507 (class 1259 OID 25975)
--- Name: idx_audit_log_table_record; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3519 (class 1259 OID 25975)
+-- Name: idx_audit_log_table_record; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_audit_log_table_record ON public.audit_log USING btree (table_name, record_id);
 
 
 --
--- TOC entry 3508 (class 1259 OID 25976)
--- Name: idx_audit_log_timestamp; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3520 (class 1259 OID 25976)
+-- Name: idx_audit_log_timestamp; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_audit_log_timestamp ON public.audit_log USING btree ("timestamp");
 
 
 --
--- TOC entry 3509 (class 1259 OID 25977)
--- Name: idx_audit_log_user_id; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3521 (class 1259 OID 25977)
+-- Name: idx_audit_log_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_audit_log_user_id ON public.audit_log USING btree (user_id);
 
 
 --
--- TOC entry 3493 (class 1259 OID 25969)
--- Name: idx_customer_created_at; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3505 (class 1259 OID 25969)
+-- Name: idx_customer_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_customer_created_at ON public.customer USING btree (created_at);
 
 
 --
--- TOC entry 3494 (class 1259 OID 25968)
--- Name: idx_customer_nic; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3506 (class 1259 OID 25968)
+-- Name: idx_customer_nic; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_customer_nic ON public.customer USING btree (nic);
 
 
 --
--- TOC entry 3454 (class 1259 OID 25979)
--- Name: idx_login_time; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3466 (class 1259 OID 25979)
+-- Name: idx_login_time; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_login_time ON public.login USING btree (login_time);
 
 
 --
--- TOC entry 3455 (class 1259 OID 25978)
--- Name: idx_login_user_id; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3467 (class 1259 OID 25978)
+-- Name: idx_login_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_login_user_id ON public.login USING btree (user_id);
 
 
 --
--- TOC entry 3476 (class 1259 OID 25972)
--- Name: idx_transactions_acc_id; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3488 (class 1259 OID 25972)
+-- Name: idx_transactions_acc_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_transactions_acc_id ON public.transactions USING btree (acc_id);
 
 
 --
--- TOC entry 3477 (class 1259 OID 25973)
--- Name: idx_transactions_created_at; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3489 (class 1259 OID 25973)
+-- Name: idx_transactions_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_transactions_created_at ON public.transactions USING btree (created_at);
 
 
 --
--- TOC entry 3478 (class 1259 OID 25974)
--- Name: idx_transactions_type; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3490 (class 1259 OID 25974)
+-- Name: idx_transactions_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_transactions_type ON public.transactions USING btree (type);
 
 
 --
--- TOC entry 3510 (class 1259 OID 25983)
--- Name: idx_user_refresh_tokens_expires_at; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3522 (class 1259 OID 25983)
+-- Name: idx_user_refresh_tokens_expires_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_user_refresh_tokens_expires_at ON public.user_refresh_tokens USING btree (expires_at);
 
 
 --
--- TOC entry 3511 (class 1259 OID 25982)
--- Name: idx_user_refresh_tokens_hash; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3523 (class 1259 OID 25982)
+-- Name: idx_user_refresh_tokens_hash; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_user_refresh_tokens_hash ON public.user_refresh_tokens USING btree (token_hash);
 
 
 --
--- TOC entry 3512 (class 1259 OID 25984)
--- Name: idx_user_refresh_tokens_revoked; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3524 (class 1259 OID 25984)
+-- Name: idx_user_refresh_tokens_revoked; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_user_refresh_tokens_revoked ON public.user_refresh_tokens USING btree (is_revoked);
 
 
 --
--- TOC entry 3513 (class 1259 OID 25981)
--- Name: idx_user_refresh_tokens_user_id; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3525 (class 1259 OID 25981)
+-- Name: idx_user_refresh_tokens_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_user_refresh_tokens_user_id ON public.user_refresh_tokens USING btree (user_id);
 
 
 --
--- TOC entry 3442 (class 1259 OID 25967)
--- Name: idx_users_created_at; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3454 (class 1259 OID 25967)
+-- Name: idx_users_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_users_created_at ON public.users USING btree (created_at);
 
 
 --
--- TOC entry 3443 (class 1259 OID 25966)
--- Name: idx_users_nic; Type: INDEX; Schema: public; Owner: postgres
+-- TOC entry 3455 (class 1259 OID 25966)
+-- Name: idx_users_nic; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_users_nic ON public.users USING btree (nic);
 
 
 --
--- TOC entry 3558 (class 2620 OID 25961)
--- Name: account update_account_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3570 (class 2620 OID 25961)
+-- Name: account update_account_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_account_updated_at BEFORE UPDATE ON public.account FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3555 (class 2620 OID 25958)
--- Name: branch update_branch_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3567 (class 2620 OID 25958)
+-- Name: branch update_branch_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_branch_updated_at BEFORE UPDATE ON public.branch FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3562 (class 2620 OID 25965)
--- Name: customer_login update_customer_login_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3574 (class 2620 OID 25965)
+-- Name: customer_login update_customer_login_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_customer_login_updated_at BEFORE UPDATE ON public.customer_login FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3561 (class 2620 OID 25964)
--- Name: customer update_customer_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3573 (class 2620 OID 25964)
+-- Name: customer update_customer_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_customer_updated_at BEFORE UPDATE ON public.customer FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3556 (class 2620 OID 25959)
--- Name: fd_plan update_fd_plan_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3568 (class 2620 OID 25959)
+-- Name: fd_plan update_fd_plan_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_fd_plan_updated_at BEFORE UPDATE ON public.fd_plan FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3559 (class 2620 OID 25962)
--- Name: fixed_deposit update_fixed_deposit_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3571 (class 2620 OID 25962)
+-- Name: fixed_deposit update_fixed_deposit_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_fixed_deposit_updated_at BEFORE UPDATE ON public.fixed_deposit FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3560 (class 2620 OID 25963)
--- Name: role update_role_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3572 (class 2620 OID 25963)
+-- Name: role update_role_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_role_updated_at BEFORE UPDATE ON public.role FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3557 (class 2620 OID 25960)
--- Name: savings_plan update_savings_plan_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3569 (class 2620 OID 25960)
+-- Name: savings_plan update_savings_plan_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_savings_plan_updated_at BEFORE UPDATE ON public.savings_plan FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3553 (class 2620 OID 25957)
--- Name: user_login update_user_login_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3565 (class 2620 OID 25957)
+-- Name: user_login update_user_login_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_user_login_updated_at BEFORE UPDATE ON public.user_login FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3563 (class 2620 OID 25980)
--- Name: user_refresh_tokens update_user_refresh_tokens_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3575 (class 2620 OID 25980)
+-- Name: user_refresh_tokens update_user_refresh_tokens_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_user_refresh_tokens_updated_at BEFORE UPDATE ON public.user_refresh_tokens FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3552 (class 2620 OID 25956)
--- Name: users update_users_updated_at; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3564 (class 2620 OID 25956)
+-- Name: users update_users_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
--- TOC entry 3554 (class 2620 OID 26834)
--- Name: user_login user_login_update_audit; Type: TRIGGER; Schema: public; Owner: postgres
+-- TOC entry 3566 (class 2620 OID 26834)
+-- Name: user_login user_login_update_audit; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER user_login_update_audit BEFORE UPDATE ON public.user_login FOR EACH ROW EXECUTE FUNCTION public.audit_user_login_update();
 
 
 --
--- TOC entry 3528 (class 2606 OID 25730)
--- Name: account account_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3540 (class 2606 OID 25730)
+-- Name: account account_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1613,8 +1984,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3529 (class 2606 OID 25740)
--- Name: account account_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3541 (class 2606 OID 25740)
+-- Name: account account_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1622,8 +1993,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3530 (class 2606 OID 25735)
--- Name: account account_savings_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3542 (class 2606 OID 25735)
+-- Name: account account_savings_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1631,8 +2002,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3531 (class 2606 OID 25745)
--- Name: account account_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3543 (class 2606 OID 25745)
+-- Name: account account_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
@@ -1640,8 +2011,8 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3547 (class 2606 OID 25901)
--- Name: accounts_owner accounts_owner_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3559 (class 2606 OID 25901)
+-- Name: accounts_owner accounts_owner_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.accounts_owner
@@ -1649,8 +2020,8 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3548 (class 2606 OID 25906)
--- Name: accounts_owner accounts_owner_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3560 (class 2606 OID 25906)
+-- Name: accounts_owner accounts_owner_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.accounts_owner
@@ -1658,8 +2029,8 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3549 (class 2606 OID 25928)
--- Name: audit_log audit_log_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3561 (class 2606 OID 25928)
+-- Name: audit_log audit_log_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.audit_log
@@ -1667,8 +2038,8 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 3522 (class 2606 OID 25673)
--- Name: branch branch_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3534 (class 2606 OID 25673)
+-- Name: branch branch_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.branch
@@ -1676,8 +2047,8 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3523 (class 2606 OID 25678)
--- Name: branch branch_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3535 (class 2606 OID 25678)
+-- Name: branch branch_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.branch
@@ -1685,8 +2056,8 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3540 (class 2606 OID 25841)
--- Name: customer customer_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3552 (class 2606 OID 25841)
+-- Name: customer customer_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer
@@ -1694,8 +2065,8 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3542 (class 2606 OID 25866)
--- Name: customer_login customer_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3554 (class 2606 OID 25866)
+-- Name: customer_login customer_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1703,8 +2074,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3543 (class 2606 OID 25876)
--- Name: customer_login customer_login_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3555 (class 2606 OID 25876)
+-- Name: customer_login customer_login_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1712,8 +2083,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3544 (class 2606 OID 25871)
--- Name: customer_login customer_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3556 (class 2606 OID 25871)
+-- Name: customer_login customer_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer_login
@@ -1721,8 +2092,8 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3541 (class 2606 OID 25846)
--- Name: customer customer_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3553 (class 2606 OID 25846)
+-- Name: customer customer_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.customer
@@ -1730,8 +2101,8 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3524 (class 2606 OID 25691)
--- Name: fd_plan fd_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3536 (class 2606 OID 25691)
+-- Name: fd_plan fd_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fd_plan
@@ -1739,8 +2110,8 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3525 (class 2606 OID 25696)
--- Name: fd_plan fd_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3537 (class 2606 OID 25696)
+-- Name: fd_plan fd_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fd_plan
@@ -1748,8 +2119,8 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3532 (class 2606 OID 25759)
--- Name: fixed_deposit fixed_deposit_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3544 (class 2606 OID 25759)
+-- Name: fixed_deposit fixed_deposit_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1757,8 +2128,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3533 (class 2606 OID 25769)
--- Name: fixed_deposit fixed_deposit_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3545 (class 2606 OID 25769)
+-- Name: fixed_deposit fixed_deposit_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1766,8 +2137,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3534 (class 2606 OID 25764)
--- Name: fixed_deposit fixed_deposit_fd_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3546 (class 2606 OID 25764)
+-- Name: fixed_deposit fixed_deposit_fd_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1775,8 +2146,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3535 (class 2606 OID 25774)
--- Name: fixed_deposit fixed_deposit_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3547 (class 2606 OID 25774)
+-- Name: fixed_deposit fixed_deposit_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.fixed_deposit
@@ -1784,8 +2155,8 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3521 (class 2606 OID 25660)
--- Name: login login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3533 (class 2606 OID 25660)
+-- Name: login login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.login
@@ -1793,8 +2164,8 @@ ALTER TABLE ONLY public.login
 
 
 --
--- TOC entry 3526 (class 2606 OID 25709)
--- Name: savings_plan savings_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3538 (class 2606 OID 25709)
+-- Name: savings_plan savings_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.savings_plan
@@ -1802,8 +2173,8 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3527 (class 2606 OID 25714)
--- Name: savings_plan savings_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3539 (class 2606 OID 25714)
+-- Name: savings_plan savings_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.savings_plan
@@ -1811,8 +2182,8 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3536 (class 2606 OID 25798)
--- Name: transactions transactions_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3548 (class 2606 OID 25798)
+-- Name: transactions transactions_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.transactions
@@ -1820,8 +2191,8 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3537 (class 2606 OID 25803)
--- Name: transactions transactions_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3549 (class 2606 OID 25803)
+-- Name: transactions transactions_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.transactions
@@ -1829,8 +2200,8 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3518 (class 2606 OID 25638)
--- Name: user_login user_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3530 (class 2606 OID 25638)
+-- Name: user_login user_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1838,8 +2209,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3519 (class 2606 OID 25643)
--- Name: user_login user_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3531 (class 2606 OID 25643)
+-- Name: user_login user_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1847,8 +2218,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3520 (class 2606 OID 25648)
--- Name: user_login user_login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3532 (class 2606 OID 25648)
+-- Name: user_login user_login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_login
@@ -1856,8 +2227,8 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3550 (class 2606 OID 25944)
--- Name: user_refresh_tokens user_refresh_tokens_revoked_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3562 (class 2606 OID 25944)
+-- Name: user_refresh_tokens user_refresh_tokens_revoked_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_refresh_tokens
@@ -1865,8 +2236,8 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3551 (class 2606 OID 25949)
--- Name: user_refresh_tokens user_refresh_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3563 (class 2606 OID 25949)
+-- Name: user_refresh_tokens user_refresh_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.user_refresh_tokens
@@ -1874,8 +2245,8 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3545 (class 2606 OID 25891)
--- Name: users_branch users_branch_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3557 (class 2606 OID 25891)
+-- Name: users_branch users_branch_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_branch
@@ -1883,8 +2254,8 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3546 (class 2606 OID 25886)
--- Name: users_branch users_branch_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3558 (class 2606 OID 25886)
+-- Name: users_branch users_branch_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_branch
@@ -1892,8 +2263,8 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3516 (class 2606 OID 25613)
--- Name: users users_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3528 (class 2606 OID 25613)
+-- Name: users users_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -1901,8 +2272,8 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3538 (class 2606 OID 25826)
--- Name: users_role users_role_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3550 (class 2606 OID 25826)
+-- Name: users_role users_role_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_role
@@ -1910,8 +2281,8 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3539 (class 2606 OID 25821)
--- Name: users_role users_role_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3551 (class 2606 OID 25821)
+-- Name: users_role users_role_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users_role
@@ -1919,15 +2290,15 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3517 (class 2606 OID 25618)
--- Name: users users_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3529 (class 2606 OID 25618)
+-- Name: users users_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(user_id);
 
 
--- Completed on 2025-10-03 17:39:31 +0530
+-- Completed on 2025-10-04 00:00:33 +0530
 
 --
 -- PostgreSQL database dump complete

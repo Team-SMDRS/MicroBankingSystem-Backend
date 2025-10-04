@@ -1,5 +1,3 @@
--- Name: account; Type: TABLE; Schema: public; Owner: postgres
---
 
 CREATE TABLE public.account (
     acc_id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -16,11 +14,9 @@ CREATE TABLE public.account (
 );
 
 
-ALTER TABLE public.account OWNER TO postgres;
-
 --
 -- TOC entry 232 (class 1259 OID 25896)
--- Name: accounts_owner; Type: TABLE; Schema: public; Owner: postgres
+-- Name: accounts_owner; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.accounts_owner (
@@ -29,11 +25,9 @@ CREATE TABLE public.accounts_owner (
 );
 
 
-ALTER TABLE public.accounts_owner OWNER TO postgres;
-
 --
 -- TOC entry 233 (class 1259 OID 25919)
--- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
+-- Name: audit_log; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.audit_log (
@@ -48,11 +42,9 @@ CREATE TABLE public.audit_log (
 );
 
 
-ALTER TABLE public.audit_log OWNER TO postgres;
-
 --
 -- TOC entry 221 (class 1259 OID 25665)
--- Name: branch; Type: TABLE; Schema: public; Owner: postgres
+-- Name: branch; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.branch (
@@ -66,11 +58,9 @@ CREATE TABLE public.branch (
 );
 
 
-ALTER TABLE public.branch OWNER TO postgres;
-
 --
 -- TOC entry 229 (class 1259 OID 25831)
--- Name: customer; Type: TABLE; Schema: public; Owner: postgres
+-- Name: customer; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.customer (
@@ -87,11 +77,9 @@ CREATE TABLE public.customer (
 );
 
 
-ALTER TABLE public.customer OWNER TO postgres;
-
 --
 -- TOC entry 230 (class 1259 OID 25851)
--- Name: customer_login; Type: TABLE; Schema: public; Owner: postgres
+-- Name: customer_login; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.customer_login (
@@ -107,11 +95,9 @@ CREATE TABLE public.customer_login (
 );
 
 
-ALTER TABLE public.customer_login OWNER TO postgres;
-
 --
 -- TOC entry 222 (class 1259 OID 25683)
--- Name: fd_plan; Type: TABLE; Schema: public; Owner: postgres
+-- Name: fd_plan; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.fd_plan (
@@ -126,11 +112,9 @@ CREATE TABLE public.fd_plan (
 );
 
 
-ALTER TABLE public.fd_plan OWNER TO postgres;
-
 --
 -- TOC entry 225 (class 1259 OID 25750)
--- Name: fixed_deposit; Type: TABLE; Schema: public; Owner: postgres
+-- Name: fixed_deposit; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.fixed_deposit (
@@ -144,16 +128,39 @@ CREATE TABLE public.fixed_deposit (
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     created_by uuid,
     updated_by uuid,
-    status public.fd_status DEFAULT 'active'::public.fd_status,
-    fd_account_no bigint DEFAULT (floor(((random() * (90000000)::double precision) + (10000000)::double precision)))::bigint
+    fd_account_no bigint DEFAULT (floor(((random() * (90000000)::double precision) + (10000000)::double precision)))::bigint,
+    status public.status_enum DEFAULT 'active'::public.status_enum NOT NULL
 );
 
 
-ALTER TABLE public.fixed_deposit OWNER TO postgres;
+--
+-- TOC entry 235 (class 1259 OID 26909)
+-- Name: fixed_deposit_details; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.fixed_deposit_details AS
+ SELECT fd.fd_id,
+    fd.fd_account_no,
+    fd.balance,
+    fd.acc_id,
+    fd.opened_date,
+    fd.maturity_date,
+    fd.fd_plan_id,
+    fd.created_at,
+    fd.updated_at,
+    a.account_no,
+    b.name AS branch_name,
+    fp.duration AS plan_duration,
+    fp.interest_rate AS plan_interest_rate
+   FROM (((public.fixed_deposit fd
+     LEFT JOIN public.account a ON ((fd.acc_id = a.acc_id)))
+     LEFT JOIN public.branch b ON ((a.branch_id = b.branch_id)))
+     LEFT JOIN public.fd_plan fp ON ((fd.fd_plan_id = fp.fd_plan_id)));
+
 
 --
 -- TOC entry 220 (class 1259 OID 25653)
--- Name: login; Type: TABLE; Schema: public; Owner: postgres
+-- Name: login; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.login (
@@ -163,11 +170,9 @@ CREATE TABLE public.login (
 );
 
 
-ALTER TABLE public.login OWNER TO postgres;
-
 --
 -- TOC entry 227 (class 1259 OID 25808)
--- Name: role; Type: TABLE; Schema: public; Owner: postgres
+-- Name: role; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.role (
@@ -176,11 +181,9 @@ CREATE TABLE public.role (
 );
 
 
-ALTER TABLE public.role OWNER TO postgres;
-
 --
 -- TOC entry 223 (class 1259 OID 25701)
--- Name: savings_plan; Type: TABLE; Schema: public; Owner: postgres
+-- Name: savings_plan; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.savings_plan (
@@ -194,11 +197,9 @@ CREATE TABLE public.savings_plan (
 );
 
 
-ALTER TABLE public.savings_plan OWNER TO postgres;
-
 --
 -- TOC entry 226 (class 1259 OID 25789)
--- Name: transactions; Type: TABLE; Schema: public; Owner: postgres
+-- Name: transactions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.transactions (
@@ -213,11 +214,9 @@ CREATE TABLE public.transactions (
 );
 
 
-ALTER TABLE public.transactions OWNER TO postgres;
-
 --
 -- TOC entry 219 (class 1259 OID 25623)
--- Name: user_login; Type: TABLE; Schema: public; Owner: postgres
+-- Name: user_login; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.user_login (
@@ -234,11 +233,9 @@ CREATE TABLE public.user_login (
 );
 
 
-ALTER TABLE public.user_login OWNER TO postgres;
-
 --
 -- TOC entry 234 (class 1259 OID 25933)
--- Name: user_refresh_tokens; Type: TABLE; Schema: public; Owner: postgres
+-- Name: user_refresh_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.user_refresh_tokens (
@@ -256,11 +253,9 @@ CREATE TABLE public.user_refresh_tokens (
 );
 
 
-ALTER TABLE public.user_refresh_tokens OWNER TO postgres;
-
 --
 -- TOC entry 218 (class 1259 OID 25603)
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -279,11 +274,9 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
-
 --
 -- TOC entry 231 (class 1259 OID 25881)
--- Name: users_branch; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users_branch; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users_branch (
@@ -292,17 +285,12 @@ CREATE TABLE public.users_branch (
 );
 
 
-ALTER TABLE public.users_branch OWNER TO postgres;
-
 --
 -- TOC entry 228 (class 1259 OID 25816)
--- Name: users_role; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users_role; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users_role (
     user_id uuid NOT NULL,
     role_id uuid NOT NULL
 );
-
-
-ALTER TABLE public.users_role OWNER TO postgres;
