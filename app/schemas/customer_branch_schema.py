@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from decimal import Decimal
 from app.repositories.user_repo import UserRepository
 
 
@@ -18,9 +19,6 @@ class CustomerCountByBranch(BaseModel):
     count: int
 
 
-# class CustomerCountByBranchID(BaseModel):
-#     branch_id: str
-#     count: int
 
 
 class CustomersByBranchID(BaseModel):
@@ -42,4 +40,5 @@ class AccountsCountByBranchID(BaseModel):
 
 class TotalBalanceByBranchID(BaseModel):
     branch_id: str
-    total_balance: Optional[float] = 0.0
+    total_balance: Optional[Decimal] = Decimal('0.00')
+
