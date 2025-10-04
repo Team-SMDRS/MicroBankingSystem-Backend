@@ -1,4 +1,4 @@
- # All business logics put here
+# All business logics put here
 
 from app.core.utils import (
     hash_password, 
@@ -48,24 +48,43 @@ class UserService:
         tokens = create_tokens(user_data)
         
         # Extract device and IP info from request
-        device_info = None
         ip_address = None
+        device_info = None
+        
         if request:
+            # Get proper IP address (handles proxies and load balancers)
+            def get_real_ip(request: Request) -> str:
+                # Check X-Forwarded-For header first (for proxies/load balancers)
+                x_forwarded_for = request.headers.get("x-forwarded-for")
+                if x_forwarded_for:
+                    return x_forwarded_for.split(",")[0].strip()
+                
+                # Check X-Real-IP header (nginx proxy)
+                x_real_ip = request.headers.get("x-real-ip")
+                if x_real_ip:
+                    return x_real_ip.strip()
+                
+                # Fallback to direct client IP
+                return request.client.host if request.client else "Unknown"
+            
+            ip_address = get_real_ip(request)
             device_info = request.headers.get("User-Agent", "Unknown")
-            ip_address = request.client.host if request.client else None
+            
+            # Print login information for debugging
+            
+        else:
+            print("⚠️ No request object received - IP and device info will be None")
         
         try:
             # Store refresh token in database
             token_id = self.repo.store_refresh_token(
                 user_id=row["user_id"],
                 token_hash=tokens["refresh_token_hash"],
-                expires_at=tokens["refresh_token_expires_at"],
-                device_info=device_info,
-                ip_address=ip_address
+                expires_at=tokens["refresh_token_expires_at"]
             )
             
             # Log login activity
-            self.repo.insert_login_time(row["user_id"])
+            self.repo.insert_login_time(row["user_id"], ip_address, device_info)
             permissions = self.repo.get_user_permissions(row["user_id"])
            
             return {
@@ -79,6 +98,7 @@ class UserService:
             }
             
         except Exception as e:
+            print(f"Login failed for user {row['username']}: {str(e)}")
             raise HTTPException(status_code=500, detail="Failed to create session")
 
     def refresh_access_token(self, refresh_token: str):

@@ -1,4 +1,4 @@
-   # /login, /register
+# /login, /register
 
 from fastapi import APIRouter, Depends, Request
 from app.schemas.user_schema import RegisterUser, LoginUser
@@ -31,13 +31,30 @@ def register(user: RegisterUser, request: Request, db=Depends(get_db)):
 
 
 @router.post("/login")
-def logins(user: LoginUser, db=Depends(get_db)):
+def logins(user: LoginUser, request: Request, db=Depends(get_db)):
     repo = UserRepository(db)
     service = UserService(repo)
 
+    # Get real client IP address (handles proxies and load balancers)
+    def get_real_ip(request: Request) -> str:
+        # Check X-Forwarded-For header first (for proxies/load balancers)
+        x_forwarded_for = request.headers.get("x-forwarded-for")
+        if x_forwarded_for:
+            return x_forwarded_for.split(",")[0].strip()
+        
+        # Check X-Real-IP header (nginx proxy)
+        x_real_ip = request.headers.get("x-real-ip")
+        if x_real_ip:
+            return x_real_ip.strip()
+        
+        # Fallback to direct client IP
+        return request.client.host
+
+    client_ip = get_real_ip(request)
+
     # login_user should return a dict like:
     # { "user_id": "...", "username": "...", "access_token": "...", "refresh_token": "...", "expires_in": datetime }
-    result = service.login_user(user)
+    result = service.login_user(user, request)  # ✅ Pass request here
 
     access_token = result["access_token"]
     refresh_token = result["refresh_token"]
@@ -50,7 +67,8 @@ def logins(user: LoginUser, db=Depends(get_db)):
 
     user_data = {
         "user_id": result["user_id"],
-        "username": result["username"]
+        "username": result["username"],
+        "login_ip": client_ip
     }
 
     # create JSON response with only access token and user info

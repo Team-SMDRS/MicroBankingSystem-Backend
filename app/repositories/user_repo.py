@@ -73,12 +73,12 @@ class UserRepository:
             (username,)
         )
         return self.cursor.fetchone()
-    
-    def insert_login_time(self, user_id):
+
+    def insert_login_time(self, user_id, ip_address, device_info):
         """Log user login activity"""
         self.cursor.execute(
-           "INSERT INTO login (user_id) VALUES (%s)",
-            (user_id,)
+           "INSERT INTO login (user_id, ip_address, device_info) VALUES (%s, %s, %s)",
+            (user_id, ip_address, device_info)
         )
         self.conn.commit()
 
