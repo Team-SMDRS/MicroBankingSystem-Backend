@@ -1,6 +1,8 @@
 from fastapi import FastAPI , Request
 
+
 from app.api import auth_routes, customer_branch_routes ,savings_plan_routes
+
 
 from app.middleware.auth_middleware import AuthMiddleware
 
