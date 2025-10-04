@@ -8,7 +8,8 @@ class TransactionType(str, Enum):
     DEPOSIT = "Deposit"
     WITHDRAWAL = "Withdrawal"
     INTEREST = "Interest"
-    BANK_TRANSFER = "banktransfer"
+    BANK_TRANSFER = "BankTransfer"
+
 
 # Base transaction models
 class TransactionBase(BaseModel):
@@ -71,6 +72,7 @@ class TransactionStatusResponse(BaseModel):
     transaction_id: Optional[str] = None
     reference_no: Optional[int] = None  # Auto-generated reference number
     timestamp: datetime = Field(default_factory=datetime.now)
+    additional_info: Optional[Dict[str, Any]] = Field(None, description="Additional transaction information")
 
 class AccountBalanceResponse(BaseModel):
     acc_id: str = Field(..., description="Account ID")

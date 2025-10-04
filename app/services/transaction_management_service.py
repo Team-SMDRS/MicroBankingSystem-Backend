@@ -1,6 +1,6 @@
 from app.repositories.transaction_management_repo import TransactionManagementRepository
 from app.schemas.transaction_management_schema import (
-    DepositRequest, WithdrawRequest, TransactionResponse, TransactionStatusResponse,
+    DepositRequest, WithdrawRequest, TransferRequest, TransactionResponse, TransactionStatusResponse,
     AccountTransactionHistory, DateRangeRequest, DateRangeTransactionResponse,
     BranchReportRequest, BranchTransactionSummary, TransactionSummaryRequest,
     AccountTransactionSummary, DailyTransactionSummary, MonthlyTransactionSummary,
@@ -57,6 +57,14 @@ class TransactionManagementService:
             if not acc_id:
                 raise HTTPException(status_code=404, detail=f"Account with number {request.account_no} not found")
 
+            # Check current account balance
+            current_balance = self.transaction_repo.get_account_balance(acc_id)
+            if current_balance < request.amount:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Insufficient balance. Current balance: Rs.{current_balance:.2f}, Withdrawal amount: Rs.{request.amount:.2f}"
+                )
+
             # Process withdrawal using repository (balance check, reference_no and transaction_id are handled by database)
             result = self.transaction_repo.process_withdrawal_transaction(
                 acc_id=acc_id,
@@ -68,7 +76,7 @@ class TransactionManagementService:
             if result.get('success', False):
                 return TransactionStatusResponse(
                     success=True,
-                    message=f"Withdrawal of ${request.amount:.2f} processed successfully",
+                    message=f"Withdrawal of Rs.{request.amount:.2f} processed successfully",
                     transaction_id=result.get('transaction_id'),
                     reference_no=result.get('reference_no')
                 )
@@ -82,6 +90,100 @@ class TransactionManagementService:
             raise
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Withdrawal processing failed: {str(e)}")
+
+    def process_transfer(self, request: TransferRequest, user_id: str) -> TransactionStatusResponse:
+        """
+        Process a money transfer between two accounts with comprehensive business logic
+        
+        Business Rules:
+        1. Validate both accounts exist
+        2. Check sufficient funds in source account
+        3. Prevent transfer to same account
+        4. Ensure minimum transfer amount
+        5. Handle account limits and restrictions
+        6. Log transaction for audit trail
+        """
+        try:
+            # Business Logic 1: Validate transfer amount
+            if request.amount <= 0:
+                raise HTTPException(status_code=400, detail="Transfer amount must be greater than 0")
+            
+            # Business Logic 2: Prevent same account transfer (additional validation)
+            if request.from_account_no == request.to_account_no:
+                raise HTTPException(status_code=400, detail="Cannot transfer money to the same account")
+            
+            # Business Logic 3: Get and validate source account
+            from_acc_id = self.transaction_repo.get_account_id_by_account_no(request.from_account_no)
+            if not from_acc_id:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"Source account {request.from_account_no} not found"
+                )
+            
+            # Business Logic 4: Get and validate destination account
+            to_acc_id = self.transaction_repo.get_account_id_by_account_no(request.to_account_no)
+            if not to_acc_id:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"Destination account {request.to_account_no} not found"
+                )
+            
+            # Business Logic 5: Check current balance for sufficient funds
+            current_balance = self.transaction_repo.get_account_balance(from_acc_id)
+            if current_balance < request.amount:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Insufficient balance. Current balance: Rs.{current_balance:.2f}, Transfer amount: Rs.{request.amount:.2f}"
+                )
+            
+            # Business Logic 6: Apply transfer limits (example business rule)
+            MAX_TRANSFER_AMOUNT = 1000000.00  # Rs. 10 Lakhs daily limit
+            if request.amount > MAX_TRANSFER_AMOUNT:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Transfer amount exceeds maximum limit of Rs.{MAX_TRANSFER_AMOUNT:.2f}"
+                )
+            
+            # Business Logic 7: Check daily transfer limit (optional enhancement)
+            # daily_transferred = self.transaction_repo.get_daily_transfer_amount(from_acc_id)
+            # if daily_transferred + request.amount > MAX_TRANSFER_AMOUNT:
+            #     raise HTTPException(
+            #         status_code=400,
+            #         detail=f"Daily transfer limit exceeded. Already transferred: Rs.{daily_transferred:.2f}"
+            #     )
+            
+            # Business Logic 8: Process the transfer using repository
+            result = self.transaction_repo.process_transfer_transaction(
+                from_acc_id=from_acc_id,
+                to_acc_id=to_acc_id,
+                amount=request.amount,
+                description=request.description or f"Transfer from {request.from_account_no} to {request.to_account_no}",
+                created_by=user_id
+            )
+            
+            # Business Logic 9: Handle transfer result
+            if result.get('success', False):
+                return TransactionStatusResponse(
+                    success=True,
+                    message=f"Transfer of Rs.{request.amount:.2f} from account {request.from_account_no} to {request.to_account_no} processed successfully",
+                    transaction_id=result.get('transaction_id'),
+                    reference_no=result.get('reference_no'),
+                    additional_info={
+                        "from_account_balance": result.get('from_balance'),
+                        "to_account_balance": result.get('to_balance'),
+                        "transfer_amount": request.amount,
+                        "from_account_no": request.from_account_no,
+                        "to_account_no": request.to_account_no
+                    }
+                )
+            else:
+                error_msg = result.get('error_message', 'Failed to process transfer')
+                raise HTTPException(status_code=400, detail=error_msg)
+                
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Transfer processing failed: {str(e)}")
 
     def get_account_transactions(self, acc_id: str, page: int = 1, per_page: int = 50) -> AccountTransactionHistory:
         """Get transaction history for a specific account"""
@@ -110,19 +212,19 @@ class TransactionManagementService:
 
             # Convert to response models
             transactions = [
-                TransactionResponse(
-                    transaction_id=tx['transaction_id'],
-                    amount=float(tx['amount']),
-                    acc_id=tx['acc_id'],
-                    type=tx['type'],
-                    description=tx['description'],
-                    reference_no=tx['reference_no'],
-                    created_at=tx['created_at'],
-                    created_by=tx['created_by'],
-                    balance_after=float(tx.get('balance_after', 0)) if tx.get('balance_after') else None
-                )
-                for tx in transactions_data
-            ]
+    TransactionResponse(
+        transaction_id=tx['transaction_id'],
+        amount=float(tx['amount']),
+        acc_id=tx['acc_id'],
+        type=tx['type'],  # no replace
+        description=tx['description'],
+        reference_no=tx['reference_no'],
+        created_at=tx['created_at'],
+        created_by=tx['created_by'],
+        balance_after=float(tx.get('balance_after', 0)) if tx.get('balance_after') else None
+    )
+    for tx in transactions_data
+]
 
             # Calculate total pages
             total_pages = math.ceil(total_count / per_page) if total_count > 0 else 1
@@ -240,12 +342,12 @@ class TransactionManagementService:
             )
 
             top_accounts_list = [
-                {
-                    'acc_id': acc['acc_id'],
-                    'acc_holder_name': acc['acc_holder_name'],
-                    'transaction_count': acc['transaction_count'],
-                    'total_volume': float(acc['total_volume'])
-                }
+                 {
+        'acc_id': acc['acc_id'],
+        'acc_holder_name': acc.get('full_name') or acc.get('account_holder_name'),
+        'transaction_count': acc['transaction_count'],
+        'total_volume': float(acc['total_volume'])
+    }
                 for acc in top_accounts
             ]
 
@@ -269,13 +371,10 @@ class TransactionManagementService:
             raise HTTPException(status_code=500, detail=f"Failed to get branch report: {str(e)}")
 
     def get_transaction_summary(self, request: TransactionSummaryRequest) -> AccountTransactionSummary:
-        """Get transaction summary for an account"""
         try:
-            # Validate account exists
             if not self.transaction_repo.account_exists(request.acc_id):
                 raise HTTPException(status_code=404, detail="Account not found")
 
-            # Get summary data from repository
             summary_data = self.transaction_repo.calculate_daily_monthly_transaction_totals(
                 acc_id=request.acc_id,
                 period=request.period,
@@ -283,40 +382,38 @@ class TransactionManagementService:
                 end_date=request.end_date
             )
 
-            # Convert to appropriate summary models
             summaries = []
             total_deposits = 0
             total_withdrawals = 0
             total_transactions = 0
 
             for data in summary_data:
+                net_change = float(data['total_deposits']) - float(data['total_withdrawals'])
                 if request.period == 'daily':
-                    summary = DailyTransactionSummary(
-                        date=data.get('summary_date', date.today()),
-                        total_deposits=float(data.get('total_deposits', 0)),
-                        total_withdrawals=float(data.get('total_withdrawals', 0)),
-                        transaction_count=data.get('transaction_count', 0),
-                        net_change=float(data.get('total_deposits', 0)) - float(data.get('total_withdrawals', 0))
-                    )
-                else:  # monthly
-                    summary = MonthlyTransactionSummary(
-                        year=data.get('year', date.today().year),
-                        month=data.get('month', date.today().month),
-                        total_deposits=float(data.get('total_deposits', 0)),
-                        total_withdrawals=float(data.get('total_withdrawals', 0)),
-                        total_transfers=float(data.get('total_transfers', 0)),
-                        transaction_count=data.get('transaction_count', 0),
-                        net_change=float(data.get('total_deposits', 0)) - float(data.get('total_withdrawals', 0)),
-                        opening_balance=float(data.get('opening_balance', 0)) if data.get('opening_balance') else None,
-                        closing_balance=float(data.get('closing_balance', 0)) if data.get('closing_balance') else None
-                    )
+                    summaries.append(DailyTransactionSummary(
+                        date=data['summary_date'],
+                        total_deposits=float(data['total_deposits']),
+                        total_withdrawals=float(data['total_withdrawals']),
+                        transaction_count=data['transaction_count'],
+                        net_change=net_change
+                    ))
+                else:
+                    summaries.append(MonthlyTransactionSummary(
+                        year=data['year'],
+                        month=data['month'],
+                        total_deposits=float(data['total_deposits']),
+                        total_withdrawals=float(data['total_withdrawals']),
+                        total_transfers=float(data['total_transfers']),
+                        transaction_count=data['transaction_count'],
+                        net_change=net_change,
+                        opening_balance=None,  # optional, calculate if needed
+                        closing_balance=None
+                    ))
 
-                summaries.append(summary)
-                total_deposits += float(data.get('total_deposits', 0))
-                total_withdrawals += float(data.get('total_withdrawals', 0))
-                total_transactions += data.get('transaction_count', 0)
+                total_deposits += float(data['total_deposits'])
+                total_withdrawals += float(data['total_withdrawals'])
+                total_transactions += data['transaction_count']
 
-            # Calculate overall summary
             total_summary = {
                 'total_deposits': total_deposits,
                 'total_withdrawals': total_withdrawals,

@@ -139,6 +139,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Function to get transaction history by account
+
 CREATE OR REPLACE FUNCTION get_transaction_history_by_account(
     p_acc_id UUID,
     p_limit INTEGER,
@@ -146,24 +147,33 @@ CREATE OR REPLACE FUNCTION get_transaction_history_by_account(
 )
 RETURNS TABLE(
     transaction_id UUID,
-    amount NUMERIC,
+    amount NUMERIC(12,2),
     acc_id UUID,
-    type VARCHAR,
+    type transaction_type,
     description TEXT,
-    reference_no VARCHAR,
+    reference_no BIGINT,
     created_at TIMESTAMP,
     created_by UUID
 ) AS
 $$
 BEGIN
     RETURN QUERY
-    SELECT t.transaction_id, t.amount, t.acc_id, t.type, t.description, t.reference_no, t.created_at, t.created_by
+    SELECT 
+        t.transaction_id, 
+        t.amount, 
+        t.acc_id, 
+        t.type, 
+        t.description, 
+        t.reference_no, 
+        t.created_at, 
+        t.created_by
     FROM transactions t
     WHERE t.acc_id = p_acc_id
     ORDER BY t.created_at DESC
     LIMIT p_limit OFFSET p_offset;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- Function to get transaction history by date range
 CREATE OR REPLACE FUNCTION get_transaction_history_by_date_range(

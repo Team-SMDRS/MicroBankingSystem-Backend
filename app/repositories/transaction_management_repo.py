@@ -13,7 +13,6 @@ class TransactionManagementRepository:
     def process_deposit_transaction(self, acc_id: str, amount: float, description: str, created_by: str) -> Dict[str, Any]:
         """Process deposit transaction using SQL function with auto-generated transaction_id and reference_no"""
         try:
-            # Call SQL function to process deposit (auto-generates transaction_id and reference_no)
             self.cursor.execute(
                 """
                 SELECT * FROM process_deposit_transaction(%s::UUID, %s::NUMERIC, %s::TEXT, %s::UUID)
@@ -22,19 +21,23 @@ class TransactionManagementRepository:
             )
             result = self.cursor.fetchone()
             self.conn.commit()
+
+            print("DEBUG RESULT:", result)  # 👈 Add this line to inspect DB response
             
             if result:
                 return {
                     'transaction_id': str(result.get('transaction_id')),
-                    'reference_no': int(result.get('reference_no')),
-                    'new_balance': float(result.get('new_balance')) if result.get('new_balance') is not None else 0.0,
+                    'reference_no': int(result.get('reference_no')) if result.get('reference_no') else None,
+                    'new_balance': float(result.get('new_balance') or 0.0),
                     'success': bool(result.get('success', False)),
-                    'error_message': result.get('error_message')
                 }
-            return {'transaction_id': None, 'reference_no': None, 'new_balance': 0, 'success': False, 'error_message': 'No result returned'}
+            return {'success': False, 'error_message': 'No result returned'}
+
         except Exception as e:
             self.conn.rollback()
+            print("DEPOSIT ERROR:", e)  # 👈 Log error
             raise e
+
 
     def process_withdrawal_transaction(self, acc_id: str, amount: float, description: str, created_by: str) -> Dict[str, Any]:
         """Process withdrawal transaction using SQL function with auto-generated transaction_id and reference_no"""
@@ -66,24 +69,22 @@ class TransactionManagementRepository:
         """Process money transfer transaction using SQL function with auto-generated transaction_id and reference_no"""
         try:
             # Call SQL function to process transfer (auto-generates transaction_id and reference_no)
-            self.cursor.execute(
-                """
-                SELECT * FROM process_transfer_transaction(%s::UUID, %s::UUID, %s::NUMERIC, %s::TEXT, %s::UUID)
-                """,
-                (from_acc_id, to_acc_id, amount, description or f"Transfer of ${amount}", created_by)
-            )
+            self.cursor.execute("""
+    SELECT * FROM process_transfer_transaction(%s::UUID, %s::UUID, %s::NUMERIC, %s::TEXT, %s::UUID)
+""", (from_acc_id, to_acc_id, amount, description, created_by))
             result = self.cursor.fetchone()
             self.conn.commit()
             
             if result:
                 return {
-                    'transaction_id': str(result.get('transaction_id')),
-                    'reference_no': int(result.get('reference_no')),
-                    'from_balance': float(result.get('from_balance')) if result.get('from_balance') is not None else 0.0,
-                    'to_balance': float(result.get('to_balance')) if result.get('to_balance') is not None else 0.0,
-                    'success': bool(result.get('success', False)),
-                    'error_message': result.get('error_message')
-                }
+    'transaction_id': str(result.get('transaction_id')) if result.get('transaction_id') else None,
+    'reference_no': int(result.get('reference_no')) if result.get('reference_no') is not None else 0,
+    'from_balance': float(result.get('from_balance')) if result.get('from_balance') is not None else 0.0,
+    'to_balance': float(result.get('to_balance')) if result.get('to_balance') is not None else 0.0,
+    'success': bool(result.get('success')) if result.get('success') is not None else False,
+    'error_message': result.get('error_message') or None
+}
+
             return {'transaction_id': None, 'reference_no': None, 'from_balance': 0, 'to_balance': 0, 'success': False, 'error_message': 'No result returned'}
         except Exception as e:
             self.conn.rollback()
@@ -153,7 +154,9 @@ class TransactionManagementRepository:
             raise e
 
     # Transaction summaries and analytics
-    def calculate_daily_monthly_transaction_totals(self, acc_id: str, period: str, start_date: date = None, end_date: date = None) -> List[Dict]:
+    def calculate_daily_monthly_transaction_totals(
+        self, acc_id: str, period: str, start_date: date = None, end_date: date = None
+    ) -> List[Dict]:
         """Calculate daily/monthly transaction totals using SQL function"""
         try:
             self.cursor.execute(
@@ -162,7 +165,19 @@ class TransactionManagementRepository:
                 """,
                 (acc_id, period, start_date, end_date)
             )
-            return self.cursor.fetchall()
+            rows = self.cursor.fetchall()
+            result = []
+            for r in rows:
+                result.append({
+                    'summary_date': r['summary_date'],
+                    'year': r['year'],
+                    'month': r['month'],
+                    'total_deposits': float(r['total_deposits']),
+                    'total_withdrawals': float(r['total_withdrawals']),
+                    'total_transfers': float(r['total_transfers']),
+                    'transaction_count': r['transaction_count']
+                })
+            return result
         except Exception as e:
             raise e
 
