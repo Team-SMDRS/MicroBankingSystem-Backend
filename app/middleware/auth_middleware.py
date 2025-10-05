@@ -8,6 +8,10 @@ from datetime import datetime
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # ADD THIS: Allow OPTIONS requests to pass through without auth
+        if request.method == "OPTIONS":
+            return await call_next(request)
+            
         public_paths = [
             "/api/auth/login", 
             # "/api/auth/register", 

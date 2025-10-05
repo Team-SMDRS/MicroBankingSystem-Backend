@@ -127,6 +127,7 @@ class AccountManagementRepository:
             b.name AS branch_name,
             b.branch_id,
             a.balance,
+            a.status,
             sp.plan_name AS account_type
             FROM account a
             JOIN accounts_owner ao ON a.acc_id = ao.acc_id

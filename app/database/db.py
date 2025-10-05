@@ -19,7 +19,7 @@ def get_db():
             port=os.getenv("DB_PORT", "5432"),
             cursor_factory=RealDictCursor
         )
-        print("Database connection established successfully.")
+      
         return conn
     except Exception as e:
         print(f"Failed to connect to the database: {e}")
