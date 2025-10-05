@@ -50,6 +50,8 @@ class TransactionManagementRepository:
             self.conn.commit()
             
             if result:
+                print("DEBUG result:", result)
+
                 return {
                     'transaction_id': str(result.get('transaction_id')),
                     'reference_no': int(result.get('reference_no')),

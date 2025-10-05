@@ -119,12 +119,15 @@ class AccountManagementRepository:
         self.cursor.execute(
             """
             SELECT 
-                STRING_AGG(c.full_name, ', ') AS customer_names,
-                a.acc_id AS account_id,
-                b.name AS branch_name,
-                b.branch_id,
-                a.balance,
-                sp.plan_name AS account_type
+            STRING_AGG(c.full_name, ' ') AS customer_names,
+            STRING_AGG(c.nic, ', ') AS customer_nics,
+            STRING_AGG(c.phone_number, ', ') AS customer_phone_numbers,
+            STRING_AGG(c.address, ', ') AS customer_addresses,
+            a.acc_id AS account_id,
+            b.name AS branch_name,
+            b.branch_id,
+            a.balance,
+            sp.plan_name AS account_type
             FROM account a
             JOIN accounts_owner ao ON a.acc_id = ao.acc_id
             JOIN customer c ON ao.customer_id = c.customer_id
