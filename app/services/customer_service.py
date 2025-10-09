@@ -78,3 +78,18 @@ class CustomerService:
             "created_at": user["created_at"].isoformat()
         }
 
+    def get_customer_by_nic(self, nic: str):
+        """
+        Return minimal customer info by NIC (customer_id, full_name, nic)
+        Raises 404 HTTPException if not found.
+        """
+        row = self.repo.get_customer_by_nic(nic)
+        from fastapi import HTTPException
+        if not row:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        return {
+            "customer_id": row["customer_id"],
+            "full_name": row["full_name"],
+            "nic": row["nic"]
+        }
+
