@@ -2,6 +2,7 @@
 
 from psycopg2.extras import RealDictCursor
 
+
 class FixedDepositRepository:
     def __init__(self, db_conn):
         self.conn = db_conn
@@ -11,7 +12,8 @@ class FixedDepositRepository:
         """
         Fetch all fixed deposit accounts with related information.
         """
-        self.cursor.execute("SELECT * FROM fixed_deposit_details ORDER BY opened_date DESC")
+        self.cursor.execute(
+            "SELECT * FROM fixed_deposit_details ORDER BY opened_date DESC")
         return self.cursor.fetchall()
 
     def create_fd_plan(self, duration_months, interest_rate, created_by_user_id=None):
@@ -19,9 +21,9 @@ class FixedDepositRepository:
         Create a new fixed deposit plan.
         """
         self.cursor.execute(
-        "SELECT * FROM create_fd_plan(%s, %s, %s::uuid)",
-        (duration_months, interest_rate, created_by_user_id)
-    )
+            "SELECT * FROM create_fd_plan(%s, %s, %s::uuid)",
+            (duration_months, interest_rate, created_by_user_id)
+        )
         result = self.cursor.fetchone()
         self.conn.commit()
         return result
@@ -71,16 +73,16 @@ class FixedDepositRepository:
             (fd_plan_id,)
         )
         plan = self.cursor.fetchone()
-        
+
         if not plan:
             raise ValueError("Invalid FD plan")
-        
+
         # Insert new fixed deposit with created_by and updated_by fields
         self.cursor.execute(
-        "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
-        (acc_id, amount, fd_plan_id, created_by_user_id)
-    )
-        
+            "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
+            (acc_id, amount, fd_plan_id, created_by_user_id)
+        )
+
         result = self.cursor.fetchone()
         self.conn.commit()
         return result
@@ -90,9 +92,9 @@ class FixedDepositRepository:
         Get fixed deposit with all related details.
         """
         self.cursor.execute(
-        "SELECT * FROM get_fixed_deposit_with_details(%s::uuid)",
-        (fd_id,)
-    )
+            "SELECT * FROM get_fixed_deposit_with_details(%s::uuid)",
+            (fd_id,)
+        )
         return self.cursor.fetchone()
 
     def get_fixed_deposit_by_fd_id(self, fd_id):
@@ -100,9 +102,9 @@ class FixedDepositRepository:
         Get fixed deposit by FD ID with all details.
         """
         self.cursor.execute(
-        "SELECT * FROM get_fixed_deposit_by_fd_id(%s::uuid)",
-        (fd_id,)
-    )
+            "SELECT * FROM get_fixed_deposit_by_fd_id(%s::uuid)",
+            (fd_id,)
+        )
         return self.cursor.fetchone()
 
     def get_fixed_deposits_by_savings_account(self, savings_account_no):
@@ -110,9 +112,9 @@ class FixedDepositRepository:
         Get all fixed deposits linked to a savings account.
         """
         self.cursor.execute(
-        "SELECT * FROM get_fixed_deposits_by_savings_account(%s)",
-        (savings_account_no,)
-    )
+            "SELECT * FROM get_fixed_deposits_by_savings_account(%s)",
+            (savings_account_no,)
+        )
         return self.cursor.fetchall()
 
     def get_fixed_deposits_by_customer_id(self, customer_id):
@@ -120,9 +122,9 @@ class FixedDepositRepository:
         Get all fixed deposits for a customer.
         """
         self.cursor.execute(
-        "SELECT * FROM get_fixed_deposits_by_customer_id(%s::uuid)",
-        (customer_id,)
-    )
+            "SELECT * FROM get_fixed_deposits_by_customer_id(%s::uuid)",
+            (customer_id,)
+        )
         return self.cursor.fetchall()
 
     def get_fixed_deposit_by_account_number(self, fd_account_no):
@@ -268,7 +270,7 @@ class FixedDepositRepository:
     def get_active_fd_plans(self):
         """
         Get all active FD plans only.
- 
+
         """
         self.cursor.execute(
             """SELECT * FROM fd_plan
@@ -362,3 +364,19 @@ class FixedDepositRepository:
             (fd_plan_id,)
         )
         return self.cursor.fetchall()
+
+    # close fixed deposit (mark as closed, balace set to zero and withdraw balance to linked savings account) before maturity or after maturity
+    def close_fixed_deposit(self, fd_id, closed_by_user_id=None):
+        """
+        Close fixed deposit account before or after maturity.
+        """
+        self.cursor.execute(
+            """UPDATE fixed_deposit 
+            SET balance = 0, status = 'closed', updated_by = %s, updated_at = CURRENT_TIMESTAMP
+            WHERE fd_id = %s AND status = 'active'
+            RETURNING fd_id, fd_account_no, balance, acc_id, opened_date, maturity_date, fd_plan_id, created_at, updated_at""",
+            (closed_by_user_id, fd_id)
+        )
+        result = self.cursor.fetchone()
+        self.conn.commit()
+        return result

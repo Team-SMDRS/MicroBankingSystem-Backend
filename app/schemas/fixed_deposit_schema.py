@@ -6,6 +6,7 @@ from typing import Optional
 from uuid import UUID
 from decimal import Decimal
 
+
 class FixedDepositResponse(BaseModel):
     fd_id: UUID
     fd_account_no: int
@@ -21,9 +22,9 @@ class FixedDepositResponse(BaseModel):
     plan_duration: int
     plan_interest_rate: Decimal
 
-
     class Config:
         from_attributes = True
+
 
 class FDPlanResponse(BaseModel):
     fd_plan_id: UUID
@@ -38,13 +39,13 @@ class FDPlanResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class CreateFDPlanResponse(BaseModel):
     message: str
     fd_plan: FDPlanResponse
 
     class Config:
         from_attributes = True
-
 
 
 class FixedDepositDBResponse(BaseModel):
@@ -61,7 +62,6 @@ class FixedDepositDBResponse(BaseModel):
     branch_name: str
     plan_duration: int
     plan_interest_rate: Decimal
-
 
 
 class FixedDepositPlanResponse(BaseModel):
