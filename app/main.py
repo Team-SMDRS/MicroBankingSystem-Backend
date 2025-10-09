@@ -44,6 +44,10 @@ app.include_router(fixed_deposit_routes.router, prefix="/api/fd" , tags=["Fixed 
 
 app.include_router(transaction_management_routes.router,prefix="/api/transactions",tags=["Transaction Management"])
 
+# Register joint account management routes
+from app.api import joint_account_management_routes
+app.include_router(joint_account_management_routes.router, prefix="/api/joint-account", tags=["Joint Account Management"])
+
 
 
 
