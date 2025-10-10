@@ -242,10 +242,10 @@ def get_fixed_deposits_by_plan_id(fd_plan_id: str, db=Depends(get_db)):
 
 
 # close fixed deposit (mark as closed, balace set to zero and withdraw balance to linked savings account) before maturity or after maturity
-@router.post("/fixed-deposits/{fd_account_no}/close")
-def close_fixed_deposit(fd_account_no: str, request: Request, db=Depends(get_db)):
+@router.post("/fixed-deposits/{fd_id}/close")
+def close_fixed_deposit(fd_id: str, request: Request, db=Depends(get_db)):
     """Close a fixed deposit account before or after maturity"""
     current_user = getattr(request.state, "user", None)
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
-    return service.close_fixed_deposit(fd_account_no, closed_by_user_id=current_user["user_id"])
+    return service.close_fixed_deposit(fd_id, closed_by_user_id=current_user["user_id"])

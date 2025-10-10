@@ -91,8 +91,28 @@ class FixedDepositRepository:
         """
         Get fixed deposit with all related details.
         """
+        # Return the detailed FD view but include the FD status from the base table
         self.cursor.execute(
-            "SELECT * FROM get_fixed_deposit_with_details(%s::uuid)",
+            """SELECT
+                fd.fd_id,
+                fd.fd_account_no,
+                fd.balance,
+                fd.acc_id,
+                fd.opened_date,
+                fd.maturity_date,
+                fd.fd_plan_id,
+                fd.created_at AS fd_created_at,
+                fd.updated_at AS fd_updated_at,
+                fd.status,
+                a.account_no,
+                b.name as branch_name,
+                fp.duration as plan_duration,
+                fp.interest_rate as plan_interest_rate
+            FROM fixed_deposit fd
+            LEFT JOIN account a ON fd.acc_id = a.acc_id
+            LEFT JOIN branch b ON a.branch_id = b.branch_id
+            LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+            WHERE fd.fd_id = %s""",
             (fd_id,)
         )
         return self.cursor.fetchone()
@@ -101,8 +121,28 @@ class FixedDepositRepository:
         """
         Get fixed deposit by FD ID with all details.
         """
+        # Similar to get_fixed_deposit_with_details but kept for API parity
         self.cursor.execute(
-            "SELECT * FROM get_fixed_deposit_by_fd_id(%s::uuid)",
+            """SELECT
+                fd.fd_id,
+                fd.fd_account_no,
+                fd.balance,
+                fd.acc_id,
+                fd.opened_date,
+                fd.maturity_date,
+                fd.fd_plan_id,
+                fd.created_at AS fd_created_at,
+                fd.updated_at AS fd_updated_at,
+                fd.status,
+                a.account_no,
+                b.name AS branch_name,
+                fp.duration AS plan_duration,
+                fp.interest_rate AS plan_interest_rate
+            FROM fixed_deposit fd
+            LEFT JOIN account a ON fd.acc_id = a.acc_id
+            LEFT JOIN branch b ON a.branch_id = b.branch_id
+            LEFT JOIN fd_plan fp ON fd.fd_plan_id = fp.fd_plan_id
+            WHERE fd.fd_id = %s""",
             (fd_id,)
         )
         return self.cursor.fetchone()

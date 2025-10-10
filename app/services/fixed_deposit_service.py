@@ -298,22 +298,37 @@ class FixedDepositService:
                 status_code=500, detail="Failed to retrieve fixed deposits for the given plan")
 
     # close fixed deposit (mark as closed, balace set to zero and withdraw balance to linked savings account)
-    def close_fixed_deposit(self, fd_account_no, closed_by_user_id=None):
-        """Close a fixed deposit account before or after maturity"""
+
+    def close_fixed_deposit(self, fd_id, closed_by_user_id=None):
+        """Close a fixed deposit account before or after maturity.
+
+        Uses the detailed FD view so we have the `status` field available. Accesses
+        fields safely to avoid KeyError when DB views/functions return different shapes.
+        """
         try:
-            # Validate FD account
-            fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
+            # Prefer the detailed FD view which contains status and related fields
+            fd = self.repo.get_fixed_deposit_with_details(fd_id)
+            if not fd:
+                # fallback to the simpler getter
+                fd = self.repo.get_fixed_deposit_by_fd_id(fd_id)
+
             if not fd:
                 raise HTTPException(
                     status_code=404, detail="Fixed deposit not found")
 
-            if fd['status'] == 'closed':
+            status = fd.get('status') if isinstance(fd, dict) else None
+            if status is None:
+                # If status isn't present, treat missing as an internal inconsistency
                 raise HTTPException(
-                    status_code=400, detail="Fixed deposit is already closed")
+                    status_code=500, detail="Fixed deposit record missing status")
 
-            # Perform the closure
-            closed_fd = self.repo.close_fixed_deposit(
-                fd_account_no, closed_by_user_id)
+            # Consider any non-active status as closed/inactive to match DB enum usage
+            if str(status).lower() != 'active':
+                raise HTTPException(
+                    status_code=400, detail="Fixed deposit is already closed or inactive")
+
+            # Proceed to close the FD using repo function (which performs atomic operations)
+            closed_fd = self.repo.close_fixed_deposit(fd_id, closed_by_user_id)
 
             if not closed_fd:
                 raise HTTPException(
