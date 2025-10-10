@@ -35,3 +35,14 @@ def update_savings_plan_interest_rate(savings_plan_id: str, new_interest_rate: f
     if not updated:
         return {"detail": "Savings plan not found or not updated."}
     return updated
+
+
+# Route to list all savings plans (id and name)
+@router.get("/savings_plans")
+def list_savings_plans(request: Request, db=Depends(get_db)):
+    repo = SavingsPlanRepository(db)
+    service = SavingsPlanService(repo)
+    # No auth required for listing, but you can enforce if needed
+    plans = service.get_all_savings_plans()
+    # Return as a list of dicts
+    return {"savings_plans": plans}
