@@ -119,7 +119,7 @@ class AccountManagementRepository:
         self.cursor.execute(
             """
             SELECT 
-            STRING_AGG(c.full_name, ' ') AS customer_names,
+            STRING_AGG(c.full_name, ', ') AS customer_names,
             STRING_AGG(c.nic, ', ') AS customer_nics,
             STRING_AGG(c.phone_number, ', ') AS customer_phone_numbers,
             STRING_AGG(c.address, ', ') AS customer_addresses,
@@ -191,11 +191,26 @@ class AccountManagementRepository:
         Get all accounts for a given NIC number.
         Returns: List of account records.
         """
+        # Select account fields except branch_id and savings_plan_id, and include human-readable names
         self.cursor.execute(
             '''
-            SELECT a.* FROM account a
+            SELECT
+                a.acc_id,
+                a.account_no,
+                a.balance,
+                a.opened_date,
+                a.created_at,
+                a.updated_at,
+                a.created_by,
+                a.updated_by,
+                a.status,
+                b.name AS branch_name,
+                sp.plan_name AS savings_plan_name
+            FROM account a
             JOIN accounts_owner ao ON a.acc_id = ao.acc_id
             JOIN customer c ON ao.customer_id = c.customer_id
+            LEFT JOIN branch b ON a.branch_id = b.branch_id
+            LEFT JOIN savings_plan sp ON a.savings_plan_id = sp.savings_plan_id
             WHERE c.nic = %s
             ORDER BY a.created_at DESC
             ''',
