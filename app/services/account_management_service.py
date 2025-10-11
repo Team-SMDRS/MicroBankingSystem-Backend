@@ -3,7 +3,7 @@ import random
 import string
 from fastapi import HTTPException
 from app.schemas.account_management_schema import CustomerAccountInput, CustomerCreate, CustomerLoginCreate, AccountCreate, RegisterCustomerWithAccount
-
+from app.core.utils import hash_password
 
 class AccountManagementService:
     
@@ -84,7 +84,7 @@ class AccountManagementService:
             # Auto-generate username and password
             username = self._generate_username(full_name)
             password = self._generate_password()
-            
+            hashed_password = hash_password(password)
             # Ensure username uniqueness by adding retry logic
             original_username = username
             retry_count = 0
@@ -104,7 +104,7 @@ class AccountManagementService:
                     # Create login object
                     login = CustomerLoginCreate(
                         username=username,
-                        password=password  # In production, hash this!
+                        password=hashed_password  # In production, hash this!
                     )
                     
                     # Create account object

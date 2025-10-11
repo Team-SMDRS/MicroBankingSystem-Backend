@@ -119,7 +119,7 @@ class AccountManagementRepository:
         self.cursor.execute(
             """
             SELECT 
-            STRING_AGG(c.full_name, ' ') AS customer_names,
+            STRING_AGG(c.full_name, ', ') AS customer_names,
             STRING_AGG(c.nic, ', ') AS customer_nics,
             STRING_AGG(c.phone_number, ', ') AS customer_phone_numbers,
             STRING_AGG(c.address, ', ') AS customer_addresses,
