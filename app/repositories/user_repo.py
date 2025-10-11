@@ -259,3 +259,18 @@ class UserRepository:
             SELECT 1 FROM users WHERE user_id = %s
         """, (user_id,))
         return self.cursor.fetchone() is not None
+
+
+    def update_user_password (self, user_id,new_hash_password):
+        """Update user's password"""
+        self.cursor.execute(
+            """
+            UPDATE user_login 
+            SET password = %s
+            WHERE user_id = %s
+            """,
+            (new_hash_password, user_id)
+        )
+        self.conn.commit()
+        return self.cursor.rowcount > 0
+        

@@ -283,3 +283,26 @@ class UserService:
                 })
         
         return list(users_dict.values())
+
+    def update_user_password(self, request: Request, old_password: str, new_password: str):
+        """Update user password after verifying the old password"""
+        from fastapi import HTTPException
+        current_user = getattr(request.state, "user", None)
+        # Fetch user login info
+        user_id = current_user["user_id"]
+        username = current_user["sub"]
+
+        row = self.repo.get_login_by_username(username)
+        if not row or not verify_password(old_password, row["password"]):
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+     
+
+        # Hash new password
+        new_hashed = hash_password(new_password)
+        
+        # Update password in database
+        success = self.repo.update_user_password(current_user["user_id"], new_hashed)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update password")
+        
+        return {"msg": "Password updated successfully"}

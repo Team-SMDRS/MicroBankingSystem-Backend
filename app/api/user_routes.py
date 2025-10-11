@@ -1,7 +1,7 @@
 # /login, /register
 
 from fastapi import APIRouter, Depends, Request, HTTPException
-from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles , UpdatePasswordRequest
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -97,11 +97,7 @@ def logins(user: LoginUser, request: Request, db=Depends(get_db)):
 
 @router.get("/protected")
 def protected(request: Request):
-    return {"user": request.state.user}
-
-
-
-
+    return {"user": request.state.user, "message": "This is a protected route"}
 
 @router.get("/roles/{user_id}")
 def get_user_roles(user_id: str, db=Depends(get_db)):
@@ -160,4 +156,16 @@ def manage_user_roles(role_data: ManageUserRoles, request: Request, db=Depends(g
 
   
 
-   
+@router.post("/update_password")
+def update_password(password_data: UpdatePasswordRequest, request: Request, db=Depends(get_db)):
+    """Update user password"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.update_user_password(request, password_data.old_password, password_data.new_password)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
