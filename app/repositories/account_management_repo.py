@@ -185,6 +185,79 @@ class AccountManagementRepository:
             , (account_no,)
         )
         return self.cursor.fetchall()
+
+    def close_account_by_account_no(self, account_no, closed_by_user_id=None):
+        """
+        Mark an account status as 'closed' by its account_no.
+        Optionally set updated_by to the user who closed the account.
+        Before closing, returns the previous balance and the updated account row (dict) if successful,
+        or None if account not found.
+        """
+        try:
+            # Lock the account row to avoid race conditions and read the current balance
+            self.cursor.execute(
+                '''
+                SELECT acc_id, balance, status FROM account
+                WHERE account_no = %s
+                FOR UPDATE
+                ''',
+                (account_no,)
+            )
+            current = self.cursor.fetchone()
+            if not current:
+                self.conn.rollback()
+                return None
+
+            previous_balance = current.get('balance', 0)
+
+            # Perform update: set balance to 0 and mark status closed
+            if closed_by_user_id:
+                self.cursor.execute(
+                    '''
+                    UPDATE account
+                    SET balance = 0, status = 'closed', updated_by = %s, updated_at = CURRENT_TIMESTAMP
+                    WHERE account_no = %s
+                    RETURNING *
+                    ''',
+                    (closed_by_user_id, account_no)
+                )
+            else:
+                self.cursor.execute(
+                    '''
+                    UPDATE account
+                    SET balance = 0, status = 'closed', updated_at = CURRENT_TIMESTAMP
+                    WHERE account_no = %s
+                    RETURNING *
+                    ''',
+                    (account_no,)
+                )
+
+            updated = self.cursor.fetchone()
+            if not updated:
+                self.conn.rollback()
+                return None
+
+            # Now fetch the selected fields including savings plan name
+            self.cursor.execute(
+                '''
+                SELECT a.account_no, sp.plan_name AS savings_plan_name, a.updated_at, a.status
+                FROM account a
+                LEFT JOIN savings_plan sp ON a.savings_plan_id = sp.savings_plan_id
+                WHERE a.account_no = %s
+                ''',
+                (account_no,)
+            )
+            selected = self.cursor.fetchone()
+            if selected:
+                self.conn.commit()
+                return {"previous_balance": previous_balance, **selected}
+            else:
+                self.conn.commit()
+                # If for any reason selected row is missing, return previous balance and updated row
+                return {"previous_balance": previous_balance, "account": updated}
+        except Exception:
+            self.conn.rollback()
+            raise
     
     def get_accounts_by_nic(self, nic):
         """

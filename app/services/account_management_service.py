@@ -388,6 +388,37 @@ class AccountManagementService:
         """
         count = self.repo.get_total_account_count()
         return {"account_count": count}
+
+
+    def close_account_by_account_no(self, account_no, closed_by_user_id=None):
+        """
+        Close (soft-delete) an account by setting its status to 'closed'.
+        Returns the previous balance and the updated account record.
+        """
+        try:
+            result = self.repo.close_account_by_account_no(account_no, closed_by_user_id)
+            if not result:
+                raise HTTPException(status_code=404, detail="Account not found")
+
+            # Expecting result to be dict { previous_balance: <val>, account_no, savings_plan_name, updated_at, status }
+            previous_balance = result.get('previous_balance') if isinstance(result, dict) else None
+            account_no = result.get('account_no') if isinstance(result, dict) else None
+            savings_plan_name = result.get('savings_plan_name') if isinstance(result, dict) else None
+            updated_at = result.get('updated_at') if isinstance(result, dict) else None
+            status = result.get('status') if isinstance(result, dict) else None
+
+            return {
+                "msg": "Account closed successfully",
+                "previous_balance": previous_balance,
+                "account_no": account_no,
+                "savings_plan_name": savings_plan_name,
+                "updated_at": updated_at,
+                "status": status
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Failed to close account")
     
     
 

@@ -62,3 +62,8 @@ class ExistingCustomerAccountInput(BaseModel):
 class SavingsPlanCreate(BaseModel):
     plan_name: str
     interest_rate: float
+
+
+# Input schema for closing an account by account number
+class CloseAccountInput(BaseModel):
+    account_no: int
