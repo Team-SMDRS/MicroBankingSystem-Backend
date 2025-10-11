@@ -49,7 +49,12 @@ class AccountManagementService:
             status=input_data.status if hasattr(input_data, 'status') else 'active'
         )
         # Call the existing repo logic
-        customer_id , account_no = self.repo.create_customer_with_login(customer.dict(), login.dict(), created_by_user_id, account.dict())
+        try:
+            customer_id, account_no = self.repo.create_customer_with_login(
+            customer.dict(), login.dict(), created_by_user_id, account.dict()
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error creating customer/account , May be NIC or Username already exists.")
         # acc_id = self.repo.create_account_for_customer(account.dict(), customer_id, created_by_user_id)
         return {
             "msg": "Customer registered and account created",
