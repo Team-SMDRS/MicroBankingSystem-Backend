@@ -31,3 +31,12 @@ class SavingsPlanService:
         if result is None:
             return {"error": "Failed to update savings plan."}
         return {"success": True}
+
+    def get_all_savings_plans(self):
+        """
+        Retrieve all savings plans (id and name).
+        Returns list of dicts: {'savings_plan_id': ..., 'plan_name': ...}
+        """
+        plans = self.repo.get_all_savings_plans()
+        # repo uses RealDictCursor so rows are already dict-like
+        return plans

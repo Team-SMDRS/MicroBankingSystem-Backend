@@ -53,19 +53,24 @@ Response body
 
 # Get account details by account number
 curl -X 'GET' \
-  'http://127.0.0.1:8000/api/account-management/account/details/1111111111' \
+  'http://127.0.0.1:8000/api/account-management/account/details/123456789' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NTg4MTIzODZ9.bpHFbCg-8qvUMnbf7RM12cXxPSCBBsnyKvAZR4RV2do'
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMiIsInVzZXJfaWQiOiI2Yjk5NzIxNy05Y2U1LTRkZGEtYTlhZS04N2JmNTg5YjkyYTUiLCJleHAiOjE3NjAxNDQ1Nzh9.Z2sugWsyd-Wtex5pOjmUJedxiY8Obe8TUMLftc5rey8'
 
+	
 Response body
 Download
 {
-  "customer_name": "customer 4",
-  "account_id": "3337ad45-7e90-4c8f-9057-e38f3c43f196",
-  "branch_name": "Colombo",
-  "branch_id": "3dd6870c-e6f2-414d-9973-309ba00ce115",
-  "balance": 3000,
-  "account_type": "Adult"
+  "customer_names": "customer 1 customer 2",
+  "customer_nics": "200454546545, 200725457898",
+  "customer_phone_numbers": "0724548799, 0756548799",
+  "customer_addresses": "jafna, jafna",
+  "account_id": "fb7b432f-634b-4b7c-9ee5-f4ba4a38f531",
+  "branch_name": "Jafna",
+  "branch_id": "57438d7f-184f-42fe-b0d6-91a2ef609beb",
+  "balance": 2000.23,
+  "status": "active",
+  "account_type": "Joint"
 }
 
 

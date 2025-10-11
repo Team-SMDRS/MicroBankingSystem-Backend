@@ -8,6 +8,17 @@ class CustomerRepository:
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
 
+    def get_customer_by_nic(self, nic: str):
+        """
+        Fetch basic customer info by NIC.
+        Returns: dict or None
+        """
+        self.cursor.execute(
+            "SELECT customer_id, full_name, nic FROM customer WHERE nic = %s",
+            (nic,)
+        )
+        return self.cursor.fetchone()
+
 
 
 

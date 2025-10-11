@@ -58,3 +58,18 @@ class SavingsPlanRepository:
         row = self.cursor.fetchone()
         self.conn.commit()
         return row
+    
+    def get_all_savings_plans(self):
+        """
+        Return all savings plans with their ids and names.
+        Returns: list of dicts with keys 'savings_plan_id' and 'plan_name'
+        """
+        self.cursor.execute(
+            """
+            SELECT savings_plan_id, plan_name
+            FROM savings_plan
+            ORDER BY plan_name
+            """
+        )
+        rows = self.cursor.fetchall()
+        return rows
