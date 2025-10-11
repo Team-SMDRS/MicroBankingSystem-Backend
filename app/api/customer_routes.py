@@ -32,3 +32,10 @@ async def my_profile(request: Request):
         "message": "My Profile",
         "customer": getattr(request.state, "customer", {})
     }
+
+
+@router.get("/by-nic/{nic}")
+def get_customer_by_nic(nic: str, db=Depends(get_db)):
+    repo = CustomerRepository(db)
+    service = CustomerService(repo)
+    return service.get_customer_by_nic(nic)

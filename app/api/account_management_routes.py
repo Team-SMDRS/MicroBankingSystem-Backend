@@ -6,6 +6,7 @@
 from fastapi import APIRouter, Depends, Request
 from app.middleware.require_permission import require_permission
 from app.schemas.account_management_schema import CustomerAccountInput, ExistingCustomerAccountInput, UpdateAccountInput, UpdateCustomerInput
+from app.schemas.account_management_schema import CloseAccountInput
 from app.database.db import get_db
 from app.repositories.account_management_repo import AccountManagementRepository
 from app.repositories.user_repo import UserRepository
@@ -93,6 +94,16 @@ def get_accounts_by_nic(nic: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_accounts_by_nic(nic)
     return accounts
+
+
+# Route to close an account (soft delete) by account number
+@router.post("/account/close")
+def close_account(input_data: CloseAccountInput, request: Request, db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    service = AccountManagementService(repo)
+    current_user = getattr(request.state, "user", None)
+    closed_by_user_id = current_user["user_id"] if current_user else None
+    return service.close_account_by_account_no(input_data.account_no, closed_by_user_id)
 
 
 # Route to update customer details
