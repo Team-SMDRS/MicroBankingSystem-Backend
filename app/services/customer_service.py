@@ -39,10 +39,8 @@ class CustomerService:
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Internal server error")
-            
-     
-   
+            raise HTTPException(status_code=500, detail="Internal server error: " + str(e))
+
 
     def logout_user(self, refresh_token: str, user_id: str):
         """Logout user by revoking refresh token"""
