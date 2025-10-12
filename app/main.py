@@ -25,7 +25,7 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # must match frontend
+    allow_origins=["http://localhost:5173","https://btrust.dpdns.org"],  # must match frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

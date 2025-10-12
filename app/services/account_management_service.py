@@ -368,6 +368,12 @@ class AccountManagementService:
         Get customer name, account id, branch name, branch id, and balance using account_no.
         Returns: dict or None if not found.
         """
+        # Validate account_no: must be non-empty and numeric (or adapt to your format)
+        if not account_no or not str(account_no).strip():
+            raise HTTPException(status_code=400, detail="Account number is required")
+        if not str(account_no).isdigit():
+            raise HTTPException(status_code=400, detail="Account number must be numeric")
+
         details = self.repo.get_account_details_by_account_no(account_no)
         if not details:
             raise HTTPException(status_code=404, detail="Account not found")
