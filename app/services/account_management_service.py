@@ -6,6 +6,8 @@ from app.schemas.account_management_schema import CustomerAccountInput, Customer
 from app.core.utils import hash_password
 
 class AccountManagementService:
+
+    
     
     
     
@@ -394,6 +396,19 @@ class AccountManagementService:
         """
         count = self.repo.get_total_account_count()
         return {"account_count": count}
+    
+    def get_customer_by_id(self, customer_id):
+        """
+        Get current values of allowed fields for a customer by ID.
+        Returns: dict or None if not found.
+        """
+        if not customer_id or not str(customer_id).strip():
+            raise HTTPException(status_code=400, detail="Customer ID is required")
+        result = self.repo.get_customer_by_id(customer_id)
+        if not result:
+            return None
+        # Optionally, validate/format result here
+        return result
 
 
     def close_account_by_account_no(self, account_no, closed_by_user_id=None):
