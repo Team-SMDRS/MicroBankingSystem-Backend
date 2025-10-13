@@ -21,6 +21,15 @@ class AccountManagementRepository:
         row = self.cursor.fetchone()
         return row['savings_plan_id'] if row else None
     
+    def get_customer_by_id(self, customer_id):
+        """
+        Fetch current values of allowed fields for a customer.
+        """
+        sql = "SELECT full_name, address, phone_number, nic FROM customer WHERE customer_id = %s"
+        self.cursor.execute(sql, (customer_id,))
+        return self.cursor.fetchone()
+    
+    
     def create_account_for_existing_customer_by_nic(self, account_data, nic, created_by_user_id):
         """
         Create a new account for an existing customer using NIC via PostgreSQL function.

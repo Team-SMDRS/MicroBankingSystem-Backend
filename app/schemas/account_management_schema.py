@@ -1,7 +1,13 @@
-
-
 from pydantic import BaseModel
 from typing import Optional
+
+class CustomerDetails(BaseModel):
+    full_name: Optional[str]
+    address: Optional[str]
+    phone_number: Optional[str]
+    nic: Optional[str]
+
+
 
 
 
