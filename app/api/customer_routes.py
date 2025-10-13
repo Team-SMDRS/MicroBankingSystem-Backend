@@ -39,3 +39,10 @@ def get_customer_by_nic(nic: str, db=Depends(get_db)):
     repo = CustomerRepository(db)
     service = CustomerService(repo)
     return service.get_customer_by_nic(nic)
+
+
+@router.get("/details/by-nic/{nic}")
+def get_customer_details_by_nic(nic: str, db=Depends(get_db)):
+    repo = CustomerRepository(db)
+    service = CustomerService(repo)
+    return service.get_customer_details_by_nic(nic)
