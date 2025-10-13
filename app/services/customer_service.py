@@ -9,6 +9,7 @@ from app.core.utils import (
 )
 from fastapi import HTTPException, Request
 class CustomerService:
+    
     def __init__(self, repo):
         self.repo = repo
 
@@ -89,5 +90,24 @@ class CustomerService:
             "customer_id": row["customer_id"],
             "full_name": row["full_name"],
             "nic": row["nic"]
+        }
+    
+    def get_customer_details_by_nic(self, nic: str):
+        """
+        Return customer details by NIC (customer_id, full_name, nic, address, phone_number, dob, created_by_user_name)
+        Raises 404 HTTPException if not found.
+        """
+        row = self.repo.get_customer_details_by_nic(nic)
+        from fastapi import HTTPException
+        if not row:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        return {
+            "customer_id": row["customer_id"],
+            "full_name": row["full_name"],
+            "nic": row["nic"],
+            "address": row["address"],
+            "phone_number": row["phone_number"],
+            "dob": row["dob"].isoformat() if row["dob"] else None,
+            "created_by_user_name": row["created_by_user_name"]
         }
 
