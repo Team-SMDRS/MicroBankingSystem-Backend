@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict BGnYtm4MmqZJ6BKRV8HObVptviqNIAiF3PuvWJJt83vhczMJoUBPfG5M6cVleKQ
-
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
 
@@ -99,7 +97,8 @@ CREATE TYPE public.transaction_type AS ENUM (
     'Deposit',
     'Withdrawal',
     'Interest',
-    'BankTransfer'
+    'BankTransfer-In',
+    'BankTransfer-Out'
 );
 
 
@@ -161,7 +160,8 @@ BEGIN
             NULL::INTEGER as month,
             COALESCE(SUM(CASE WHEN t.type = 'Deposit' THEN t.amount ELSE 0 END), 0) as total_deposits,
             COALESCE(SUM(CASE WHEN t.type = 'Withdrawal' THEN t.amount ELSE 0 END), 0) as total_withdrawals,
-            COALESCE(SUM(CASE WHEN t.type = 'BankTransfer' THEN t.amount ELSE 0 END), 0) as total_transfers,
+            COALESCE(SUM(CASE WHEN t.type = 'BankTransfer-In' THEN t.amount ELSE 0 END), 0) as total_transfers,
+            COALESCE(SUM(CASE WHEN t.type = 'BankTransfer-Out' THEN t.amount ELSE 0 END), 0) as total_transfers_out
             COUNT(t.transaction_id) as transaction_count
         FROM transactions t
         WHERE t.acc_id = p_acc_id
@@ -676,7 +676,8 @@ BEGIN
         b.name as branch_name,
         COALESCE(SUM(CASE WHEN t.type = 'Deposit' THEN t.amount ELSE 0 END), 0) as total_deposits,
         COALESCE(SUM(CASE WHEN t.type = 'Withdrawal' THEN t.amount ELSE 0 END), 0) as total_withdrawals,
-        COALESCE(SUM(CASE WHEN t.type = 'BankTransfer' THEN t.amount ELSE 0 END), 0) as total_transfers,
+        COALESCE(SUM(CASE WHEN t.type = 'BankTransfer-In' THEN t.amount ELSE 0 END), 0) as total_transfers_in,
+        COALESCE(SUM(CASE WHEN t.type = 'BankTransfer-Out' THEN t.amount ELSE 0 END), 0) as total_transfers_out,
         COUNT(t.transaction_id) as transaction_count
     FROM branch b
     LEFT JOIN account a ON b.branch_id = a.branch_id
@@ -1043,7 +1044,7 @@ BEGIN
     VALUES (
         p_amount,
         p_from_acc_id,
-        'BankTransfer',
+        'BankTransfer-Out',
         COALESCE(p_description, FORMAT('Transfer to account %s', p_to_acc_id)),
         p_created_by
     )
@@ -1054,7 +1055,7 @@ BEGIN
     VALUES (
         p_amount,
         p_to_acc_id,
-        'BankTransfer',
+        'BankTransfer-In',
         COALESCE(p_description, FORMAT('Transfer from account %s', p_from_acc_id)),
         p_created_by
     )
@@ -1824,18 +1825,18 @@ INSERT INTO public.transactions VALUES ('9dae883f-55b7-4643-9fee-98285bc587bc', 
 INSERT INTO public.transactions VALUES ('16f7f5e3-fd6b-4ad4-8342-4fb3003392ad', 100.50, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:32:07.268343', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 986191972686343);
 INSERT INTO public.transactions VALUES ('a29be355-36e6-44aa-90ce-8663d5accb40', 100000.50, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:32:21.669552', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 500650514889355);
 INSERT INTO public.transactions VALUES ('bf3dea4a-0736-4b29-bf70-e8590cde0807', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:35:24.987748', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 754060340288079);
-INSERT INTO public.transactions VALUES ('42968485-7c4e-44e9-90eb-2e2524e4049d', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 795322413062976);
-INSERT INTO public.transactions VALUES ('cb2605f7-a0b2-4c1f-88ce-bc8e7a88aaa2', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 921110500106017);
-INSERT INTO public.transactions VALUES ('93c6e675-d1fd-4747-bb6d-7e74cc4f8a39', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 27073176646106);
-INSERT INTO public.transactions VALUES ('3f94eb1e-b5a7-42a6-bbee-4d237ea920df', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 127707374048069);
+INSERT INTO public.transactions VALUES ('42968485-7c4e-44e9-90eb-2e2524e4049d', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 795322413062976);
+INSERT INTO public.transactions VALUES ('cb2605f7-a0b2-4c1f-88ce-bc8e7a88aaa2', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 921110500106017);
+INSERT INTO public.transactions VALUES ('93c6e675-d1fd-4747-bb6d-7e74cc4f8a39', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 27073176646106);
+INSERT INTO public.transactions VALUES ('3f94eb1e-b5a7-42a6-bbee-4d237ea920df', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 127707374048069);
 INSERT INTO public.transactions VALUES ('1f4222fc-14b9-4ec0-8584-f083b8a61010', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 12:13:25.511162', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 963021931708024);
 INSERT INTO public.transactions VALUES ('adfc693d-7e8e-4fde-ba07-5cdef65c3606', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 12:13:30.364103', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 913566220312107);
-INSERT INTO public.transactions VALUES ('926db7e9-ba61-4357-a743-2393b4c363b0', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 717924963395123);
-INSERT INTO public.transactions VALUES ('388e791c-1be8-445a-b367-8b514b012ee3', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 637806377612270);
+INSERT INTO public.transactions VALUES ('926db7e9-ba61-4357-a743-2393b4c363b0', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 717924963395123);
+INSERT INTO public.transactions VALUES ('388e791c-1be8-445a-b367-8b514b012ee3', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 637806377612270);
 INSERT INTO public.transactions VALUES ('9045c9d6-632b-410e-80d1-e2440b702617', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 13:10:41.432708', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 632304819075343);
 INSERT INTO public.transactions VALUES ('e1302a6e-7323-40be-ac41-7dab6b256772', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 13:10:47.582915', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 903800137536799);
-INSERT INTO public.transactions VALUES ('2a5bdb9a-48d4-49ea-9fde-8612be1ad263', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 531032877856749);
-INSERT INTO public.transactions VALUES ('ad80af1f-5cd4-46f0-a37e-b2d038f40365', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 881838457476605);
+INSERT INTO public.transactions VALUES ('2a5bdb9a-48d4-49ea-9fde-8612be1ad263', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 531032877856749);
+INSERT INTO public.transactions VALUES ('ad80af1f-5cd4-46f0-a37e-b2d038f40365', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 881838457476605);
 INSERT INTO public.transactions VALUES ('99f70d4e-8371-41c1-92d0-5eaee03442d2', 21.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'string', '2025-10-04 14:47:38.452432', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 977432922278397);
 INSERT INTO public.transactions VALUES ('3e953f9a-5ba1-4035-8bc0-f7019a955fff', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:14:36.451911', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 921821928857034);
 INSERT INTO public.transactions VALUES ('336478e1-4c44-4a91-82d3-a9bcec406e4f', 1.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-05 18:14:43.727441', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 982010863816673);
