@@ -99,6 +99,7 @@ class CustomerService:
         """
         row = self.repo.get_customer_details_by_nic(nic)
         
+        
         if not row:
             raise HTTPException(status_code=404, detail="Customer not found")
         return {
