@@ -1,10 +1,8 @@
 # Fixed Deposit service - Business logic for fixed deposit operations
 
 from fastapi import HTTPException
-from datetime import datetime
 
 class FixedDepositService:
-    
     def __init__(self, repo):
         self.repo = repo
 
@@ -15,40 +13,6 @@ class FixedDepositService:
             return fixed_deposits
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits")
-        
-    def close_fixed_deposit(self, fd_account_no, closed_by_user_id=None):
-        """
-        Close a fixed deposit account: transfer balance to linked savings account, set FD balance to 0, status to inactive.
-        """
-        try:
-            fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
-            if not fd:
-                raise HTTPException(status_code=404, detail="Fixed deposit not found")
-            if getattr(fd, "status", "active") != "active":
-                raise HTTPException(status_code=400, detail="FD account is not active")
-
-            # Get linked savings account
-            savings_account = self.repo.get_savings_account_by_fd_number(fd_account_no)
-            if not savings_account:
-                raise HTTPException(status_code=404, detail="Linked savings account not found")
-
-            # Transfer FD balance to savings account
-            transfer_success = self.repo.transfer_fd_balance_to_savings(fd_account_no, savings_account["account_no"], fd["balance"])
-            if not transfer_success:
-                raise HTTPException(status_code=500, detail="Failed to transfer FD balance to savings account")
-
-            # Set FD balance to 0 and status to inactive
-            updated_fd = self.repo.close_fixed_deposit(fd_account_no, closed_by_user_id)
-            if not updated_fd:
-                raise HTTPException(status_code=500, detail="Failed to close FD account")
-            return updated_fd
-        
-
-
-        except HTTPException:
-            raise
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to close FD account: {str(e)}")
 
     def create_fd_plan(self, duration_months, interest_rate, created_by_user_id=None):
         """
@@ -246,65 +210,33 @@ class FixedDepositService:
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve owner details")
 
-    def close_fixed_deposit(self, fd_account_no, closed_by_user_id=None):
-        """
-        Close a fixed deposit account: transfer balance to linked savings account, set FD balance to 0, status to inactive.
-        If account is not matured, include a message in the response.
-        """
-        
+    def get_branch_by_fd_number(self, fd_account_no):
+        """Get branch details by FD account number"""
         try:
-            fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
-            if not fd:
-                raise HTTPException(status_code=404, detail="Fixed deposit not found")
-            if fd.get("status", "active") != "active":
-                raise HTTPException(status_code=400, detail="FD account is not active")
-
-            # Check maturity date
-            today = datetime.now().date()
-            maturity_date = fd["maturity_date"].date() if hasattr(fd["maturity_date"], "date") else fd["maturity_date"]
-            matured = (maturity_date <= today)
-
-            # Get linked savings account
-            savings_account = self.repo.get_savings_account_by_fd_number(fd_account_no)
-            if not savings_account:
-                raise HTTPException(status_code=404, detail="Linked savings account not found")
-
-            # Transfer FD balance to savings account
-            transfer_success = self.repo.transfer_fd_balance_to_savings(fd_account_no, savings_account["account_no"], fd["balance"])
-            if not transfer_success:
-                raise HTTPException(status_code=500, detail="Failed to transfer FD balance to savings account")
-
-            # Set FD balance to 0 and status to inactive
-            updated_fd = self.repo.close_fixed_deposit(fd_account_no, closed_by_user_id)
-            if not updated_fd:
-                raise HTTPException(status_code=500, detail="Failed to close FD account")
-
-            def convert_for_json(obj):
-                import datetime
-                if isinstance(obj, dict):
-                    return {k: convert_for_json(v) for k, v in obj.items()}
-                elif isinstance(obj, list):
-                    return [convert_for_json(i) for i in obj]
-                elif type(obj).__name__ == 'Decimal':
-                    return float(obj)
-                elif isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date):
-                    return obj.isoformat()
-                else:
-                    return obj
-
-            result = dict(updated_fd) if not isinstance(updated_fd, dict) else updated_fd
-            result = convert_for_json(result)
-            message = None
-            if not matured:
-                message = "Account is not matured. Closed before maturity date."
-            return {
-                "details": result,
-                "message": message
-            }
+            branch = self.repo.get_branch_by_fd_number(fd_account_no)
+            if not branch:
+                raise HTTPException(status_code=404, detail="Branch not found for this FD")
+            return branch
         except HTTPException:
             raise
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to close FD account: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to retrieve branch details")
+
+    def get_fixed_deposits_by_branch(self, branch_id):
+        """Get all fixed deposits in a branch"""
+        try:
+            fds = self.repo.get_fixed_deposits_by_branch(branch_id)
+            return fds
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits")
+
+    def get_active_fd_plans(self):
+        """Get all active FD plans only"""
+        try:
+            plans = self.repo.get_active_fd_plans()
+            return plans
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Failed to retrieve active FD plan")
 
     def get_fixed_deposits_by_status(self, status):
         """Get all fixed deposits by status"""
@@ -329,6 +261,3 @@ class FixedDepositService:
             return fds
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits for the given plan")
-
-
-
