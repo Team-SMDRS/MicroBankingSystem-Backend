@@ -8,7 +8,8 @@ class TransactionType(str, Enum):
     DEPOSIT = "Deposit"
     WITHDRAWAL = "Withdrawal"
     INTEREST = "Interest"
-    BANK_TRANSFER = "BankTransfer"
+    BANK_TRANSFER_IN = "BankTransfer-In"
+    BANK_TRANSFER_OUT = "BankTransfer-Out"
 
 
 # Base transaction models

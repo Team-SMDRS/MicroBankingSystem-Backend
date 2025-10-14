@@ -8,8 +8,8 @@ class SavingsPlanService:
         """
         Create a new savings plan. Returns dict with result or error.
         """
-        filtered = {k: plan_data[k] for k in ('plan_name', 'interest_rate', 'user_id') if k in plan_data}
-        
+        filtered = {k: plan_data[k] for k in ('plan_name', 'interest_rate', 'user_id', 'min_balance') if k in plan_data}
+
         # Validate interest rate
         if 'interest_rate' in filtered and filtered['interest_rate'] >= 100:
             return {"error": "Interest rate must be less than 100."}
