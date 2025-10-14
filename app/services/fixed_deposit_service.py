@@ -1,6 +1,7 @@
 # Fixed Deposit service - Business logic for fixed deposit operations
 
 from fastapi import HTTPException
+from datetime import datetime
 
 class FixedDepositService:
     
@@ -198,6 +199,27 @@ class FixedDepositService:
     def get_fixed_deposit_by_account_number(self, fd_account_no):
         """Get fixed deposit by FD account number"""
         try:
+            # Always return details and message (if not matured)
+            def convert_decimals(obj):
+                if isinstance(obj, dict):
+                    return {k: convert_decimals(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_decimals(i) for i in obj]
+                elif hasattr(obj, '__dict__'):
+                    return convert_decimals(vars(obj))
+                elif type(obj).__name__ == 'Decimal':
+                    return float(obj)
+                else:
+                    return obj
+
+           
+            result = convert_decimals(result)
+            message = None
+            
+            return {
+                "details": result,
+                "message": message
+            }
             fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
             if not fd:
                 raise HTTPException(status_code=404, detail="Fixed deposit not found")
@@ -250,7 +272,7 @@ class FixedDepositService:
         Close a fixed deposit account: transfer balance to linked savings account, set FD balance to 0, status to inactive.
         If account is not matured, include a message in the response.
         """
-        from datetime import datetime
+        
         try:
             fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
             if not fd:
