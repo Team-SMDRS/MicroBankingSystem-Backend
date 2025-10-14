@@ -1,6 +1,7 @@
-from fastapi import FastAPI , Request
+from app.api import joint_account_management_routes
+from fastapi import FastAPI, Request
 
-from app.api import customer_branch_routes ,savings_plan_routes,transaction_management_routes, user_routes
+from app.api import customer_branch_routes, savings_plan_routes, transaction_management_routes, user_routes
 
 
 from app.middleware.auth_middleware import AuthMiddleware
@@ -25,7 +26,8 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173","https://btrust.dpdns.org"],  # must match frontend
+    allow_origins=["http://localhost:5173",
+                   "https://btrust.dpdns.org"],  # must match frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,25 +36,30 @@ app.add_middleware(
 app.add_middleware(AuthMiddleware)
 
 # Routes
-app.include_router(user_routes.router,prefix="/api/auth",tags=["Authentication"])
-app.include_router(account_management_routes.router, prefix="/api/account-management", tags=["Account Management"])
-app.include_router(savings_plan_routes.router, prefix="/api/savings-plan", tags=["Savings Plan Management"])
-app.include_router(test_account_routes.router,prefix="/api/account",tags=["Accounts"])
-app.include_router(customer_branch_routes.router, prefix="/api/customer-branch", tags=["Customer Branch"])
+app.include_router(user_routes.router, prefix="/api/auth",
+                   tags=["Authentication"])
+app.include_router(account_management_routes.router,
+                   prefix="/api/account-management", tags=["Account Management"])
+app.include_router(savings_plan_routes.router,
+                   prefix="/api/savings-plan", tags=["Savings Plan Management"])
+app.include_router(test_account_routes.router,
+                   prefix="/api/account", tags=["Accounts"])
+app.include_router(customer_branch_routes.router,
+                   prefix="/api/customer-branch", tags=["Customer Branch"])
 app.include_router(branch_routes.router, prefix="/api/branch", tags=["Branch"])
-app.include_router(fixed_deposit_routes.router, prefix="/api/fd" , tags=["Fixed Deposit"])
+app.include_router(fixed_deposit_routes.router,
+                   prefix="/api/fd", tags=["Fixed Deposit"])
 
-app.include_router(transaction_management_routes.router,prefix="/api/transactions",tags=["Transaction Management"])
+app.include_router(transaction_management_routes.router,
+                   prefix="/api/transactions", tags=["Transaction Management"])
 
 # Register joint account management routes
-from app.api import joint_account_management_routes
-app.include_router(joint_account_management_routes.router, prefix="/api/joint-account", tags=["Joint Account Management"])
+app.include_router(joint_account_management_routes.router,
+                   prefix="/api/joint-account", tags=["Joint Account Management"])
 
 
-
-
-
-app.include_router(customer_routes.router, prefix="/customer_data", tags=["Customer Login & get data"])
+app.include_router(customer_routes.router,
+                   prefix="/customer_data", tags=["Customer Login & get data"])
 
 
 @app.get("/")
@@ -69,23 +76,14 @@ async def root():
 # )
 
 
-
-
-
-
-
-
-
-
-
-
-
-#this below this lines, just I (sangeeth) added to the auth process with fast api ui swagger, so no need to worry with this
+# this below this lines, just I (sangeeth) added to the auth process with fast api ui swagger, so no need to worry with this
 
 # Define the header for Swagger
 api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
 
 # Override OpenAPI to show Authorize button
+
+
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -105,20 +103,19 @@ def custom_openapi():
     }
     # Apply globally to all endpoints
     for path in openapi_schema["paths"].values():
-            for method in path.values():
-                method.setdefault("security", [{"BearerAuth": []}])
+        for method in path.values():
+            method.setdefault("security", [{"BearerAuth": []}])
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+
 app.openapi = custom_openapi
-
-
 
 
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc):
     return JSONResponse(
         status_code=404,
-        content={"error": "Route not found. Please check the URL."}
+        content={"error": f"Something went wrong. {exc}"}
     )
