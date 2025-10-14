@@ -1,6 +1,7 @@
 # Fixed Deposit service - Business logic for fixed deposit operations
 
 from fastapi import HTTPException
+from datetime import datetime
 
 class FixedDepositService:
     
@@ -250,7 +251,7 @@ class FixedDepositService:
         Close a fixed deposit account: transfer balance to linked savings account, set FD balance to 0, status to inactive.
         If account is not matured, include a message in the response.
         """
-        from datetime import datetime
+        
         try:
             fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
             if not fd:

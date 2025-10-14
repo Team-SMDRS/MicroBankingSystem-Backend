@@ -351,7 +351,8 @@ class TransactionManagementRepository:
                     COUNT(*) as transaction_count,
                     SUM(CASE WHEN type = 'Deposit' THEN amount ELSE 0 END) as total_deposits,
                     SUM(CASE WHEN type = 'Withdrawal' THEN amount ELSE 0 END) as total_withdrawals,
-                    SUM(CASE WHEN type = 'banktransfer' THEN amount ELSE 0 END) as total_transfers
+                    SUM(CASE WHEN type = 'banktransfer-in' THEN amount ELSE 0 END) as total_transfers_in,
+                    SUM(CASE WHEN type = 'banktransfer-out' THEN amount ELSE 0 END) as total_transfers_out
                 FROM transactions
                 WHERE acc_id = %s 
                 AND EXTRACT(YEAR FROM created_at) = %s 
