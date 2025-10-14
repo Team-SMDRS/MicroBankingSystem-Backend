@@ -13,7 +13,7 @@ import math
 
 class TransactionManagementService:
     # Class-level constants
-    MAX_TRANSFER_AMOUNT = 1000000.00  # Rs. 10 Lakhs daily limit
+    MAX_TRANSFER_AMOUNT = 10000000.00  # Rs. 100 Lakhs daily limit
     
     def __init__(self, transaction_repo: TransactionManagementRepository):
         self.transaction_repo = transaction_repo
@@ -25,6 +25,19 @@ class TransactionManagementService:
             acc_id = self.transaction_repo.get_account_id_by_account_no(request.account_no)
             if not acc_id:
                 raise HTTPException(status_code=404, detail=f"Account with number {request.account_no} not found")
+
+            # Get account with savings plan details
+            account_details = self.transaction_repo.get_account_with_savings_plan(acc_id)
+            if not account_details:
+                raise HTTPException(status_code=404, detail="Account details not found")
+
+            # Check if it's a Children account - no deposits allowed (except through guardian)
+            plan_name = account_details.get('plan_name', '').strip()
+            if plan_name == 'Children':
+                raise HTTPException(
+                    status_code=403, 
+                    detail="Direct deposits are not allowed for Children accounts. Please contact a guardian or bank representative."
+                )
 
             # Process deposit using repository (reference_no and transaction_id are auto-generated)
             result = self.transaction_repo.process_deposit_transaction(
@@ -60,12 +73,35 @@ class TransactionManagementService:
             if not acc_id:
                 raise HTTPException(status_code=404, detail=f"Account with number {request.account_no} not found")
 
+            # Get account with savings plan details
+            account_details = self.transaction_repo.get_account_with_savings_plan(acc_id)
+            if not account_details:
+                raise HTTPException(status_code=404, detail="Account details not found")
+
+            # Check if it's a Children account - no transactions allowed
+            plan_name = account_details.get('plan_name', '').strip()
+            if plan_name == 'Children':
+                raise HTTPException(
+                    status_code=403, 
+                    detail="Withdrawals are not allowed for Children accounts"
+                )
+
             # Check current account balance
             current_balance = self.transaction_repo.get_account_balance(acc_id)
             if current_balance < request.amount:
                 raise HTTPException(
                     status_code=400, 
                     detail=f"Insufficient balance. Current balance: Rs.{current_balance:.2f}, Withdrawal amount: Rs.{request.amount:.2f}"
+                )
+
+            # Check minimum balance requirement
+            minimum_balance = float(account_details.get('minimum_balance', 0))
+            balance_after_withdrawal = current_balance - request.amount
+            
+            if balance_after_withdrawal < minimum_balance:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Withdrawal would violate minimum balance requirement. Minimum balance: Rs.{minimum_balance:.2f}, Balance after withdrawal: Rs.{balance_after_withdrawal:.2f}"
                 )
 
             # Process withdrawal using repository (balance check, reference_no and transaction_id are handled by database)
@@ -105,6 +141,8 @@ class TransactionManagementService:
         4. Ensure minimum transfer amount
         5. Handle account limits and restrictions
         6. Log transaction for audit trail
+        7. Enforce minimum balance requirements
+        8. Block Children account transactions
         """
         try:
             # Business Logic 1: Validate transfer amount
@@ -131,7 +169,30 @@ class TransactionManagementService:
                     detail=f"Destination account {request.to_account_no} not found"
                 )
             
-            # Business Logic 5: Check current balance for sufficient funds
+            # Business Logic 5: Get source account with savings plan details
+            from_account_details = self.transaction_repo.get_account_with_savings_plan(from_acc_id)
+            if not from_account_details:
+                raise HTTPException(status_code=404, detail="Source account details not found")
+
+            # Business Logic 6: Check if source account is a Children account - no transfers allowed
+            from_plan_name = from_account_details.get('plan_name', '').strip()
+            if from_plan_name == 'Children':
+                raise HTTPException(
+                    status_code=403, 
+                    detail="Transfers are not allowed from Children accounts"
+                )
+
+            # Business Logic 7: Check if destination account is a Children account - no transfers allowed
+            to_account_details = self.transaction_repo.get_account_with_savings_plan(to_acc_id)
+            if to_account_details:
+                to_plan_name = to_account_details.get('plan_name', '').strip()
+                if to_plan_name == 'Children':
+                    raise HTTPException(
+                        status_code=403, 
+                        detail="Transfers are not allowed to Children accounts"
+                    )
+            
+            # Business Logic 8: Check current balance for sufficient funds
             current_balance = self.transaction_repo.get_account_balance(from_acc_id)
             if current_balance < request.amount:
                 raise HTTPException(
@@ -139,14 +200,24 @@ class TransactionManagementService:
                     detail=f"Insufficient balance. Current balance: Rs.{current_balance:.2f}, Transfer amount: Rs.{request.amount:.2f}"
                 )
             
-            # Business Logic 6: Apply transfer limits (example business rule)
+            # Business Logic 9: Check minimum balance requirement for source account
+            minimum_balance = float(from_account_details.get('minimum_balance', 0))
+            balance_after_transfer = current_balance - request.amount
+            
+            if balance_after_transfer < minimum_balance:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Transfer would violate minimum balance requirement. Minimum balance: Rs.{minimum_balance:.2f}, Balance after transfer: Rs.{balance_after_transfer:.2f}"
+                )
+            
+            # Business Logic 10: Apply transfer limits (example business rule)
             if request.amount > self.MAX_TRANSFER_AMOUNT:
                 raise HTTPException(
                     status_code=400,
                     detail=f"Transfer amount exceeds maximum limit of Rs.{self.MAX_TRANSFER_AMOUNT:.2f}"
                 )
             
-            # Business Logic 7: Check daily transfer limit (optional enhancement)
+            # Business Logic 11: Check daily transfer limit (optional enhancement)
             # daily_transferred = self.transaction_repo.get_daily_transfer_amount(from_acc_id)
             # if daily_transferred + request.amount > MAX_TRANSFER_AMOUNT:
             #     raise HTTPException(
@@ -154,7 +225,7 @@ class TransactionManagementService:
             #         detail=f"Daily transfer limit exceeded. Already transferred: Rs.{daily_transferred:.2f}"
             #     )
             
-            # Business Logic 8: Process the transfer using repository
+            # Business Logic 12: Process the transfer using repository
             result = self.transaction_repo.process_transfer_transaction(
                 from_acc_id=from_acc_id,
                 to_acc_id=to_acc_id,
@@ -163,7 +234,7 @@ class TransactionManagementService:
                 created_by=user_id
             )
             
-            # Business Logic 9: Handle transfer result
+            # Business Logic 13: Handle transfer result
             if result.get('success', False):
                 return TransactionStatusResponse(
                     success=True,
@@ -295,7 +366,7 @@ class TransactionManagementService:
             # Calculate summary
             total_deposits = sum(tx.amount for tx in transactions if tx.type == TransactionType.DEPOSIT)
             total_withdrawals = sum(tx.amount for tx in transactions if tx.type == TransactionType.WITHDRAWAL)
-            total_transfers = sum(tx.amount for tx in transactions if tx.type == TransactionType.BANK_TRANSFER)
+            total_transfers = sum(tx.amount for tx in transactions if tx.type == TransactionType.BANK_TRANSFER_IN or tx.type == TransactionType.BANK_TRANSFER_OUT)
 
             summary = {
                 'total_transactions': len(transactions),

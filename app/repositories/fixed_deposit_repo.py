@@ -65,25 +65,25 @@ class FixedDepositRepository:
         """
         Create a new fixed deposit account.
         """
-        try:
-            # Insert new fixed deposit using stored procedure
-            # The stored procedure returns: fd_id, fd_account_no, balance, acc_id, opened_date, 
-            # maturity_date, fd_plan_id, created_at, updated_at, status, created_by, updated_by
-            self.cursor.execute(
-                "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
-                (acc_id, amount, fd_plan_id, created_by_user_id)
-            )
-            
-            result = self.cursor.fetchone()
-            self.conn.commit()
-            
-            if not result:
-                raise ValueError("Failed to create fixed deposit")
-            
-            return result
-        except Exception as e:
-            self.conn.rollback()
-            raise Exception(f"Database error creating fixed deposit: {str(e)}")
+        # Calculate maturity date based on plan duration
+        self.cursor.execute(
+            """SELECT duration FROM fd_plan WHERE fd_plan_id = %s""",
+            (fd_plan_id,)
+        )
+        plan = self.cursor.fetchone()
+        
+        if not plan:
+            raise ValueError("Invalid FD plan")
+        
+        # Insert new fixed deposit with created_by and updated_by fields
+        self.cursor.execute(
+        "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
+        (acc_id, amount, fd_plan_id, created_by_user_id)
+    )
+        
+        result = self.cursor.fetchone()
+        self.conn.commit()
+        return result
 
     def get_fixed_deposit_with_details(self, fd_id):
         """

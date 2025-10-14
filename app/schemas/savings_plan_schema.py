@@ -5,4 +5,7 @@ from typing import Optional
 class SavingsPlanCreate(BaseModel):
     plan_name: str
     interest_rate: float
+    min_balance: Optional[float] = 0.0  # New field for minimum balance
+
+    
 

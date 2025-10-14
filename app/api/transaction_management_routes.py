@@ -1,3 +1,4 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from app.schemas.transaction_management_schema import (
     DepositRequest, WithdrawRequest, TransferRequest, TransactionResponse, TransactionStatusResponse,
