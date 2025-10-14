@@ -8,10 +8,6 @@ class TransactionType(str, Enum):
     DEPOSIT = "Deposit"
     WITHDRAWAL = "Withdrawal"
     INTEREST = "Interest"
-<<<<<<< HEAD
-=======
-    BANK_TRANSFER = "BankTransfer"
->>>>>>> 002cfee (fix: Update transaction types and branch report to support BankTransfer-In/Out)
     BANK_TRANSFER_IN = "BankTransfer-In"
     BANK_TRANSFER_OUT = "BankTransfer-Out"
 
