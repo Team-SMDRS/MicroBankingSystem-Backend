@@ -201,6 +201,12 @@ class AccountManagementRepository:
         Optionally set updated_by to the user who closed the account.
         Before closing, returns the previous balance and the updated account row (dict) if successful,
         or None if account not found.
+        If the account is linked to any fixed deposit accounts, returns an error message.
+        
+        Returns:
+            dict: The updated account with previous balance, or
+            dict: An error message if account has linked fixed deposits, or
+            None: If account not found
         """
         try:
             # Lock the account row to avoid race conditions and read the current balance
@@ -216,6 +222,25 @@ class AccountManagementRepository:
             if not current:
                 self.conn.rollback()
                 return None
+                
+            # Check if the account is already closed
+            if current['status'] == 'closed':
+                self.conn.rollback()
+                return {"error": "Account is already closed"}
+                
+            # Check if this account has any linked fixed deposit accounts
+            self.cursor.execute(
+                '''
+                SELECT COUNT(*) AS fd_count 
+                FROM fixed_deposit fd 
+                WHERE fd.acc_id = %s
+                ''',
+                (current['acc_id'],)
+            )
+            fd_result = self.cursor.fetchone()
+            if fd_result and fd_result['fd_count'] > 0:
+                self.conn.rollback()
+                return {"error": "Cannot close account because it has an active fixed deposit linked to it"}
 
             previous_balance = current.get('balance', 0)
 

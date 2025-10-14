@@ -415,11 +415,20 @@ class AccountManagementService:
         """
         Close (soft-delete) an account by setting its status to 'closed'.
         Returns the previous balance and the updated account record.
+        
+        Raises HTTPException in the following cases:
+        - 404 if the account is not found
+        - 400 if the account is already closed
+        - 400 if the account is linked to a fixed deposit
         """
         try:
             result = self.repo.close_account_by_account_no(account_no, closed_by_user_id)
             if not result:
                 raise HTTPException(status_code=404, detail="Account not found")
+                
+            # Check if there's an error (account linked to a fixed deposit)
+            if isinstance(result, dict) and result.get('error'):
+                raise HTTPException(status_code=400, detail=result.get('error'))
 
             # Expecting result to be dict { previous_balance: <val>, account_no, savings_plan_name, updated_at, status }
             previous_balance = result.get('previous_balance') if isinstance(result, dict) else None
