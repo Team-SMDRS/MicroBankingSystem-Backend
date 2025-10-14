@@ -25,12 +25,13 @@ class SavingsPlanRepository:
 
         self.cursor.execute(
             """
-            SELECT * FROM create_savings_plan(%s, %s, %s)
+            SELECT * FROM create_savings_plan(%s, %s, %s,%s)
             """,
             (
                 plan_data['plan_name'],
                 plan_data['interest_rate'],
-                plan_data['user_id']
+                plan_data['user_id'],
+                plan_data['min_balance']
             )
         )
         row = self.cursor.fetchone()

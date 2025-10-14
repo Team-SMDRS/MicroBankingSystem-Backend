@@ -254,6 +254,22 @@ class TransactionManagementRepository:
         except Exception as e:
             raise e
 
+    def get_account_with_savings_plan(self, acc_id: str) -> Optional[Dict]:
+        """Get account details with savings plan information including minimum balance"""
+        try:
+            self.cursor.execute(
+                """
+                SELECT a.*, sp.plan_name, sp.minimum_balance
+                FROM account a
+                LEFT JOIN savings_plan sp ON a.savings_plan_id = sp.savings_plan_id
+                WHERE a.acc_id = %s
+                """,
+                (acc_id,)
+            )
+            return self.cursor.fetchone()
+        except Exception as e:
+            raise e
+
     def fix_null_balance(self, acc_id: str) -> bool:
         """Fix NULL balance by setting it to 0.00"""
         try:
@@ -352,8 +368,8 @@ class TransactionManagementRepository:
                     COUNT(*) as transaction_count,
                     SUM(CASE WHEN type = 'Deposit' THEN amount ELSE 0 END) as total_deposits,
                     SUM(CASE WHEN type = 'Withdrawal' THEN amount ELSE 0 END) as total_withdrawals,
-                    SUM(CASE WHEN type = 'banktransfer-in' THEN amount ELSE 0 END) as total_transfers_in,
-                    SUM(CASE WHEN type = 'banktransfer-out' THEN amount ELSE 0 END) as total_transfers_out
+                    SUM(CASE WHEN type = 'BankTransfer-In' THEN amount ELSE 0 END) as total_transfers_in,
+                    SUM(CASE WHEN type = 'BankTransfer-Out' THEN amount ELSE 0 END) as total_transfers_out
                 FROM transactions
                 WHERE acc_id = %s 
                 AND EXTRACT(YEAR FROM created_at) = %s 
@@ -381,7 +397,7 @@ class TransactionManagementRepository:
             base_query = """
                 SELECT 
                     t.acc_id,
-                    c.full_name as customer_name,
+                    c.full_name as full_name,
                     COUNT(*) as transaction_count,
                     SUM(t.amount) as total_volume,
                     AVG(t.amount) as avg_amount
