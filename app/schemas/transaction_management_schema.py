@@ -9,6 +9,8 @@ class TransactionType(str, Enum):
     WITHDRAWAL = "Withdrawal"
     INTEREST = "Interest"
     BANK_TRANSFER = "BankTransfer"
+    BANK_TRANSFER_IN = "BankTransfer-In"
+    BANK_TRANSFER_OUT = "BankTransfer-Out"
 
 
 # Base transaction models
@@ -122,7 +124,10 @@ class BranchTransactionSummary(BaseModel):
     branch_name: Optional[str]
     total_deposits: float
     total_withdrawals: float
-    total_transfers: float
+    total_transfers_in: float
+    total_transfers_out: float
+    total_transfers: float = 0.0  # Computed field for backward compatibility
+    net_amount: float = 0.0  # Computed field: deposits + transfers_in - withdrawals - transfers_out
     transaction_count: int
     date_range: Dict[str, str]
     top_accounts: List[Dict[str, Any]]
