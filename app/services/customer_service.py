@@ -1,5 +1,5 @@
  # All business logics put here
-
+from fastapi import HTTPException
 from app.core.utils import (
     hash_password, 
     verify_password, 
@@ -98,7 +98,7 @@ class CustomerService:
         Raises 404 HTTPException if not found.
         """
         row = self.repo.get_customer_details_by_nic(nic)
-        from fastapi import HTTPException
+        
         if not row:
             raise HTTPException(status_code=404, detail="Customer not found")
         return {
