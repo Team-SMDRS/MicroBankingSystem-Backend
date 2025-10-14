@@ -67,7 +67,31 @@ class AccountManagementService:
             balance = getattr(input_data, 'balance', 0.0)
             if balance < 0:
                 raise HTTPException(status_code=400, detail="Balance cannot be negative")
-                
+
+            # Validate savings plan minimum balance
+            try:
+                min_balance = self.repo.get_minimum_balance_by_savings_plan_id(input_data.savings_plan_id)
+            except Exception as e:
+                # If repo raised an unexpected error treat as internal error
+                raise HTTPException(status_code=500, detail="Failed to validate savings plan")
+
+            if min_balance is None:
+                raise HTTPException(status_code=400, detail="Invalid savings plan ID")
+
+            # Convert to float for comparison (handles Decimal)
+            try:
+                min_balance_val = float(min_balance)
+            except Exception:
+                raise HTTPException(status_code=500, detail="Invalid minimum balance configured for savings plan")
+
+            if float(balance) < min_balance_val:
+                raise HTTPException(status_code=400, detail=f"Initial balance must be at least {min_balance_val} for the selected savings plan")
+
+            # Validate savings plan name
+            savings_plan_name = self.repo.get_plan_name_by_savings_plan_id(input_data.savings_plan_id)
+            if  savings_plan_name == "Joint":
+                raise HTTPException(status_code=400, detail="Cannot create joint account using this endpoint. Please use the joint account creation endpoint.")
+
             # Validate phone number if provided
             if hasattr(input_data, 'phone_number') and input_data.phone_number:
                 phone = str(input_data.phone_number).strip()
@@ -255,7 +279,29 @@ class AccountManagementService:
             balance = getattr(input_data, 'balance', 0.0)
             if balance < 0:
                 raise HTTPException(status_code=400, detail="Balance cannot be negative")
-                
+
+            # Validate savings plan minimum balance
+            try:
+                min_balance = self.repo.get_minimum_balance_by_savings_plan_id(input_data.savings_plan_id)
+            except Exception:
+                raise HTTPException(status_code=500, detail="Failed to validate savings plan")
+
+            if min_balance is None:
+                raise HTTPException(status_code=400, detail="Invalid savings plan ID")
+
+            try:
+                min_balance_val = float(min_balance)
+            except Exception:
+                raise HTTPException(status_code=500, detail="Invalid minimum balance configured for savings plan")
+
+            if float(balance) < min_balance_val:
+                raise HTTPException(status_code=400, detail=f"Initial balance must be at least {min_balance_val} for the selected savings plan")
+            # Validate savings plan name
+            savings_plan_name = self.repo.get_plan_name_by_savings_plan_id(input_data.savings_plan_id)
+            if  savings_plan_name == "Joint":
+                raise HTTPException(status_code=400, detail="Cannot create joint account using this endpoint. Please use the joint account creation endpoint.")
+
+
             # Validate branch_id and user_id
             if not branch_id:
                 raise HTTPException(status_code=400, detail="Branch ID is required")

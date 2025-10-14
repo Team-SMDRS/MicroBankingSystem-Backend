@@ -342,7 +342,21 @@ class AccountManagementRepository:
         )
         row = self.cursor.fetchone()
         return row['account_count'] if row else 0
+    def get_minimum_balance_by_savings_plan_id(self, savings_plan_id):
+        self.cursor.execute(
+            "SELECT minimum_balance FROM savings_plan WHERE savings_plan_id = %s",
+            (savings_plan_id,)
+        )
+        row = self.cursor.fetchone()
+        return row['minimum_balance'] if row else None
     
 
+    def get_plan_name_by_savings_plan_id(self, savings_plan_id):
+        self.cursor.execute(
+            "SELECT plan_name FROM savings_plan WHERE savings_plan_id = %s",
+            (savings_plan_id,)
+        )
+        row = self.cursor.fetchone()
+        return row['plan_name'] if row else None
     
     
