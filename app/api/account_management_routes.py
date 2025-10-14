@@ -1,3 +1,5 @@
+# Route to get customer details by customer_id
+
 
 
 
@@ -16,7 +18,14 @@ from app.services.account_management_service import AccountManagementService
 router = APIRouter()
 
 
-
+@router.get("/customer/{customer_id}")
+def get_customer_by_id(customer_id: str, db=Depends(get_db)):
+    repo = AccountManagementRepository(db)
+    service = AccountManagementService(repo)
+    result = service.get_customer_by_id(customer_id)
+    if not result:
+        return {"detail": "Customer not found"}
+    return result
 
 
 # Route for existing customer to open a new account using NIC
