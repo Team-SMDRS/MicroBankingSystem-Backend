@@ -3,60 +3,9 @@
 from psycopg2.extras import RealDictCursor
 
 class FixedDepositRepository:
-
     def __init__(self, db_conn):
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
-
-        
-    def transfer_fd_balance_to_savings(self, fd_account_no, savings_account_no, amount):
-        """
-        Transfer FD balance to linked savings account.
-        """
-        try:
-            # Add amount to savings account
-            self.cursor.execute(
-                """UPDATE account SET balance = balance + %s WHERE account_no = %s AND status = 'active' RETURNING acc_id""",
-                (amount, savings_account_no)
-            )
-            updated_acc = self.cursor.fetchone()
-            if not updated_acc:
-                self.conn.rollback()
-                return False
-
-            # Set FD balance to 0 (will set status in next step)
-            self.cursor.execute(
-                """UPDATE fixed_deposit SET balance = 0 WHERE fd_account_no = %s RETURNING fd_id""",
-                (fd_account_no,)
-            )
-            updated_fd = self.cursor.fetchone()
-            if not updated_fd:
-                self.conn.rollback()
-                return False
-
-            self.conn.commit()
-            return True
-        except Exception:
-            self.conn.rollback()
-            return False
-
-    def close_fixed_deposit(self, fd_account_no, closed_by_user_id=None):
-        """
-        Set FD balance to 0 and status to inactive, update updated_by and updated_at.
-        """
-        self.cursor.execute(
-            """UPDATE fixed_deposit 
-            SET balance = 0, status = 'inactive', updated_by = %s, updated_at = CURRENT_TIMESTAMP
-            WHERE fd_account_no = %s
-            RETURNING fd_id, fd_account_no, balance, acc_id, opened_date, maturity_date, fd_plan_id, created_at as fd_created_at, updated_at as fd_updated_at
-            """,
-            (closed_by_user_id, fd_account_no)
-        )
-        result = self.cursor.fetchone()
-        self.conn.commit()
-        # Return updated FD details (with joined info if needed)
-        return self.get_fixed_deposit_by_account_number(fd_account_no)
-    
 
     def get_all_fixed_deposits(self):
         """
@@ -116,25 +65,25 @@ class FixedDepositRepository:
         """
         Create a new fixed deposit account.
         """
-        # Calculate maturity date based on plan duration
-        self.cursor.execute(
-            """SELECT duration FROM fd_plan WHERE fd_plan_id = %s""",
-            (fd_plan_id,)
-        )
-        plan = self.cursor.fetchone()
-        
-        if not plan:
-            raise ValueError("Invalid FD plan")
-        
-        # Insert new fixed deposit with created_by and updated_by fields
-        self.cursor.execute(
-        "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
-        (acc_id, amount, fd_plan_id, created_by_user_id)
-    )
-        
-        result = self.cursor.fetchone()
-        self.conn.commit()
-        return result
+        try:
+            # Insert new fixed deposit using stored procedure
+            # The stored procedure returns: fd_id, fd_account_no, balance, acc_id, opened_date, 
+            # maturity_date, fd_plan_id, created_at, updated_at, status, created_by, updated_by
+            self.cursor.execute(
+                "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
+                (acc_id, amount, fd_plan_id, created_by_user_id)
+            )
+            
+            result = self.cursor.fetchone()
+            self.conn.commit()
+            
+            if not result:
+                raise ValueError("Failed to create fixed deposit")
+            
+            return result
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Database error creating fixed deposit: {str(e)}")
 
     def get_fixed_deposit_with_details(self, fd_id):
         """

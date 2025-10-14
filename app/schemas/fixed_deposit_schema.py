@@ -6,6 +6,14 @@ from typing import Optional
 from uuid import UUID
 from decimal import Decimal
 
+class CreateFixedDepositRequest(BaseModel):
+    savings_account_no: str
+    amount: float
+    plan_id: str
+
+    class Config:
+        from_attributes = True
+
 class FixedDepositResponse(BaseModel):
     fd_id: UUID
     fd_account_no: int

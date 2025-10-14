@@ -17,19 +17,6 @@ from app.services.fixed_deposit_service import FixedDepositService
 router = APIRouter()
 
 # get all fixed deposits 
-from fastapi.responses import JSONResponse
-
-@router.post("/fixed-deposits/{fd_account_no}/close")
-async def close_fixed_deposit(request: Request, fd_account_no: int, db=Depends(get_db)):
-    """
-    Close a fixed deposit account, transfer balance to linked savings account, set FD balance to 0 and status to inactive.
-    """
-    current_user = getattr(request.state, "user", None)
-    repo = FixedDepositRepository(db)
-    service = FixedDepositService(repo)
-    result = service.close_fixed_deposit(fd_account_no, closed_by_user_id=current_user["user_id"])
-    return JSONResponse(content=result)
-
 @router.get("/fixed-deposits", response_model=List[FixedDepositResponse])
 def get_all_fixed_deposits(db=Depends(get_db)):
     """Get all fixed deposit accounts"""
