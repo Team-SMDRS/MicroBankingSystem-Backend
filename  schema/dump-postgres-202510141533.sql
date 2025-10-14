@@ -2,17 +2,7 @@
 -- PostgreSQL database dump
 --
 
-<<<<<<< HEAD: schema/dump-postgres-202510141533.sql
-<<<<<<< HEAD: schema/dump-postgres-202510141533.sql
-\restrict eTJGvJ7DDyx1RnhcQh3tiJ0ySh3OtQM4E1hnrHxPWxGRuRZjvh2d9ygugbghPX1
-=======
-\restrict BGnYtm4MmqZJ6BKRV8HObVptviqNIAiF3PuvWJJt83vhczMJoUBPfG5M6cVleKQ
->>>>>>> d3a6d94 (refact:add minimum balance when creating account): schema/dump-bankdata-202510091619.sql
 
-=======
->>>>>>> 775a7f3 (feat:add interest calculation): schema/dump-bankdata-202510091619.sql
--- Dumped from database version 17.6
--- Dumped by pg_dump version 17.6
 
 -- Started on 2025-10-14 15:33:28 +0530
 
