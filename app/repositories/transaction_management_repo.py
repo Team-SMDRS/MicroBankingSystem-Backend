@@ -145,7 +145,8 @@ class TransactionManagementRepository:
                     'branch_name': result.get('branch_name'),
                     'total_deposits': float(result.get('total_deposits', 0)),
                     'total_withdrawals': float(result.get('total_withdrawals', 0)),
-                    'total_transfers': float(result.get('total_transfers', 0)),
+                    'total_transfers_in': float(result.get('total_transfers_in', 0)),
+                    'total_transfers_out': float(result.get('total_transfers_out', 0)),
                     'transaction_count': result.get('transaction_count', 0)
                 }
             return {}

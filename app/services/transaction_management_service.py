@@ -424,12 +424,27 @@ class TransactionManagementService:
                 for acc in top_accounts
             ]
 
+            # Calculate total transfers and net amount
+            total_transfers_in = report_data.get('total_transfers_in', 0)
+            total_transfers_out = report_data.get('total_transfers_out', 0)
+            total_deposits = report_data.get('total_deposits', 0)
+            total_withdrawals = report_data.get('total_withdrawals', 0)
+            
+            # Total transfers is the sum of both in and out
+            total_transfers = total_transfers_in + total_transfers_out
+            
+            # Net amount: incoming - outgoing
+            net_amount = total_deposits + total_transfers_in - total_withdrawals - total_transfers_out
+
             return BranchTransactionSummary(
                 branch_id=request.branch_id,
                 branch_name=report_data.get('branch_name'),
-                total_deposits=report_data.get('total_deposits', 0),
-                total_withdrawals=report_data.get('total_withdrawals', 0),
-                total_transfers=report_data.get('total_transfers', 0),
+                total_deposits=total_deposits,
+                total_withdrawals=total_withdrawals,
+                total_transfers_in=total_transfers_in,
+                total_transfers_out=total_transfers_out,
+                total_transfers=total_transfers,
+                net_amount=net_amount,
                 transaction_count=report_data.get('transaction_count', 0),
                 date_range={
                     'start_date': request.start_date.isoformat(),
