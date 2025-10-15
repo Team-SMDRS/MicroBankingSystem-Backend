@@ -483,3 +483,132 @@ class TransactionManagementRepository:
             return None
         except Exception as e:
             raise e
+
+    def get_balance_after_transaction(self, acc_id: str, transaction_id: str) -> Optional[float]:
+        """Calculate the account balance after a specific transaction"""
+        try:
+            # Get the current account balance
+            self.cursor.execute(
+                "SELECT balance FROM account WHERE acc_id = %s::UUID",
+                (acc_id,)
+            )
+            current_balance_result = self.cursor.fetchone()
+            if not current_balance_result:
+                return None
+            
+            current_balance = float(current_balance_result['balance'])
+            
+            # Get all transactions after the target transaction (more recent)
+            self.cursor.execute(
+                """
+                WITH target_transaction AS (
+                    SELECT created_at, transaction_id
+                    FROM transactions 
+                    WHERE transaction_id = %s::UUID AND acc_id = %s::UUID
+                ),
+                later_transactions AS (
+                    SELECT 
+                        t.amount,
+                        t.type
+                    FROM transactions t, target_transaction tt
+                    WHERE t.acc_id = %s::UUID 
+                    AND (
+                        t.created_at > tt.created_at 
+                        OR (t.created_at = tt.created_at AND t.transaction_id > tt.transaction_id)
+                    )
+                )
+                SELECT 
+                    COALESCE(SUM(
+                        CASE 
+                            WHEN type IN ('Deposit', 'BankTransfer-In', 'Interest') THEN amount
+                            WHEN type IN ('Withdrawal', 'BankTransfer-Out') THEN -amount
+                            ELSE 0
+                        END
+                    ), 0) as later_net_change
+                FROM later_transactions
+                """,
+                (transaction_id, acc_id, acc_id)
+            )
+            
+            result = self.cursor.fetchone()
+            later_net_change = float(result['later_net_change']) if result else 0.0
+            
+            # Balance after target transaction = current balance - net change from later transactions
+            balance_after = current_balance - later_net_change
+            
+            return balance_after
+            
+        except Exception as e:
+            print(f"Error calculating balance after transaction: {e}")
+            return None
+
+    def get_all_transactions_with_balance_after(self, limit: int = 100, offset: int = 0) -> List[Dict]:
+        """Get all transactions with account details and balance_after calculated"""
+        try:
+            # First get the basic transaction data
+            basic_transactions = self.get_all_transactions_with_account_details(limit, offset)
+            
+            # Enhance with balance_after for each transaction
+            enhanced_transactions = []
+            for tx in basic_transactions:
+                balance_after = self.get_balance_after_transaction(
+                    str(tx['acc_id']), 
+                    str(tx['transaction_id'])
+                )
+                
+                # Convert to dict and add balance_after
+                tx_dict = dict(tx)
+                tx_dict['balance_after'] = balance_after
+                enhanced_transactions.append(tx_dict)
+            
+            return enhanced_transactions
+        except Exception as e:
+            raise e
+
+    def get_transaction_history_by_date_range_with_balance(self, start_date: date, end_date: date, acc_id: str = None, transaction_type: str = None) -> List[Dict]:
+        """Get transaction history by date range with balance_after calculated"""
+        try:
+            # First get the basic transaction data
+            basic_transactions = self.get_transaction_history_by_date_range(start_date, end_date, acc_id, transaction_type)
+            
+            # Enhance with balance_after for each transaction
+            enhanced_transactions = []
+            for tx in basic_transactions:
+                balance_after = self.get_balance_after_transaction(
+                    str(tx['acc_id']), 
+                    str(tx['transaction_id'])
+                )
+                
+                # Convert to dict and add balance_after
+                tx_dict = dict(tx)
+                tx_dict['balance_after'] = balance_after
+                enhanced_transactions.append(tx_dict)
+            
+            return enhanced_transactions
+        except Exception as e:
+            raise e
+
+    def get_transaction_history_by_account_with_balance(self, acc_id: str, limit: int = 50, offset: int = 0) -> Tuple[List[Dict], int]:
+        """Get transaction history by account with balance_after calculated"""
+        try:
+            # First get the basic transaction data
+            basic_transactions, total_count = self.get_transaction_history_by_account(acc_id, limit, offset)
+            
+            # Enhance with balance_after for each transaction
+            enhanced_transactions = []
+            for tx in basic_transactions:
+                balance_after = self.get_balance_after_transaction(
+                    str(tx['acc_id']), 
+                    str(tx['transaction_id'])
+                )
+                
+                # Convert to dict and add balance_after
+                tx_dict = dict(tx)
+                tx_dict['balance_after'] = balance_after
+                enhanced_transactions.append(tx_dict)
+            
+            return enhanced_transactions, total_count
+        except Exception as e:
+            raise e
+        
+    

@@ -2,12 +2,13 @@
 from fastapi import HTTPException
 from uuid import UUID
 from app.repositories.joint_account_management_repo import JointAccountManagementRepository
-
+from app.repositories.account_management_repo import AccountManagementRepository
 
 class JointAccountManagementService:
 
     def __init__(self, db_conn):
         self.repo = JointAccountManagementRepository(db_conn)
+        self.account_repo = AccountManagementRepository(db_conn)
 
     def _get_joint_account_plan_id(self):
         """Get the savings plan ID for joint accounts"""
@@ -46,6 +47,30 @@ class JointAccountManagementService:
         validated_user_id = self._validate_user_authentication(user_id)
         account_data = self._normalize_account_data(account_data)
 
+        # Validate savings plan minimum balance
+        try:
+            min_balance = self.account_repo.get_minimum_balance_by_savings_plan_id(account_data["savings_plan_id"])
+        except Exception:
+            raise HTTPException(status_code=500, detail="Failed to validate savings plan")
+
+        if min_balance is None:
+            raise HTTPException(status_code=400, detail="Invalid savings plan ID")
+
+        try:
+            min_balance_val = float(min_balance)
+        except Exception:
+            raise HTTPException(status_code=500, detail="Invalid minimum balance configured for savings plan")
+
+        # Get balance from account_data
+        balance = account_data.get("balance", "0")
+        if float(balance) < min_balance_val:
+            raise HTTPException(status_code=400, detail=f"Initial balance must be at least {min_balance_val} for the selected savings plan")
+        
+        # Validate savings plan name
+        savings_plan_name = self.account_repo.get_plan_name_by_savings_plan_id(account_data["savings_plan_id"])
+        if savings_plan_name != "Joint":
+            raise HTTPException(status_code=400, detail="Cannot create other account using this endpoint. Please use the create account creation endpoint.")
+
         try:
             result = self.repo.create_joint_account(account_data, nic1, nic2, validated_user_id)
         except Exception as e:
@@ -60,6 +85,30 @@ class JointAccountManagementService:
         """Create joint account with two new customers (validations + normalization)."""
         validated_user_id = self._validate_user_authentication(user_id)
         account_data = self._normalize_account_data(account_data)
+
+        # Validate savings plan minimum balance
+        try:
+            min_balance = self.account_repo.get_minimum_balance_by_savings_plan_id(account_data["savings_plan_id"])
+        except Exception:
+            raise HTTPException(status_code=500, detail="Failed to validate savings plan")
+
+        if min_balance is None:
+            raise HTTPException(status_code=400, detail="Invalid savings plan ID")
+
+        try:
+            min_balance_val = float(min_balance)
+        except Exception:
+            raise HTTPException(status_code=500, detail="Invalid minimum balance configured for savings plan")
+
+        # Get balance from account_data
+        balance = account_data.get("balance", "0")
+        if float(balance) < min_balance_val:
+            raise HTTPException(status_code=400, detail=f"Initial balance must be at least {min_balance_val} for the selected savings plan")
+        
+        # Validate savings plan name
+        savings_plan_name = self.account_repo.get_plan_name_by_savings_plan_id(account_data["savings_plan_id"])
+        if savings_plan_name != "Joint":
+            raise HTTPException(status_code=400, detail="Cannot create other account using this endpoint. Please use the create account creation endpoint.")
 
         try:
             result = self.repo.create_joint_account_with_new_customers(
@@ -77,6 +126,30 @@ class JointAccountManagementService:
         """Create joint account with one existing and one new customer (validations + normalization)."""
         validated_user_id = self._validate_user_authentication(user_id)
         account_data = self._normalize_account_data(account_data)
+
+        # Validate savings plan minimum balance
+        try:
+            min_balance = self.account_repo.get_minimum_balance_by_savings_plan_id(account_data["savings_plan_id"])
+        except Exception:
+            raise HTTPException(status_code=500, detail="Failed to validate savings plan")
+
+        if min_balance is None:
+            raise HTTPException(status_code=400, detail="Invalid savings plan ID")
+
+        try:
+            min_balance_val = float(min_balance)
+        except Exception:
+            raise HTTPException(status_code=500, detail="Invalid minimum balance configured for savings plan")
+
+        # Get balance from account_data
+        balance = account_data.get("balance", "0")
+        if float(balance) < min_balance_val:
+            raise HTTPException(status_code=400, detail=f"Initial balance must be at least {min_balance_val} for the selected savings plan")
+        
+        # Validate savings plan name
+        savings_plan_name = self.account_repo.get_plan_name_by_savings_plan_id(account_data["savings_plan_id"])
+        if savings_plan_name != "Joint":
+            raise HTTPException(status_code=400, detail="Cannot create other account using this endpoint. Please use the create account creation endpoint.")
 
         try:
             result = self.repo.create_joint_account_with_existing_and_new_customer(
