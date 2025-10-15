@@ -275,8 +275,8 @@ class TransactionManagementService:
             # Calculate offset
             offset = (page - 1) * per_page
 
-            # Get transactions and total count
-            transactions_data, total_count = self.transaction_repo.get_transaction_history_by_account(
+            # Get transactions and total count with balance_after
+            transactions_data, total_count = self.transaction_repo.get_transaction_history_by_account_with_balance(
                 acc_id, per_page, offset
             )
 
@@ -340,8 +340,8 @@ class TransactionManagementService:
             if request.acc_id and not self.transaction_repo.account_exists(request.acc_id):
                 raise HTTPException(status_code=404, detail="Account not found")
 
-            # Get transactions
-            transactions_data = self.transaction_repo.get_transaction_history_by_date_range(
+            # Get transactions with balance_after
+            transactions_data = self.transaction_repo.get_transaction_history_by_date_range_with_balance(
                 start_date=request.start_date,
                 end_date=request.end_date,
                 acc_id=request.acc_id,
@@ -358,7 +358,8 @@ class TransactionManagementService:
                     description=tx['description'],
                     reference_no=tx['reference_no'],
                     created_at=tx['created_at'],
-                    created_by=tx['created_by']
+                    created_by=tx['created_by'],
+                    balance_after=float(tx['balance_after']) if tx.get('balance_after') is not None else None
                 )
                 for tx in transactions_data
             ]

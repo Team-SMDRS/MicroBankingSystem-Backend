@@ -375,8 +375,8 @@ def get_all_transactions_report(
             }
         
         else:
-            # Get all transactions with pagination
-            all_transactions = transaction_repo.get_all_transactions_with_account_details(per_page, offset)
+            # Get all transactions with pagination and balance_after
+            all_transactions = transaction_repo.get_all_transactions_with_balance_after(per_page, offset)
             
             transactions = [
                 TransactionResponse(
@@ -387,7 +387,8 @@ def get_all_transactions_report(
                     description=tx['description'],
                     reference_no=tx['reference_no'],
                     created_at=tx['created_at'],
-                    created_by=tx['created_by']
+                    created_by=tx['created_by'],
+                    balance_after=float(tx['balance_after']) if tx.get('balance_after') is not None else None
                 )
                 for tx in all_transactions
             ]
