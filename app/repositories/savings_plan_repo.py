@@ -31,7 +31,8 @@ class SavingsPlanRepository:
                 plan_data['plan_name'],
                 plan_data['interest_rate'],
                 plan_data['user_id'],
-                plan_data['min_balance']
+                # support both old and new field names just in case
+                plan_data.get('minimum_balance', plan_data.get('min_balance', 0))
             )
         )
         row = self.cursor.fetchone()
@@ -68,6 +69,21 @@ class SavingsPlanRepository:
         self.cursor.execute(
             """
             SELECT savings_plan_id, plan_name
+            FROM savings_plan
+            ORDER BY plan_name
+            """
+        )
+        rows = self.cursor.fetchall()
+        return rows
+
+    def get_all_savings_plan_details(self):
+        """
+        Return all savings plans with id, name, interest rate and minimum balance.
+        Returns: list of dicts with keys 'savings_plan_id', 'plan_name', 'interest_rate', 'minimum_balance'
+        """
+        self.cursor.execute(
+            """
+            SELECT savings_plan_id, plan_name, interest_rate, COALESCE(minimum_balance, 0) AS minimum_balance
             FROM savings_plan
             ORDER BY plan_name
             """

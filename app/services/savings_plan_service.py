@@ -8,12 +8,13 @@ class SavingsPlanService:
         """
         Create a new savings plan. Returns dict with result or error.
         """
-        filtered = {k: plan_data[k] for k in ('plan_name', 'interest_rate', 'user_id', 'min_balance') if k in plan_data}
+        # Use the updated field name 'minimum_balance' that matches DB column
+        filtered = {k: plan_data[k] for k in ('plan_name', 'interest_rate', 'user_id', 'minimum_balance') if k in plan_data}
 
         # Validate interest rate
         if 'interest_rate' in filtered and filtered['interest_rate'] >= 100:
             return {"error": "Interest rate must be less than 100."}
-        
+
         savings_plan_id = self.repo.create_savings_plan(filtered)
         if savings_plan_id is None:
             return {"error": "A savings plan with this name already exists."}
@@ -39,4 +40,12 @@ class SavingsPlanService:
         """
         plans = self.repo.get_all_savings_plans()
         # repo uses RealDictCursor so rows are already dict-like
+        return plans
+
+    def get_all_savings_plan_details(self):
+        """
+        Retrieve all savings plans with details (id, name, interest_rate, minimum_balance).
+        Returns list of dicts: {'savings_plan_id', 'plan_name', 'interest_rate', 'minimum_balance'}
+        """
+        plans = self.repo.get_all_savings_plan_details()
         return plans
