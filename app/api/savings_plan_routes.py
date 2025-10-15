@@ -46,3 +46,12 @@ def list_savings_plans(request: Request, db=Depends(get_db)):
     plans = service.get_all_savings_plans()
     # Return as a list of dicts
     return {"savings_plans": plans}
+
+
+# Route to list all savings plans with details (id, name, interest_rate, minimum_balance)
+@router.get("/savings_plans/details")
+def list_savings_plan_details(request: Request, db=Depends(get_db)):
+    repo = SavingsPlanRepository(db)
+    service = SavingsPlanService(repo)
+    plans = service.get_all_savings_plan_details()
+    return {"savings_plans": plans}
