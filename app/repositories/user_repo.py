@@ -314,3 +314,18 @@ class UserRepository:
             (user_id, start_date, end_date)
         )
         return self.cursor.fetchall()
+    
+    def get_transactions_by_user_id_and_date_range_and_type(self, user_id: str, start_date: str, end_date: str, transaction_type: str):
+        """Get transactions for a specific user within a date range and of a specific type"""
+        self.cursor.execute(
+            """
+            SELECT t.*
+            FROM transactions t
+            WHERE t.created_by = %s
+              AND t.created_at >= %s
+              AND t.created_at <= %s
+              AND t.transaction_type = %s
+            """,
+            (user_id, start_date, end_date, transaction_type)
+        )
+        return self.cursor.fetchall()

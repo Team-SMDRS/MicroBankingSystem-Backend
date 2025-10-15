@@ -228,3 +228,22 @@ def get_user_today_transactions(request: Request, db=Depends(get_db)):
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+@router.get("/user/transactions_by_date_range")
+def get_user_transactions_by_date_range(start_date: str, end_date: str, request: Request, db=Depends(get_db)):
+    """Get transactions for the logged-in user by date range"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+
+    try:
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        user_id = current_user["user_id"]
+        transactions = service.get_transactions_by_user_id_and_date_range(user_id, start_date, end_date)
+        return {"transactions": transactions, "total_count": len(transactions)}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

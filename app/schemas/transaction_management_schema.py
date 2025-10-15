@@ -63,6 +63,8 @@ class TransactionResponse(BaseModel):
     created_at: datetime
     created_by: str
     balance_after: Optional[float] = Field(None, description="Account balance after transaction")
+    username: Optional[str] = Field(None, description="Username of the created by user")
+    account_no: Optional[int] = Field(None, description="Account number associated with the transaction")
 
     class Config:
         from_attributes = True
@@ -90,7 +92,6 @@ class AccountTransactionHistory(BaseModel):
 class DateRangeRequest(BaseModel):
     start_date: date = Field(..., description="Start date for the range (YYYY-MM-DD)")
     end_date: date = Field(..., description="End date for the range (YYYY-MM-DD)")
-    acc_id: Optional[str] = Field(None, description="Optional account ID filter")
     transaction_type: Optional[TransactionType] = Field(None, description="Optional transaction type filter")
     
     @validator('end_date')
@@ -129,7 +130,7 @@ class BranchTransactionSummary(BaseModel):
     net_amount: float = 0.0  # Computed field: deposits + transfers_in - withdrawals - transfers_out
     transaction_count: int
     date_range: Dict[str, str]
-    top_accounts: List[Dict[str, Any]]
+    all_accounts: List[Dict[str, Any]]
 
 # Transaction summary models
 class TransactionSummaryRequest(BaseModel):

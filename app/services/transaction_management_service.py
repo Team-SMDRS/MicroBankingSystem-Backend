@@ -337,14 +337,13 @@ class TransactionManagementService:
         """Get transactions within a date range"""
         try:
             # If account specified, validate it exists
-            if request.acc_id and not self.transaction_repo.account_exists(request.acc_id):
-                raise HTTPException(status_code=404, detail="Account not found")
+           
 
             # Get transactions with balance_after
             transactions_data = self.transaction_repo.get_transaction_history_by_date_range_with_balance(
                 start_date=request.start_date,
                 end_date=request.end_date,
-                acc_id=request.acc_id,
+              
                 transaction_type=request.transaction_type.value if request.transaction_type else None
             )
 
@@ -359,7 +358,9 @@ class TransactionManagementService:
                     reference_no=tx['reference_no'],
                     created_at=tx['created_at'],
                     created_by=tx['created_by'],
-                    balance_after=float(tx['balance_after']) if tx.get('balance_after') is not None else None
+                    balance_after=float(tx['balance_after']) if tx.get('balance_after') is not None else None,
+                    username=tx['username'] if tx.get('username') is not None else None,
+                    account_no=tx['account_no'] if tx.get('account_no') is not None else None
                 )
                 for tx in transactions_data
             ]
@@ -415,13 +416,13 @@ class TransactionManagementService:
                 end_date=request.end_date
             )
 
-            top_accounts_list = [
-                 {
-        'acc_id': acc['acc_id'],
-        'acc_holder_name': acc.get('full_name') or acc.get('account_holder_name'),
-        'transaction_count': acc['transaction_count'],
-        'total_volume': float(acc['total_volume'])
-    }
+            all_accounts_list = [
+                {
+                    'acc_id': acc['acc_id'],
+                    'acc_holder_name': acc.get('full_name') or acc.get('account_holder_name'),
+                    'transaction_count': acc['transaction_count'],
+                    'total_volume': float(acc['total_volume'])
+                }
                 for acc in top_accounts
             ]
 
@@ -451,7 +452,7 @@ class TransactionManagementService:
                     'start_date': request.start_date.isoformat(),
                     'end_date': request.end_date.isoformat()
                 },
-                top_accounts=top_accounts_list
+                all_accounts=all_accounts_list
             )
 
         except HTTPException:

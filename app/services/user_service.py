@@ -8,6 +8,8 @@ from app.core.utils import (
     create_access_token_from_refresh
 )
 from fastapi import HTTPException, Request
+from datetime import datetime, timedelta
+
 
 class UserService:
     def __init__(self, repo):
@@ -320,13 +322,14 @@ class UserService:
         return transactions
     
     def get_today_transactions_by_user_id(self, user_id: str):
-        """Get today's transactions for a specific user by their user ID and return totals"""
-        from datetime import datetime, timedelta
+        """Get today's transactions for a specific user by their user ID and return totals (Sri Lanka time)"""
+        from datetime import timezone, timedelta
 
-        # Calculate start and end of today (UTC)
-        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-        today_end = today_start + timedelta(days=1)
-
+        # Sri Lanka is UTC+5:30
+        sri_lanka_tz = timezone(timedelta(hours=5, minutes=30))
+        today = datetime.now(sri_lanka_tz).date()
+        today_start = datetime.combine(today, datetime.min.time(), tzinfo=sri_lanka_tz)
+        today_end = datetime.combine(today, datetime.max.time(), tzinfo=sri_lanka_tz)
         raw_transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, today_start, today_end) or []
 
         transactions = []
@@ -386,3 +389,19 @@ class UserService:
         }
 
         return {"transactions": transactions, "summary": summary}
+    
+
+    def get_transactions_by_user_id_and_date_range(self, user_id: str, start_date: str, end_date: str):
+        """Get transactions for a specific user by their user ID and date range"""
+
+        try:
+            start_dt = datetime.fromisoformat(start_date)
+            end_dt = datetime.fromisoformat(end_date)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use ISO format YYYY-MM-DDTHH:MM:SS")
+
+        if start_dt >= end_dt:
+            raise HTTPException(status_code=400, detail="start_date must be before end_date")
+
+        transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, start_dt, end_dt)
+        return transactions
