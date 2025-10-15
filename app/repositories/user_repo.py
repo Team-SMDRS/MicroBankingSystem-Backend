@@ -278,11 +278,39 @@ class UserRepository:
         """Get user by ID"""
         self.cursor.execute(
             """
-            SELECT u.*, ul.username 
+            SELECT u.*, ul.username ,b.name as branch_name
             FROM users u
             JOIN user_login ul ON u.user_id = ul.user_id
+            JOIN users_branch ub ON u.user_id = ub.user_id
+            JOIN branch b ON ub.branch_id = b.branch_id
             WHERE u.user_id = %s
             """,
             (user_id,)
         )
         return self.cursor.fetchone()
+    
+    def get_transactions_by_user_id(self, user_id: str):
+        """Get transactions for a specific user"""
+        self.cursor.execute(
+            """
+            SELECT t.*
+            FROM transactions t
+            WHERE t.created_by = %s
+            """,
+            (user_id,)
+        )
+        return self.cursor.fetchall()
+    
+    def get_transactions_by_user_id_and_date_range(self, user_id: str, start_date: str, end_date: str):
+        """Get transactions for a specific user within a date range"""
+        self.cursor.execute(
+            """
+            SELECT t.*
+            FROM transactions t
+            WHERE t.created_by = %s
+              AND t.created_at >= %s
+              AND t.created_at <= %s
+            """,
+            (user_id, start_date, end_date)
+        )
+        return self.cursor.fetchall()

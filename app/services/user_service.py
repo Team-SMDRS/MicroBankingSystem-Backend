@@ -313,3 +313,76 @@ class UserService:
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return user
+
+    def get_transactions_by_user_id(self, user_id: str):
+        """Get transactions for a specific user by their user ID"""
+        transactions = self.repo.get_transactions_by_user_id(user_id)
+        return transactions
+    
+    def get_today_transactions_by_user_id(self, user_id: str):
+        """Get today's transactions for a specific user by their user ID and return totals"""
+        from datetime import datetime, timedelta
+
+        # Calculate start and end of today (UTC)
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_end = today_start + timedelta(days=1)
+
+        raw_transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, today_start, today_end) or []
+
+        transactions = []
+        total_amount = 0.0
+        totals_by_type = {
+            "withdrawal": 0.0,
+            "deposit": 0.0,
+            "banktransfer_in": 0.0,
+            "banktransfer_out": 0.0
+        }
+        # net: deposits and banktransfer-in positive, withdrawals and banktransfer-out negative
+        net_amount = 0.0
+
+        for tx in raw_transactions:
+            amt = float(tx.get("amount") or 0)
+            total_amount += amt
+
+            tx_type_raw = (tx.get("type") or "").strip()
+            tx_type = tx_type_raw.lower().replace(" ", "").replace("_", "")
+            # normalize checks
+            if tx_type in ("withdrawal",):
+                totals_by_type["withdrawal"] += amt
+                net_amount -= amt
+            elif tx_type in ("deposit",):
+                totals_by_type["deposit"] += amt
+                net_amount += amt
+            elif tx_type in ("banktransferin", "banktransfer-in", "banktransfer_in", "banktransferin"):
+                totals_by_type["banktransfer_in"] += amt
+                net_amount += amt
+            elif tx_type in ("banktransferout", "banktransfer-out", "banktransfer_out", "banktransferout"):
+                totals_by_type["banktransfer_out"] += amt
+                net_amount -= amt
+            else:
+                # unknown types count as positive by default
+                net_amount += amt
+
+            transactions.append({
+                "transaction_id": str(tx.get("transaction_id")),
+                "amount": amt,
+                "acc_id": str(tx.get("acc_id")) if tx.get("acc_id") else None,
+                "type": tx.get("type"),
+                "description": tx.get("description"),
+                "created_at": tx.get("created_at").isoformat() if hasattr(tx.get("created_at"), "isoformat") else tx.get("created_at"),
+                "created_by": str(tx.get("created_by")) if tx.get("created_by") else None,
+                "reference_no": tx.get("reference_no")
+            })
+
+        summary = {
+            "total_transactions": len(transactions),
+            "total_amount": total_amount,                       # sum of amounts (all transactions)
+            "total_withdrawal": totals_by_type["withdrawal"],
+            "total_deposit": totals_by_type["deposit"],
+            "total_banktransfer_in": totals_by_type["banktransfer_in"],
+            "total_banktransfer_out": totals_by_type["banktransfer_out"],
+            "sum_of_all_value": total_amount,                   # alias for total_amount
+            "numeric_sum": net_amount                           # withdrawals negative, deposits positive
+        }
+
+        return {"transactions": transactions, "summary": summary}
