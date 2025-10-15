@@ -306,3 +306,10 @@ class UserService:
             raise HTTPException(status_code=500, detail="Failed to update password")
         
         return {"msg": "Password updated successfully"}
+
+    def get_user_by_id(self, user_id: str):
+        """Get user by ID"""
+        user = self.repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return user

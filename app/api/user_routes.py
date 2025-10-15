@@ -169,3 +169,23 @@ def update_password(password_data: UpdatePasswordRequest, request: Request, db=D
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
+
+@router.get("/user_data")
+def get_user_data(request: Request, db=Depends(get_db)):
+    """Get user data from access token"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        user_id = current_user["user_id"]
+        user_data = service.get_user_by_id(user_id)
+        return user_data
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

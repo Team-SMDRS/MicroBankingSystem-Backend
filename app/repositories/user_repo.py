@@ -274,3 +274,15 @@ class UserRepository:
         self.conn.commit()
         return self.cursor.rowcount > 0
         
+    def get_user_by_id(self, user_id: str):
+        """Get user by ID"""
+        self.cursor.execute(
+            """
+            SELECT u.*, ul.username 
+            FROM users u
+            JOIN user_login ul ON u.user_id = ul.user_id
+            WHERE u.user_id = %s
+            """,
+            (user_id,)
+        )
+        return self.cursor.fetchone()
