@@ -410,7 +410,7 @@ class TransactionManagementService:
             # Get top accounts for this branch
             top_accounts = self.transaction_repo.get_top_accounts_by_volume(
                 branch_id=request.branch_id,
-                limit=5,
+               
                 start_date=request.start_date,
                 end_date=request.end_date
             )

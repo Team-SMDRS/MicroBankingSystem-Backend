@@ -391,7 +391,7 @@ class TransactionManagementRepository:
         except Exception as e:
             raise e
 
-    def get_top_accounts_by_volume(self, branch_id: str = None, limit: int = 10, start_date: date = None, end_date: date = None) -> List[Dict]:
+    def get_top_accounts_by_volume(self, branch_id: str = None, start_date: date = None, end_date: date = None, limit: int = None) -> List[Dict]:
         """Get top accounts by transaction volume"""
         try:
             base_query = """
@@ -428,9 +428,11 @@ class TransactionManagementRepository:
             base_query += """
                 GROUP BY t.acc_id, c.full_name
                 ORDER BY total_volume DESC
-                LIMIT %s
             """
-            params.append(limit)
+            
+            if limit:
+                base_query += " LIMIT %s"
+                params.append(limit)
             
             self.cursor.execute(base_query, params)
             return self.cursor.fetchall()
@@ -610,5 +612,4 @@ class TransactionManagementRepository:
             return enhanced_transactions, total_count
         except Exception as e:
             raise e
-        
-    
+
