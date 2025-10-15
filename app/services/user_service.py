@@ -8,7 +8,7 @@ from app.core.utils import (
     create_access_token_from_refresh
 )
 from fastapi import HTTPException, Request
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 
 
 class UserService:
@@ -323,7 +323,7 @@ class UserService:
     
     def get_today_transactions_by_user_id(self, user_id: str):
         """Get today's transactions for a specific user by their user ID and return totals (Sri Lanka time)"""
-        from datetime import timezone, timedelta
+       
 
         # Sri Lanka is UTC+5:30
         sri_lanka_tz = timezone(timedelta(hours=5, minutes=30))
