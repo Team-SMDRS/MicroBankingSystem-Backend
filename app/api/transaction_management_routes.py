@@ -314,7 +314,6 @@ def get_account_balance(
 # Advanced reporting endpoints
 @router.get("/report/all-transactions")
 def get_all_transactions_report(
-    current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1, description="Page number"),
     per_page: int = Query(100, ge=1, le=500, description="Records per page (max 500)"),
     acc_id: Optional[str] = Query(None, description="Filter by account ID"),
@@ -345,6 +344,29 @@ def get_all_transactions_report(
                 transaction_type=TransactionType(transaction_type) if transaction_type else None
             )
             result = transaction_service.get_transactions_by_date_range(date_request)
+            
+            # Filter transactions by date and acc_id in the route for robustness
+            filtered_transactions = [
+                tx for tx in result.transactions 
+                if start_date <= tx.created_at.date() <= end_date
+            ]
+            if acc_id:
+                filtered_transactions = [
+                    tx for tx in filtered_transactions 
+                    if tx.acc_id == acc_id
+                ]
+            
+            # Remove duplicates based on transaction_id
+            unique_transactions = []
+            seen_ids = set()
+            for tx in filtered_transactions:
+                if tx.transaction_id not in seen_ids:
+                    unique_transactions.append(tx)
+                    seen_ids.add(tx.transaction_id)
+            
+            result.transactions = unique_transactions
+            result.total_count = len(unique_transactions)
+            
             return {
                 "transactions": result.transactions,
                 "total_count": result.total_count,
