@@ -2,12 +2,13 @@
 Simple Transaction Report API
 """
 
-from fastapi import APIRouter
+
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from app.services.pdf_report_service import PDFReportService
 from fastapi.responses import StreamingResponse
-
-router = APIRouter(prefix="/api/transaction-report", tags=["Reports"])
+from app.database.db import get_db
+router = APIRouter()
 
 
 class SimplePDFRequest(BaseModel):
@@ -18,17 +19,15 @@ class SimplePDFRequest(BaseModel):
 
 
 @router.post("/pdf")
-async def get_report_pdf(request: SimplePDFRequest):
+async def get_report_pdf(request: Request, db=Depends(get_db)):
     """Generate simple PDF report"""
+    user = getattr(request.state, "user", None)
+    user_id = user["user_id"] if user and "user_id" in user else None
     try:
-        pdf_service = PDFReportService()
-        pdf_buffer = pdf_service.generate_report(
-            branch_name=request.branch_name,
-            total_deposits=request.total_deposits,
-            total_withdrawals=request.total_withdrawals
-        )
-        
-        filename = f"report_{request.branch_name}.pdf"
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_report(user_id=user_id)
+
+        filename = f"report.pdf"
         return StreamingResponse(
             iter([pdf_buffer.getvalue()]),
             media_type="application/pdf",

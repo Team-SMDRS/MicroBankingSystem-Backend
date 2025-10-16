@@ -33,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 # Middleware
-# app.add_middleware(AuthMiddleware)
+app.add_middleware(AuthMiddleware)
 
 # Routes
 app.include_router(user_routes.router, prefix="/api/auth",
@@ -62,7 +62,9 @@ app.include_router(customer_routes.router,
                    prefix="/customer_data", tags=["Customer Login & get data"])
 
 # Simple transaction report routes
-app.include_router(pdf_report_routes.router)
+app.include_router(pdf_report_routes.router,
+                   prefix='/api/pdf-reports', tags=["PDF Reports"])
+
 
 @app.get("/")
 async def root():
