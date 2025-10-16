@@ -65,22 +65,29 @@ class FixedDepositRepository:
         """
         Create a new fixed deposit account.
         """
+        # Check if account already has a fixed deposit
+        self.cursor.execute(
+            "SELECT fd_id FROM fixed_deposit WHERE acc_id = %s",
+            (acc_id,)
+        )
+        existing_fd = self.cursor.fetchone()
+        if existing_fd:
+            raise ValueError("Account already has a fixed deposit. Only one FD allowed per account.")
+
         # Calculate maturity date based on plan duration
         self.cursor.execute(
-            """SELECT duration FROM fd_plan WHERE fd_plan_id = %s""",
+            "SELECT duration FROM fd_plan WHERE fd_plan_id = %s",
             (fd_plan_id,)
         )
         plan = self.cursor.fetchone()
-        
         if not plan:
             raise ValueError("Invalid FD plan")
-        
+
         # Insert new fixed deposit with created_by and updated_by fields
         self.cursor.execute(
-        "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
-        (acc_id, amount, fd_plan_id, created_by_user_id)
-    )
-        
+            "SELECT * FROM create_fixed_deposit(%s::uuid, %s, %s::uuid, %s::uuid)",
+            (acc_id, amount, fd_plan_id, created_by_user_id)
+        )
         result = self.cursor.fetchone()
         self.conn.commit()
         return result
