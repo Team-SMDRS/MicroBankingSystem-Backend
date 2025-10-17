@@ -62,3 +62,7 @@ class DeactivateUserRequest(BaseModel):
     
 class ActivateUserRequest(BaseModel):
     user_id: str
+
+class PasswordResetRequest(BaseModel):
+    username: str
+    new_password: str
