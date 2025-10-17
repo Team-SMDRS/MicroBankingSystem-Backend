@@ -1,7 +1,7 @@
 # /login, /register
 
 from fastapi import APIRouter, Depends, Request, HTTPException
-from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest, DeactivateUserRequest
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest, DeactivateUserRequest, ActivateUserRequest
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -284,6 +284,20 @@ def check_user_status(user_id: str, db=Depends(get_db)):
     
     try:
         result = service.check_user_status(user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/activate")
+def activate_user(user_data: ActivateUserRequest, request: Request, db=Depends(get_db)):
+    """Activate a user by setting their status to 'active'"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.activate_user(request, user_data.user_id)
         return result
     except HTTPException as e:
         raise e

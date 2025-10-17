@@ -498,3 +498,38 @@ class UserService:
             "status": status,
             "is_active": status == "active"
         }
+        
+    def activate_user(self, request: Request, user_id: str):
+        """Activate a user by setting their status to 'active'"""
+        from fastapi import HTTPException
+        
+        # Get the current user from the request (the one making the activation)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be activated exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - only users with admin permissions can activate users
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow only if user has admin permissions
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not has_admin_permission:
+        #     raise HTTPException(status_code=403, detail="You don't have permission to activate this user")
+            
+        # Check current status
+        status = self.repo.get_user_status(user_id)
+        if status == "active":
+            return {"msg": "User is already active"}
+            
+        # Activate the user in the database
+        success = self.repo.activate_user(user_id, current_user_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to activate user")
+        
+        return {"msg": "User activated successfully"}

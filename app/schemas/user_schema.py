@@ -59,3 +59,6 @@ class UpdateUserRequest(BaseModel):
     
 class DeactivateUserRequest(BaseModel):
     user_id: str
+    
+class ActivateUserRequest(BaseModel):
+    user_id: str

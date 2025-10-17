@@ -396,3 +396,22 @@ class UserRepository:
             return result["status"]
         except Exception as e:
             raise Exception(f"Error retrieving user status: {e}")
+            
+    def activate_user(self, user_id: str, activated_by_user_id: str):
+        """Activate a user by setting their status to 'active' in the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE user_login
+                SET status = 'active',
+                    updated_at = CURRENT_TIMESTAMP,
+                    updated_by = %s
+                WHERE user_id = %s
+                """,
+                (activated_by_user_id, user_id)
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error activating user: {e}")
