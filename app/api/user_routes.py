@@ -275,3 +275,17 @@ def deactivate_user(user_data: DeactivateUserRequest, request: Request, db=Depen
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.get("/user/status/{user_id}")
+def check_user_status(user_id: str, db=Depends(get_db)):
+    """Check if a user is active or inactive"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.check_user_status(user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")

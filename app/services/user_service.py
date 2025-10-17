@@ -479,3 +479,22 @@ class UserService:
             raise HTTPException(status_code=500, detail="Failed to deactivate user")
         
         return {"msg": "User deactivated successfully"}
+        
+    def check_user_status(self, user_id: str):
+        """Check if a user is active or inactive"""
+        from fastapi import HTTPException
+        
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        # Get user status
+        status = self.repo.get_user_status(user_id)
+        if status is None:
+            raise HTTPException(status_code=404, detail="User status not found")
+            
+        return {
+            "user_id": user_id,
+            "status": status,
+            "is_active": status == "active"
+        }

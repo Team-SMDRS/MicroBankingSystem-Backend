@@ -377,3 +377,22 @@ class UserRepository:
         except Exception as e:
             self.conn.rollback()
             raise Exception(f"Error deactivating user: {e}")
+            
+    def get_user_status(self, user_id: str):
+        """Check if a user is active or inactive by retrieving their status from the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                SELECT status 
+                FROM user_login
+                WHERE user_id = %s
+                """,
+                (user_id,)
+            )
+            result = self.cursor.fetchone()
+            if not result:
+                return None
+                
+            return result["status"]
+        except Exception as e:
+            raise Exception(f"Error retrieving user status: {e}")
