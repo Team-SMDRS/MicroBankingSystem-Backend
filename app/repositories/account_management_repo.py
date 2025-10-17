@@ -245,31 +245,33 @@ class AccountManagementRepository:
             previous_balance = current.get('balance', 0)
 
             # Perform update: set balance to 0 and mark status closed
-            if closed_by_user_id:
-                self.cursor.execute(
-                    '''
-                    UPDATE account
-                    SET balance = 0, status = 'closed', updated_by = %s, updated_at = CURRENT_TIMESTAMP
-                    WHERE account_no = %s
-                    RETURNING *
-                    ''',
-                    (closed_by_user_id, account_no)
-                )
-            else:
-                self.cursor.execute(
-                    '''
-                    UPDATE account
-                    SET balance = 0, status = 'closed', updated_at = CURRENT_TIMESTAMP
-                    WHERE account_no = %s
-                    RETURNING *
-                    ''',
-                    (account_no,)
-                )
+            if not closed_by_user_id:
+                self.conn.rollback()
+                return {"error": "A user ID must be provided to close the account."}
+
+            self.cursor.execute(
+                '''
+                UPDATE account
+                SET balance = 0, status = 'closed', updated_by = %s, updated_at = CURRENT_TIMESTAMP
+                WHERE account_no = %s
+                RETURNING *
+                '''
+                , (closed_by_user_id, account_no)
+            )
 
             updated = self.cursor.fetchone()
             if not updated:
                 self.conn.rollback()
                 return None
+
+            # Insert withdrawal transaction for closing the account
+            self.cursor.execute(
+                '''
+                INSERT INTO transactions (amount, acc_id, type, description, created_by)
+                VALUES (%s, %s, %s, %s, %s)
+                ''',
+                (previous_balance, current['acc_id'], 'Withdrawal', 'Closed the account.', closed_by_user_id)
+            )
 
             # Now fetch the selected fields including savings plan name
             self.cursor.execute(
