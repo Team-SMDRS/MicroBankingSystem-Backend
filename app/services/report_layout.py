@@ -28,10 +28,10 @@ def header(canvas, doc, logo_path=None, bank_name='BTrust Bank', max_w=1.8 * inc
             logo_mid_offset = 6
 
     # Bank name at top-right (appears on every page)
-    canvas.setFont('Helvetica-Bold', 14)
-    text_x = doc.pagesize[0] - doc.rightMargin
-    text_y = doc.pagesize[1] - doc.topMargin - logo_mid_offset
-    canvas.drawRightString(text_x, text_y, bank_name)
+        canvas.setFont('Helvetica-Bold', 14)
+        text_x = doc.pagesize[0] - doc.rightMargin
+        text_y = doc.pagesize[1] - doc.topMargin - logo_mid_offset
+        canvas.drawRightString(text_x, text_y, bank_name)
 
     # Generated timestamp below the bank name (right-aligned)
     try:
