@@ -76,11 +76,11 @@ async def get_own_users_today_transaction_report_pdf(request: Request, db=Depend
 
 
 @router.get("/admin/daily_transactions_by_branch/report/pdf", tags=["PDF Reports"])
-async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, db=Depends(get_db)):
+async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, start_date: str, end_date: str, db=Depends(get_db)):
     """Generate PDF report for daily transactions by branch (admin)."""
     try:
         pdf_service = PDFReportService(db)
-        pdf_buffer = pdf_service.generate_daily_transactions_report_by_branch(branch_id=branch_id)
+        pdf_buffer = pdf_service.generate_daily_transactions_report_by_branch(branch_id=branch_id, report_date=start_date, end_date=end_date)
 
         filename = f"daily_transactions_branch_{branch_id}.pdf"
         return StreamingResponse(

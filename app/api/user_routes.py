@@ -262,3 +262,23 @@ def users_password_reset(password_data: PasswordResetRequest, request: Request, 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
+
+
+@router.get("/user/transactions_history_by_user/{user_id}")
+def get_user_transactions(request: Request, user_id: str, db=Depends(get_db)):
+    """Get transactions for the specified user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        
+        transactions = service.get_transactions_by_user_id(user_id)
+        return {"transactions": transactions, "total_count": len(transactions)}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
