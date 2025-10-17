@@ -21,7 +21,7 @@ class UserRepository:
             (user_id,)
         )
         row = self.cursor.fetchone()
-        return row if row else None
+        return row['branch_id'] if row else None
     def __init__(self, db_conn):
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
