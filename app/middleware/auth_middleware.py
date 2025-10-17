@@ -70,7 +70,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 }
             )
 
-        # Fetch user permissions from database
+        # Fetch user permissions and branch from database
         conn = None
         try:
             
@@ -78,6 +78,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             repo = UserRepository(conn)
             
             permissions = repo.get_user_permissions(user_id)
+            branch_id = repo.get_user_branch_id(user_id)
             
             
             # Verify user still exists and is active
@@ -104,5 +105,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
         request.state.user = payload
         request.state.user["permissions"] = permissions or []
         request.state.user["user_id"] = user_id
+        request.state.user["branch_id"] = branch_id
 
         return await call_next(request)
