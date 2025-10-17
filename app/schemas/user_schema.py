@@ -48,7 +48,25 @@ class UserWithRoles(BaseModel):
 class UpdatePasswordRequest(BaseModel):
     old_password: str
     new_password: str
+    
+class UpdateUserRequest(BaseModel):
+    user_id: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    address: str
+    email: Optional[str] = None
+    
+class DeactivateUserRequest(BaseModel):
+    user_id: str
+    
+class ActivateUserRequest(BaseModel):
+    user_id: str
 
 class PasswordResetRequest(BaseModel):
     username: str
     new_password: str
+    
+class AssignUserToBranchRequest(BaseModel):
+    user_id: str
+    branch_id: str

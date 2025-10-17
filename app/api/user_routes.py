@@ -1,7 +1,7 @@
 # /login, /register
 
 from fastapi import APIRouter, Depends, Request, HTTPException
-from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles , UpdatePasswordRequest,PasswordResetRequest
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest, DeactivateUserRequest, ActivateUserRequest, PasswordResetRequest, AssignUserToBranchRequest
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -247,6 +247,20 @@ def get_user_transactions_by_date_range(start_date: str, end_date: str, request:
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/update_details")
+def update_user_details(user_data: UpdateUserRequest, request: Request, db=Depends(get_db)):
+    """Update user details (first name, last name, phone number, address, email) of a specific user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.update_user_details(request, user_data)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
 @router.post("/users_password_reset")
 def users_password_reset(password_data: PasswordResetRequest, request: Request, db=Depends(get_db)):
@@ -264,6 +278,7 @@ def users_password_reset(password_data: PasswordResetRequest, request: Request, 
     
 
 
+
 @router.get("/user/transactions_history_by_user/{user_id}")
 def get_user_transactions(request: Request, user_id: str, db=Depends(get_db)):
     """Get transactions for the specified user"""
@@ -278,6 +293,77 @@ def get_user_transactions(request: Request, user_id: str, db=Depends(get_db)):
         
         transactions = service.get_transactions_by_user_id(user_id)
         return {"transactions": transactions, "total_count": len(transactions)}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.put("/user/deactivate")
+def deactivate_user(user_data: DeactivateUserRequest, request: Request, db=Depends(get_db)):
+    """Deactivate a user by setting their status to 'inactive'"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.deactivate_user(request, user_data.user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.get("/user/status/{user_id}")
+def check_user_status(user_id: str, db=Depends(get_db)):
+    """Check if a user is active or inactive"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.check_user_status(user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/activate")
+def activate_user(user_data: ActivateUserRequest, request: Request, db=Depends(get_db)):
+    """Activate a user by setting their status to 'active'"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.activate_user(request, user_data.user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.get("/user/branch/{user_id}")
+def get_user_branch(user_id: str, db=Depends(get_db)):
+    """Get the branch information (branch_id and branch_name) for a specific user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.get_user_branch(user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/assign-branch")
+def assign_user_to_branch(assignment_data: AssignUserToBranchRequest, request: Request, db=Depends(get_db)):
+    """Assign a user to a branch. User can only have one branch."""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.assign_user_to_branch(request, assignment_data.user_id, assignment_data.branch_id)
+        return result
     except HTTPException as e:
         raise e
     except Exception as e:

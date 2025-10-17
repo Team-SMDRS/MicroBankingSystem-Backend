@@ -10,12 +10,18 @@ class UserRepository:
 
 
     def get_user_branch_id(self, user_id):
+        """Get branch ID and name for a specific user"""
         self.cursor.execute(
-            "SELECT branch_id FROM users_branch WHERE user_id = %s",
+            """
+            SELECT ub.branch_id, b.name as branch_name
+            FROM users_branch ub
+            JOIN branch b ON ub.branch_id = b.branch_id
+            WHERE ub.user_id = %s
+            """,
             (user_id,)
         )
         row = self.cursor.fetchone()
-        return row['branch_id'] if row else None
+        return row if row else None
     def __init__(self, db_conn):
         self.conn = db_conn
         self.cursor = self.conn.cursor(cursor_factory=RealDictCursor)
@@ -203,10 +209,11 @@ class UserRepository:
     def get_all_users(self):
         """Get all users"""
         self.cursor.execute("""
-            SELECT user_id, nic, first_name, last_name, address, 
-                   phone_number, dob, email, created_at
-            FROM users
-            ORDER BY first_name, last_name
+            SELECT u.user_id, u.nic, u.first_name, u.last_name, u.address, 
+                   u.phone_number, u.dob, u.email, u.created_at, ul.username
+            FROM users u
+            JOIN user_login ul ON u.user_id = ul.user_id
+            ORDER BY u.first_name, u.last_name
         """)
         return self.cursor.fetchall()
 
@@ -245,8 +252,9 @@ class UserRepository:
         self.cursor.execute("""
             SELECT u.user_id, u.nic, u.first_name, u.last_name, u.address,
                    u.phone_number, u.dob, u.email, u.created_at,
-                   r.role_id, r.role_name
+                   r.role_id, r.role_name, ul.username
             FROM users u
+            JOIN user_login ul ON u.user_id = ul.user_id
             LEFT JOIN users_role ur ON u.user_id = ur.user_id
             LEFT JOIN role r ON ur.role_id = r.role_id
             ORDER BY u.first_name, u.last_name
@@ -329,3 +337,137 @@ class UserRepository:
             (user_id, start_date, end_date, transaction_type)
         )
         return self.cursor.fetchall()
+        
+    def update_user_details(self, user_id: str, user_data):
+        """Update user details (first name, last name, phone number, address, email)"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE users
+                SET first_name = %s,
+                    last_name = %s,
+                    phone_number = %s,
+                    address = %s,
+                    email = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = %s
+                """,
+                (
+                    user_data.first_name,
+                    user_data.last_name,
+                    user_data.phone_number,
+                    user_data.address,
+                    user_data.email,
+                    user_id
+                )
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error updating user details: {e}")
+            
+    def deactivate_user(self, user_id: str, deactivated_by_user_id: str):
+        """Deactivate a user by setting their status to 'inactive' in the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE user_login
+                SET status = 'inactive',
+                    updated_at = CURRENT_TIMESTAMP,
+                    updated_by = %s
+                WHERE user_id = %s
+                """,
+                (deactivated_by_user_id, user_id)
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error deactivating user: {e}")
+            
+    def get_user_status(self, user_id: str):
+        """Check if a user is active or inactive by retrieving their status from the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                SELECT status 
+                FROM user_login
+                WHERE user_id = %s
+                """,
+                (user_id,)
+            )
+            result = self.cursor.fetchone()
+            if not result:
+                return None
+                
+            return result["status"]
+        except Exception as e:
+            raise Exception(f"Error retrieving user status: {e}")
+            
+    def activate_user(self, user_id: str, activated_by_user_id: str):
+        """Activate a user by setting their status to 'active' in the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE user_login
+                SET status = 'active',
+                    updated_at = CURRENT_TIMESTAMP,
+                    updated_by = %s
+                WHERE user_id = %s
+                """,
+                (activated_by_user_id, user_id)
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error activating user: {e}")
+            
+    def assign_user_to_branch(self, user_id: str, branch_id: str, assigned_by_user_id: str):
+        """Assign a user to a branch. User can only have one branch."""
+        try:
+            # First check if the branch exists
+            self.cursor.execute(
+                """
+                SELECT 1 FROM branch WHERE branch_id = %s
+                """,
+                (branch_id,)
+            )
+            if not self.cursor.fetchone():
+                raise Exception("Branch does not exist")
+            
+            # Check if user already assigned to a branch
+            self.cursor.execute(
+                """
+                SELECT branch_id FROM users_branch WHERE user_id = %s
+                """,
+                (user_id,)
+            )
+            existing = self.cursor.fetchone()
+            
+            if existing:
+                # Update existing assignment
+                self.cursor.execute(
+                    """
+                    UPDATE users_branch 
+                    SET branch_id = %s
+                    WHERE user_id = %s
+                    """,
+                    (branch_id, user_id)
+                )
+            else:
+                # Create new assignment
+                self.cursor.execute(
+                    """
+                    INSERT INTO users_branch (user_id, branch_id)
+                    VALUES (%s, %s)
+                    """,
+                    (user_id, branch_id)
+                )
+                
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error assigning user to branch: {e}")

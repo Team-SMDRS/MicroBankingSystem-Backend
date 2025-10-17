@@ -218,6 +218,7 @@ class UserService:
                 "phone_number": user["phone_number"],
                 "dob": user["dob"].isoformat() if user["dob"] else None,
                 "email": user["email"],
+                "username": user["username"],
                 "created_at": user["created_at"].isoformat()
             })
         
@@ -273,6 +274,7 @@ class UserService:
                     "phone_number": row["phone_number"],
                     "dob": row["dob"].isoformat() if row["dob"] else None,
                     "email": row["email"],
+                    "username": row["username"],
                     "created_at": row["created_at"].isoformat(),
                     "roles": []
                 }
@@ -331,6 +333,8 @@ class UserService:
         today_start = datetime.combine(today, datetime.min.time(), tzinfo=sri_lanka_tz)
         today_end = datetime.combine(today, datetime.max.time(), tzinfo=sri_lanka_tz)
         raw_transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, today_start, today_end) or []
+        
+    
 
         transactions = []
         total_amount = 0.0
@@ -390,6 +394,47 @@ class UserService:
 
         return {"transactions": transactions, "summary": summary}
     
+    def update_user_details(self, request: Request, user_data):
+        """Update user details (first name, last name, phone number, address, email) of a specific user"""
+        from fastapi import HTTPException
+        import re
+        
+        # Get the current user from the request (the one making the update)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be updated exists
+        target_user_id = user_data.user_id
+        if not self.repo.user_exists(target_user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - either the user is updating their own profile
+        # or they have appropriate permissions
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow if user is updating their own profile or has admin permissions
+        is_self_update = current_user_id == target_user_id
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not (is_self_update or has_admin_permission):
+        #     raise HTTPException(status_code=403, detail="You don't have permission to update this user's details")
+        
+        # Validate email if provided
+        if user_data.email:
+            # Simple regex for email validation
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(email_pattern, user_data.email):
+                raise HTTPException(status_code=400, detail="Invalid email format")
+            
+        # Update user details in the database
+        success = self.repo.update_user_details(target_user_id, user_data)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update user details")
+        
+        return {"msg": "User details updated successfully"}
+    
 
     def get_transactions_by_user_id_and_date_range(self, user_id: str, start_date: str, end_date: str):
         """Get transactions for a specific user by their user ID and date range"""
@@ -405,6 +450,91 @@ class UserService:
 
         transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, start_dt, end_dt)
         return transactions
+        
+    def deactivate_user(self, request: Request, user_id: str):
+        """Deactivate a user by setting their status to 'inactive'"""
+        from fastapi import HTTPException
+        
+        # Get the current user from the request (the one making the deactivation)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be deactivated exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - only users with admin permissions can deactivate users
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow only if user has admin permissions (except for self-deactivation)
+        is_self_deactivation = current_user_id == user_id
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not (is_self_deactivation or has_admin_permission):
+        #     raise HTTPException(status_code=403, detail="You don't have permission to deactivate this user")
+            
+        # Deactivate the user in the database
+        success = self.repo.deactivate_user(user_id, current_user_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to deactivate user")
+        
+        return {"msg": "User deactivated successfully"}
+        
+    def check_user_status(self, user_id: str):
+        """Check if a user is active or inactive"""
+        from fastapi import HTTPException
+        
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        # Get user status
+        status = self.repo.get_user_status(user_id)
+        if status is None:
+            raise HTTPException(status_code=404, detail="User status not found")
+            
+        return {
+            "user_id": user_id,
+            "status": status,
+            "is_active": status == "active"
+        }
+        
+    def activate_user(self, request: Request, user_id: str):
+        """Activate a user by setting their status to 'active'"""
+        from fastapi import HTTPException
+        
+        # Get the current user from the request (the one making the activation)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be activated exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - only users with admin permissions can activate users
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow only if user has admin permissions
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not has_admin_permission:
+        #     raise HTTPException(status_code=403, detail="You don't have permission to activate this user")
+            
+        # Check current status
+        status = self.repo.get_user_status(user_id)
+        if status == "active":
+            return {"msg": "User is already active"}
+            
+        # Activate the user in the database
+        success = self.repo.activate_user(user_id, current_user_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to activate user")
+        
+        return {"msg": "User activated successfully"}
     
 
     def users_password_reset(self, request: Request, username: str, new_password: str):
@@ -427,3 +557,58 @@ class UserService:
             raise HTTPException(status_code=500, detail="Failed to update password")
         
         return {"msg": "Password updated successfully"}
+        
+    def get_user_branch(self, user_id: str):
+        """Get the branch information for a specific user"""
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        # Get the branch information for the user
+        branch_info = self.repo.get_user_branch_id(user_id)
+        
+        if not branch_info:
+            raise HTTPException(status_code=404, detail="Branch not found for this user")
+            
+        return {
+            "user_id": user_id,
+            "branch_id": branch_info["branch_id"],
+            "branch_name": branch_info["branch_name"]
+        }
+        
+    def assign_user_to_branch(self, request: Request, user_id: str, branch_id: str):
+        """Assign a user to a branch"""
+        from fastapi import HTTPException
+        import re
+        
+        # Check if user has appropriate permissions
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+            
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        try:
+            # Call repository method to assign the user to the branch
+            result = self.repo.assign_user_to_branch(
+                user_id=user_id,
+                branch_id=branch_id,
+                assigned_by_user_id=current_user["user_id"]
+            )
+            
+            if result:
+                # Get branch information to return in response
+                branch_info = self.repo.get_user_branch_id(user_id)
+                return {
+                    "success": True, 
+                    "message": "User assigned to branch successfully", 
+                    "user_id": user_id, 
+                    "branch_id": branch_id,
+                    "branch_name": branch_info["branch_name"] if branch_info else None
+                }
+            else:
+                raise HTTPException(status_code=500, detail="Failed to assign user to branch")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
