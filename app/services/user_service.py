@@ -331,6 +331,47 @@ class UserService:
         today_start = datetime.combine(today, datetime.min.time(), tzinfo=sri_lanka_tz)
         today_end = datetime.combine(today, datetime.max.time(), tzinfo=sri_lanka_tz)
         raw_transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, today_start, today_end) or []
+        
+    def update_user_details(self, request: Request, user_data):
+        """Update user details (first name, last name, phone number, address, email) of a specific user"""
+        from fastapi import HTTPException
+        import re
+        
+        # Get the current user from the request (the one making the update)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be updated exists
+        target_user_id = user_data.user_id
+        if not self.repo.user_exists(target_user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - either the user is updating their own profile
+        # or they have appropriate permissions
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow if user is updating their own profile or has admin permissions
+        is_self_update = current_user_id == target_user_id
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not (is_self_update or has_admin_permission):
+        #     raise HTTPException(status_code=403, detail="You don't have permission to update this user's details")
+        
+        # Validate email if provided
+        if user_data.email:
+            # Simple regex for email validation
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+            if not re.match(email_pattern, user_data.email):
+                raise HTTPException(status_code=400, detail="Invalid email format")
+            
+        # Update user details in the database
+        success = self.repo.update_user_details(target_user_id, user_data)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update user details")
+        
+        return {"msg": "User details updated successfully"}
 
         transactions = []
         total_amount = 0.0

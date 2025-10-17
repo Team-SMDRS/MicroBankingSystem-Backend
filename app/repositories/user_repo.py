@@ -329,3 +329,32 @@ class UserRepository:
             (user_id, start_date, end_date, transaction_type)
         )
         return self.cursor.fetchall()
+        
+    def update_user_details(self, user_id: str, user_data):
+        """Update user details (first name, last name, phone number, address, email)"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE users
+                SET first_name = %s,
+                    last_name = %s,
+                    phone_number = %s,
+                    address = %s,
+                    email = %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = %s
+                """,
+                (
+                    user_data.first_name,
+                    user_data.last_name,
+                    user_data.phone_number,
+                    user_data.address,
+                    user_data.email,
+                    user_id
+                )
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error updating user details: {e}")

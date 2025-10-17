@@ -1,7 +1,7 @@
 # /login, /register
 
 from fastapi import APIRouter, Depends, Request, HTTPException
-from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles , UpdatePasswordRequest
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -243,6 +243,20 @@ def get_user_transactions_by_date_range(start_date: str, end_date: str, request:
         user_id = current_user["user_id"]
         transactions = service.get_transactions_by_user_id_and_date_range(user_id, start_date, end_date)
         return {"transactions": transactions, "total_count": len(transactions)}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/update_details")
+def update_user_details(user_data: UpdateUserRequest, request: Request, db=Depends(get_db)):
+    """Update user details (first name, last name, phone number, address, email) of a specific user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.update_user_details(request, user_data)
+        return result
     except HTTPException as e:
         raise e
     except Exception as e:

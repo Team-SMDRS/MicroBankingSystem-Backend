@@ -48,3 +48,11 @@ class UserWithRoles(BaseModel):
 class UpdatePasswordRequest(BaseModel):
     old_password: str
     new_password: str
+    
+class UpdateUserRequest(BaseModel):
+    user_id: str
+    first_name: str
+    last_name: str
+    phone_number: str
+    address: str
+    email: Optional[str] = None
