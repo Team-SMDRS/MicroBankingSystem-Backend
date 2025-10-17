@@ -423,3 +423,51 @@ class UserRepository:
         except Exception as e:
             self.conn.rollback()
             raise Exception(f"Error activating user: {e}")
+            
+    def assign_user_to_branch(self, user_id: str, branch_id: str, assigned_by_user_id: str):
+        """Assign a user to a branch. User can only have one branch."""
+        try:
+            # First check if the branch exists
+            self.cursor.execute(
+                """
+                SELECT 1 FROM branch WHERE branch_id = %s
+                """,
+                (branch_id,)
+            )
+            if not self.cursor.fetchone():
+                raise Exception("Branch does not exist")
+            
+            # Check if user already assigned to a branch
+            self.cursor.execute(
+                """
+                SELECT branch_id FROM users_branch WHERE user_id = %s
+                """,
+                (user_id,)
+            )
+            existing = self.cursor.fetchone()
+            
+            if existing:
+                # Update existing assignment
+                self.cursor.execute(
+                    """
+                    UPDATE users_branch 
+                    SET branch_id = %s
+                    WHERE user_id = %s
+                    """,
+                    (branch_id, user_id)
+                )
+            else:
+                # Create new assignment
+                self.cursor.execute(
+                    """
+                    INSERT INTO users_branch (user_id, branch_id)
+                    VALUES (%s, %s)
+                    """,
+                    (user_id, branch_id)
+                )
+                
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error assigning user to branch: {e}")

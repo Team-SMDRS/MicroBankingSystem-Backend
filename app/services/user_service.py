@@ -575,3 +575,40 @@ class UserService:
             "branch_id": branch_info["branch_id"],
             "branch_name": branch_info["branch_name"]
         }
+        
+    def assign_user_to_branch(self, request: Request, user_id: str, branch_id: str):
+        """Assign a user to a branch"""
+        from fastapi import HTTPException
+        import re
+        
+        # Check if user has appropriate permissions
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+            
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        try:
+            # Call repository method to assign the user to the branch
+            result = self.repo.assign_user_to_branch(
+                user_id=user_id,
+                branch_id=branch_id,
+                assigned_by_user_id=current_user["user_id"]
+            )
+            
+            if result:
+                # Get branch information to return in response
+                branch_info = self.repo.get_user_branch_id(user_id)
+                return {
+                    "success": True, 
+                    "message": "User assigned to branch successfully", 
+                    "user_id": user_id, 
+                    "branch_id": branch_id,
+                    "branch_name": branch_info["branch_name"] if branch_info else None
+                }
+            else:
+                raise HTTPException(status_code=500, detail="Failed to assign user to branch")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))

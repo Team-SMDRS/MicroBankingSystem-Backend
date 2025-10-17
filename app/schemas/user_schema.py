@@ -66,3 +66,7 @@ class ActivateUserRequest(BaseModel):
 class PasswordResetRequest(BaseModel):
     username: str
     new_password: str
+    
+class AssignUserToBranchRequest(BaseModel):
+    user_id: str
+    branch_id: str
