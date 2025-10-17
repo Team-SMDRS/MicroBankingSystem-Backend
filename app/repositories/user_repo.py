@@ -203,10 +203,11 @@ class UserRepository:
     def get_all_users(self):
         """Get all users"""
         self.cursor.execute("""
-            SELECT user_id, nic, first_name, last_name, address, 
-                   phone_number, dob, email, created_at
-            FROM users
-            ORDER BY first_name, last_name
+            SELECT u.user_id, u.nic, u.first_name, u.last_name, u.address, 
+                   u.phone_number, u.dob, u.email, u.created_at, ul.username
+            FROM users u
+            JOIN user_login ul ON u.user_id = ul.user_id
+            ORDER BY u.first_name, u.last_name
         """)
         return self.cursor.fetchall()
 
@@ -245,8 +246,9 @@ class UserRepository:
         self.cursor.execute("""
             SELECT u.user_id, u.nic, u.first_name, u.last_name, u.address,
                    u.phone_number, u.dob, u.email, u.created_at,
-                   r.role_id, r.role_name
+                   r.role_id, r.role_name, ul.username
             FROM users u
+            JOIN user_login ul ON u.user_id = ul.user_id
             LEFT JOIN users_role ur ON u.user_id = ur.user_id
             LEFT JOIN role r ON ur.role_id = r.role_id
             ORDER BY u.first_name, u.last_name

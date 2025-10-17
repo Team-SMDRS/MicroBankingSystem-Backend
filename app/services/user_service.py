@@ -218,6 +218,7 @@ class UserService:
                 "phone_number": user["phone_number"],
                 "dob": user["dob"].isoformat() if user["dob"] else None,
                 "email": user["email"],
+                "username": user["username"],
                 "created_at": user["created_at"].isoformat()
             })
         
@@ -273,6 +274,7 @@ class UserService:
                     "phone_number": row["phone_number"],
                     "dob": row["dob"].isoformat() if row["dob"] else None,
                     "email": row["email"],
+                    "username": row["username"],
                     "created_at": row["created_at"].isoformat(),
                     "roles": []
                 }
