@@ -1,7 +1,7 @@
 # /login, /register
 
 from fastapi import APIRouter, Depends, Request, HTTPException
-from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest
+from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest, DeactivateUserRequest
 from app.database.db import get_db
 from app.repositories.user_repo import UserRepository
 from app.services.user_service import UserService
@@ -256,6 +256,20 @@ def update_user_details(user_data: UpdateUserRequest, request: Request, db=Depen
     
     try:
         result = service.update_user_details(request, user_data)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.put("/user/deactivate")
+def deactivate_user(user_data: DeactivateUserRequest, request: Request, db=Depends(get_db)):
+    """Deactivate a user by setting their status to 'inactive'"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.deactivate_user(request, user_data.user_id)
         return result
     except HTTPException as e:
         raise e

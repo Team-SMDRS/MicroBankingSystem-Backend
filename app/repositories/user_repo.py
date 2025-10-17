@@ -358,3 +358,22 @@ class UserRepository:
         except Exception as e:
             self.conn.rollback()
             raise Exception(f"Error updating user details: {e}")
+            
+    def deactivate_user(self, user_id: str, deactivated_by_user_id: str):
+        """Deactivate a user by setting their status to 'inactive' in the user_login table"""
+        try:
+            self.cursor.execute(
+                """
+                UPDATE user_login
+                SET status = 'inactive',
+                    updated_at = CURRENT_TIMESTAMP,
+                    updated_by = %s
+                WHERE user_id = %s
+                """,
+                (deactivated_by_user_id, user_id)
+            )
+            self.conn.commit()
+            return self.cursor.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise Exception(f"Error deactivating user: {e}")

@@ -56,3 +56,6 @@ class UpdateUserRequest(BaseModel):
     phone_number: str
     address: str
     email: Optional[str] = None
+    
+class DeactivateUserRequest(BaseModel):
+    user_id: str

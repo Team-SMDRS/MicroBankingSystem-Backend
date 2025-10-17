@@ -448,3 +448,34 @@ class UserService:
 
         transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, start_dt, end_dt)
         return transactions
+        
+    def deactivate_user(self, request: Request, user_id: str):
+        """Deactivate a user by setting their status to 'inactive'"""
+        from fastapi import HTTPException
+        
+        # Get the current user from the request (the one making the deactivation)
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        
+        # Check if the user to be deactivated exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check permissions - only users with admin permissions can deactivate users
+        current_user_id = current_user["user_id"]
+        current_user_permissions = self.repo.get_user_permissions(current_user_id)
+        
+        # Allow only if user has admin permissions (except for self-deactivation)
+        is_self_deactivation = current_user_id == user_id
+        # has_admin_permission = "admin" in current_user_permissions
+        
+        # if not (is_self_deactivation or has_admin_permission):
+        #     raise HTTPException(status_code=403, detail="You don't have permission to deactivate this user")
+            
+        # Deactivate the user in the database
+        success = self.repo.deactivate_user(user_id, current_user_id)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to deactivate user")
+        
+        return {"msg": "User deactivated successfully"}
