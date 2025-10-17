@@ -7,15 +7,18 @@ from reportlab.lib.pagesizes import A4
 from decimal import Decimal
 from datetime import datetime
 from reportlab.lib.units import inch
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib import colors
 from app.services.user_service import UserService
 from app.repositories.user_repo import UserRepository
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+import os
+from reportlab.lib.utils import ImageReader
+
 class PDFReportService:
     """Minimal PDF report generation"""
     
-    def __init__(self,repo):
+    def __init__(self, repo):
         self.styles = getSampleStyleSheet()
         self.user_service = UserService(UserRepository(repo))
         
@@ -24,13 +27,14 @@ class PDFReportService:
         """Generate simple PDF report"""
         buffer = BytesIO()
         doc = SimpleDocTemplate(
-        buffer,
-        pagesize=A4,
-        rightMargin=1 * inch,
-        leftMargin=1 * inch,
-        topMargin=1 * inch,
-        bottomMargin=1 * inch,
-    )
+            buffer,
+            pagesize=A4,
+            rightMargin=1 * inch,
+            leftMargin=1 * inch,
+            topMargin=0.2 * inch,
+            bottomMargin=1 * inch,
+            # header & footer drawn on canvas in build call
+        )
         elements = []
 
         styles = getSampleStyleSheet()
@@ -43,8 +47,21 @@ class PDFReportService:
             wordWrap='CJK',  # allows breaking long words
         )
 
+        # Header will be drawn on every page (logo + bank name)
+        logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
+
         # Title
-        elements.append(Paragraph(f"Transaction Report for User: {user_id}", styles['Heading1']))
+        user = self.user_service.get_user_by_id(user_id)
+        users_name = f"{user['first_name']} {user['last_name']}"
+        
+        elements.append(Spacer(1, 0.8 * inch))
+        centered_style = ParagraphStyle(
+            name='CenteredHeading',
+            parent=styles['Heading2'],
+            alignment=1,  # 0=left, 1=center, 2=right
+        )
+        elements.append(Paragraph(f"Transaction Report Of User: {users_name}", centered_style))
+        
         elements.append(Spacer(1, 0.3 * inch))
 
         # Get user transaction data
@@ -77,29 +94,39 @@ class PDFReportService:
 
             # Create table with adjusted column widths
             table = Table(data, colWidths=[
-    1.9 * inch,  # Date
-    1.3 * inch,  # Type
-    1.3 * inch,  # Amount
-    1.4 * inch,  # Description
-    1.5 * inch,  # Reference No
-]
-)
+                1.9 * inch,  # Date
+                1.3 * inch,  # Type
+                1.3 * inch,  # Amount
+                1.4 * inch,  # Description
+                1.5 * inch,  # Reference No
+            ])
 
             table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                 ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, -1), 10),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
             ]))
 
             elements.append(table)
 
-        # Build PDF
-        doc.build(elements)
+        # Use shared header/footer helpers from report_layout
+        from app.services.report_layout import header as layout_header, footer as layout_footer
+
+        # Build PDF: create wrappers that bind logo_path for header
+        def on_first_page(canvas, doc):
+            layout_header(canvas, doc, logo_path=logo_path)
+            layout_footer(canvas, doc)
+
+        def on_later_pages(canvas, doc):
+            layout_header(canvas, doc, logo_path=None)  # no logo after first page
+            layout_footer(canvas, doc)
+
+        doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
         buffer.seek(0)
         return buffer
