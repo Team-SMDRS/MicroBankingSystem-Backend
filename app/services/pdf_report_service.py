@@ -5,12 +5,16 @@ Minimal PDF Report Generation
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, date
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib import colors
 from app.services.user_service import UserService
 from app.repositories.user_repo import UserRepository
+from app.services.transaction_management_service import TransactionManagementService
+from app.repositories.transaction_management_repo import TransactionManagementRepository
+from app.services.branch_service import BranchService
+from app.repositories.branch_repo import BranchRepository
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import os
 from reportlab.lib.utils import ImageReader
@@ -21,7 +25,9 @@ class PDFReportService:
     def __init__(self, repo):
         self.styles = getSampleStyleSheet()
         self.user_service = UserService(UserRepository(repo))
-        
+        self.transaction_service = TransactionManagementService(TransactionManagementRepository(repo))
+        self.branch_service = BranchService(BranchRepository(repo))
+  
 
     def generate_users_all_transaction_report_by_id(self, user_id: str) -> BytesIO:
         """Generate simple PDF report"""
@@ -265,18 +271,35 @@ class PDFReportService:
         return buffer
 
     
-
-    def generate_daily_transactions_report_by_branch(self, branch_id: str, start_date: str, end_date: str) -> BytesIO:
-        """Generate daily transactions report for a specific branch"""
+    def generate_date_range_transactions_report_by_branch(self, branch_id: str, start_date: str, end_date: str) -> BytesIO:
+        """Generate daily transactions report for a specific branch."""
         buffer = BytesIO()
 
-        # Fetch transactions for the branch within the date range
+        # Convert string dates to datetime.date
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date() if isinstance(start_date, str) else start_date
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date() if isinstance(end_date, str) else end_date
+
+        # Get branch name from service
+        branch = self.branch_service.get_branch_by_id(branch_id)
+        branch_name = branch[0]['name'] if branch else "Unknown Branch"
+        
+        # Fetch transactions and summary from service
+        result = self.transaction_service.get_branch_transactions_report(
+            branch_id=branch_id,
+            start_date=start_date_obj,
+            end_date=end_date_obj
+        )
+
+        transactions = result.get("transactions", [])
+        summary = result.get("type_summary", {})
+
+        # Create PDF document
         doc = SimpleDocTemplate(
             buffer,
             pagesize=A4,
             rightMargin=1 * inch,
             leftMargin=1 * inch,
-            topMargin=0.2 * inch,
+            topMargin=0.5 * inch,
             bottomMargin=1 * inch,
         )
         elements = []
@@ -291,63 +314,55 @@ class PDFReportService:
             wordWrap='CJK',
         )
 
-        # Header and Title
-        logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
-     
-       
-        elements.append(Spacer(1, 0.8 * inch))
+        # Header / Title
         centered_style = ParagraphStyle(
             name='CenteredHeading',
             parent=styles['Heading2'],
             alignment=1,
         )
-        today=datetime.now().strftime('%Y-%m-%d')
-        elements.append(Paragraph(f"Transaction Report Of User: ({today})", centered_style))
+        today = datetime.now().strftime('%Y-%m-%d')
+        elements.append(Spacer(1, 1 * inch))
+        elements.append(Paragraph(f"Transaction Report of {branch_name}  Branch: ({start_date}) to ({end_date})", centered_style))
         elements.append(Spacer(1, 0.3 * inch))
 
-        # Get user transactions and summary
-        result = self.user_service.get_today_transactions_by_user_id(user_id)
-        print("DEBUG result:", result)  # Debugging line
-        transactions = result.get("transactions", [])
-        summary = result.get("summary", {})
-
         if not transactions:
-            elements.append(Paragraph("No transactions found.", styles['Normal']))
+            elements.append(Paragraph("No transactions found.", normal_style))
         else:
-            # Table headers
+            # Transaction Table
             data = [[
-                Paragraph("Time", table_cell_style),
+                Paragraph("Date & Time", table_cell_style),
                 Paragraph("Type", table_cell_style),
                 Paragraph("Amount", table_cell_style),
                 Paragraph("Description", table_cell_style),
                 Paragraph("Reference No", table_cell_style),
             ]]
 
-            # Table rows
             for tx in transactions:
+                # Format amount
                 amount = f"Rs. {float(tx['amount']):,.2f}" if isinstance(tx['amount'], (Decimal, float, int)) else str(tx['amount'])
-                # Extract only time from 'created_at'
+
+                # Extract date and time from created_at
                 if isinstance(tx['created_at'], datetime):
-                    date = tx['created_at'].strftime('%H:%M:%S')
+                    datetime_str = tx['created_at'].strftime('%Y-%m-%d %H:%M:%S')
                 else:
-                    # If it's a string like '2025-10-17T23:31:08.549325'
+                    # Handle ISO string like '2025-10-17T23:31:08.549325'
                     try:
-                        date = tx['created_at'].split('T')[1].split('.')[0]  # '23:31:08'
+                        # Split at 'T', then take date and time part
+                        date_part, time_part = tx['created_at'].split('T')
+                        time_part = time_part.split('.')[0]  # Remove microseconds if present
+                        datetime_str = f"{date_part} {time_part}"
                     except Exception:
-                        date = str(tx['created_at'])
+                        datetime_str = str(tx['created_at'])
 
                 data.append([
-                    Paragraph(date, table_cell_style),
+                    Paragraph(datetime_str, table_cell_style),
                     Paragraph(tx.get('type', ''), table_cell_style),
                     Paragraph(amount, table_cell_style),
                     Paragraph(tx.get('description', ''), table_cell_style),
                     Paragraph(str(tx.get('reference_no', '')), table_cell_style),
                 ])
 
-            # Create transaction table
-            table = Table(data, colWidths=[
-                1.9 * inch, 1.3 * inch, 1.3 * inch, 1.4 * inch, 1.5 * inch
-            ])
+            table = Table(data, colWidths=[1.6*inch, 1.5*inch, 1.5*inch, 1.8*inch, 1.5*inch])
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -359,21 +374,27 @@ class PDFReportService:
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
             ]))
             elements.append(table)
-            elements.append(Spacer(1, 0.4 * inch))
+            elements.append(Spacer(1, 0.3 * inch))
 
-            # Add summary table
+            # Summary Table
+            total_deposit = sum(v['total_amount'] for k, v in summary.items() if k.lower() == 'deposit')
+            total_withdrawal = sum(v['total_amount'] for k, v in summary.items() if k.lower() == 'withdrawal')
+            total_in = sum(v['total_amount'] for k, v in summary.items() if k.lower() == 'banktransfer-in')
+            total_out = sum(v['total_amount'] for k, v in summary.items() if k.lower() == 'banktransfer-out')
+            net_change = total_deposit + total_in - total_withdrawal - total_out
+
             summary_data = [
-                [Paragraph("<b>Summary</b>", table_cell_style), ""],
-                ["Total Transactions", str(summary.get("total_transactions", 0))],
-                ["Total Amount", f"Rs. {summary.get('total_amount', 0):,.2f}"],
-                ["Total Deposits", f"Rs. {summary.get('total_deposit', 0):,.2f}"],
-                ["Total Withdrawals", f"Rs. {summary.get('total_withdrawal', 0):,.2f}"],
-                ["Bank Transfer In", f"Rs. {summary.get('total_banktransfer_in', 0):,.2f}"],
-                ["Bank Transfer Out", f"Rs. {summary.get('total_banktransfer_out', 0):,.2f}"],
-                ["Net Change", f"Rs. {summary.get('numeric_sum', 0):,.2f}"],
+                ["Summary", ""],
+                ["Total Transactions", str(result.get("total_transactions", 0))],
+                ["Total Amount", f"Rs. {result.get('total_amount', 0):,.2f}"],
+                ["Total Deposits", f"Rs. {total_deposit:,.2f}"],
+                ["Total Withdrawals", f"Rs. {total_withdrawal:,.2f}"],
+                ["Bank Transfer In", f"Rs. {total_in:,.2f}"],
+                ["Bank Transfer Out", f"Rs. {total_out:,.2f}"],
+                ["Net Change", f"Rs. {net_change:,.2f}"],
             ]
 
-            summary_table = Table(summary_data, colWidths=[2.5 * inch, 2.5 * inch])
+            summary_table = Table(summary_data, colWidths=[2*inch, 2*inch])
             summary_table.setStyle(TableStyle([
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
                 ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
@@ -382,10 +403,11 @@ class PDFReportService:
             ]))
             elements.append(summary_table)
 
-        # Import shared layout helpers
+        # Add header/footer if you have layout helpers
         from app.services.report_layout import header as layout_header, footer as layout_footer
 
         def on_first_page(canvas, doc):
+            logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
             layout_header(canvas, doc, logo_path=logo_path)
             layout_footer(canvas, doc)
 
@@ -395,5 +417,4 @@ class PDFReportService:
 
         doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
         buffer.seek(0)
-
         return buffer

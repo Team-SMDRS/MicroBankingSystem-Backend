@@ -3,6 +3,8 @@ Simple Transaction Report API
 """
 
 
+from re import I
+from webbrowser import get
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 from app.services.pdf_report_service import PDFReportService
@@ -80,7 +82,29 @@ async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, star
     """Generate PDF report for daily transactions by branch (admin)."""
     try:
         pdf_service = PDFReportService(db)
-        pdf_buffer = pdf_service.generate_daily_transactions_report_by_branch(branch_id=branch_id, report_date=start_date, end_date=end_date)
+        pdf_buffer = pdf_service.generate_date_range_transactions_report_by_branch(branch_id=branch_id, start_date=start_date, end_date=end_date)
+
+        filename = f"daily_transactions_branch_{branch_id}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        return {"error": str(e)}
+    
+
+@router.get("/users/daily_branch_transactions/report/pdf", tags=["PDF Reports"])
+async def get_users_daily_branch_transactions_report_pdf(start_date: str, end_date: str, request: Request, db=Depends(get_db)):
+    """Generate PDF report for daily branch transactions for the authenticated user."""
+  
+    # Get branch_id from request.state (set by middleware)
+    user = getattr(request.state, "user", None)
+    branch_id = user["branch_id"] if user and "branch_id" in user else None
+
+    try:
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_date_range_transactions_report_by_branch(branch_id=branch_id, start_date=start_date, end_date=end_date)
 
         filename = f"daily_transactions_branch_{branch_id}.pdf"
         return StreamingResponse(
