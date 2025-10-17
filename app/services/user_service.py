@@ -557,3 +557,21 @@ class UserService:
             raise HTTPException(status_code=500, detail="Failed to update password")
         
         return {"msg": "Password updated successfully"}
+        
+    def get_user_branch(self, user_id: str):
+        """Get the branch information for a specific user"""
+        # Check if user exists
+        if not self.repo.user_exists(user_id):
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        # Get the branch information for the user
+        branch_info = self.repo.get_user_branch_id(user_id)
+        
+        if not branch_info:
+            raise HTTPException(status_code=404, detail="Branch not found for this user")
+            
+        return {
+            "user_id": user_id,
+            "branch_id": branch_info["branch_id"],
+            "branch_name": branch_info["branch_name"]
+        }

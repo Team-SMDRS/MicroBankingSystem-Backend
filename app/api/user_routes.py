@@ -317,3 +317,17 @@ def activate_user(user_data: ActivateUserRequest, request: Request, db=Depends(g
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        
+@router.get("/user/branch/{user_id}")
+def get_user_branch(user_id: str, db=Depends(get_db)):
+    """Get the branch information (branch_id and branch_name) for a specific user"""
+    repo = UserRepository(db)
+    service = UserService(repo)
+    
+    try:
+        result = service.get_user_branch(user_id)
+        return result
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
