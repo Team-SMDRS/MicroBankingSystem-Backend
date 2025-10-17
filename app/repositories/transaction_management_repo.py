@@ -613,3 +613,45 @@ class TransactionManagementRepository:
         except Exception as e:
             raise e
 
+    def get_branch_transactions_by_date_range(self, branch_id: str, start_date: date, end_date: date, transaction_type: str = None) -> List[Dict]:
+        """Get all transactions for accounts in a specific branch within a date range"""
+        try:
+            query = """
+    SELECT 
+        t.transaction_id,
+        t.amount,
+        t.acc_id,
+        t.type,
+        t.description,
+        t.reference_no,
+        t.created_at,
+        t.created_by,
+        a.account_no,
+        u.first_name || ' ' || u.last_name AS full_name,
+        ul.username
+    FROM public.transactions AS t
+    JOIN public.account AS a 
+        ON t.acc_id = a.acc_id
+    LEFT JOIN public.users AS u 
+        ON t.created_by = u.user_id
+    LEFT JOIN public.user_login AS ul 
+        ON u.user_id = ul.user_id
+    WHERE a.branch_id = %s::UUID
+      AND DATE(t.created_at) BETWEEN %s AND %s
+"""
+            params = [branch_id, start_date, end_date]
+
+            if transaction_type:
+                query += " AND t.type = %s"
+                params.append(transaction_type)
+
+            query += " ORDER BY t.created_at DESC"
+
+            
+            self.cursor.execute(query, params)
+            transactions = self.cursor.fetchall()
+            
+            return [dict(tx) for tx in transactions]
+        except Exception as e:
+            raise e
+

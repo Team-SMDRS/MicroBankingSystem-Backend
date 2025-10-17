@@ -255,4 +255,12 @@ class PDFReportService:
         buffer.seek(0)
         return buffer
 
-        
+    
+
+    def generate_daily_transactions_report_by_branch(self, branch_id: str, report_date: str) -> BytesIO:
+        """Generate daily transactions report for a specific branch"""
+        # Implementation would be similar to above methods,
+        # fetching transactions for the branch on the given date
+        # and formatting them into a PDF report.
+        buffer = BytesIO()
+        # ... (implementation details)

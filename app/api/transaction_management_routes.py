@@ -9,6 +9,7 @@ from app.schemas.transaction_management_schema import (
 from app.database.db import get_db
 from app.repositories.transaction_management_repo import TransactionManagementRepository
 from app.services.transaction_management_service import TransactionManagementService
+from app.repositories.user_repo import UserRepository
 from typing import Optional
 from datetime import date
 
@@ -456,3 +457,50 @@ def get_account_transactions_by_uuid(
     return transaction_service.get_account_transactions(account_id, page, per_page)
 
 
+@router.get("/transactions/branch/{branch_id}")
+def get_branch_transactions_report_by_date(
+    branch_id: str,
+    start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
+    end_date: date = Query(..., description="End date for the report (YYYY-MM-DD)"),
+    transaction_type: Optional[str] = Query(None, description="Optional transaction type filter (deposit, withdrawal, transfer)"),
+    transaction_service: TransactionManagementService = Depends(get_transaction_service)
+):
+    """
+    Get transaction report for a specific branch within a date range
+    
+    - **branch_id**: Branch UUID to get transactions for
+    - **start_date**: Start date for the report (YYYY-MM-DD)
+    - **end_date**: End date for the report (YYYY-MM-DD)
+    - **transaction_type**: Optional transaction type filter (deposit, withdrawal, transfer)
+    
+    Returns:
+    - List of all transactions for accounts in the branch
+    - Summary statistics including total transactions and amounts
+    - Breakdown by transaction type
+    """
+    return transaction_service.get_branch_transactions_report(branch_id, start_date, end_date, transaction_type)
+
+
+
+@router.get("/transactions/users_branch")
+def get_users_branch_transactions(
+    request: Request,
+    start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
+    end_date: date = Query(..., description="End date for the report (YYYY-MM-DD)"),
+    transaction_type: Optional[str] = Query(None, description="Optional transaction type filter (deposit, withdrawal, transfer)"),
+    current_user: dict = Depends(get_current_user),
+    transaction_service: TransactionManagementService = Depends(get_transaction_service)
+):
+    """
+    Get transaction report for the branch of the authenticated user within a date range
+    
+    - **start_date**: Start date for the report (YYYY-MM-DD)
+    - **end_date**: End date for the report (YYYY-MM-DD)
+    - **transaction_type**: Optional transaction type filter (deposit, withdrawal, transfer)
+    
+    Returns:
+    - List of all transactions for accounts in the user's branch
+    - Summary statistics including total transactions and amounts
+    - Breakdown by transaction type
+    """
+    return transaction_service.get_users_branch_transactions_report(current_user, start_date, end_date, transaction_type)

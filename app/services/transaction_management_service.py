@@ -584,3 +584,73 @@ class TransactionManagementService:
             raise
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to get transaction: {str(e)}")
+
+    def get_branch_transactions_report(self, branch_id: str, start_date: date, end_date: date, transaction_type: str = None) -> Dict[str, Any]:
+        """Get transaction report for a specific branch within a date range"""
+        try:
+            # Validate date range
+            if start_date > end_date:
+                raise HTTPException(status_code=400, detail="Start date must be before or equal to end date")
+            
+            # Get transactions from repository
+            transactions = self.transaction_repo.get_branch_transactions_by_date_range(
+                branch_id=branch_id,
+                start_date=start_date,
+                end_date=end_date,
+                transaction_type=transaction_type
+            )
+            
+            # Calculate summary statistics
+            total_transactions = len(transactions)
+            total_amount = sum(float(tx['amount']) for tx in transactions)
+            
+            # Group by transaction type
+            type_summary = {}
+            for tx in transactions:
+                tx_type = tx['type']
+                if tx_type not in type_summary:
+                    type_summary[tx_type] = {
+                        'count': 0,
+                        'total_amount': 0.0
+                    }
+                type_summary[tx_type]['count'] += 1
+                type_summary[tx_type]['total_amount'] += float(tx['amount'])
+            
+            return {
+                'branch_id': branch_id,
+                'start_date': start_date,
+                'end_date': end_date,
+                'transaction_type_filter': transaction_type,
+                'total_transactions': total_transactions,
+                'total_amount': total_amount,
+                'type_summary': type_summary,
+                'transactions': [
+                    {
+                        'transaction_id': str(tx['transaction_id']),
+                        'amount': float(tx['amount']),
+                        'acc_id': str(tx['acc_id']),
+                        'account_no': int(tx['account_no']),
+                        'type': tx['type'],
+                        'description': tx['description'],
+                        'reference_no': int(tx['reference_no']) if tx['reference_no'] else None,
+                        'created_at': tx['created_at'],
+                        'created_by': str(tx['created_by']) if tx['created_by'] else None,
+                        'username': tx.get('username')
+                    }
+                    for tx in transactions
+                ]
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to get branch transaction report: {str(e)}")
+        
+    def get_users_branch_transactions_report(self, current_user: dict, start_date: date, end_date: date, transaction_type: str = None) -> Dict[str, Any]:
+        """Get transaction report for the branch of the authenticated user within a date range"""
+        
+        # Extract branch_id from current_user
+        branch_id = current_user.get("branch_id")
+        if not branch_id:
+            raise HTTPException(status_code=401, detail="Unauthorized or branch information missing")
+
+        return self.get_branch_transactions_report(branch_id, start_date, end_date, transaction_type)       

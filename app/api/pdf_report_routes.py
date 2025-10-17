@@ -72,3 +72,21 @@ async def get_own_users_today_transaction_report_pdf(request: Request, db=Depend
         )
     except Exception as e:
         return {"error": str(e)}
+    
+
+
+@router.get("/admin/daily_transactions_by_branch/report/pdf", tags=["PDF Reports"])
+async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, db=Depends(get_db)):
+    """Generate PDF report for daily transactions by branch (admin)."""
+    try:
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_daily_transactions_report_by_branch(branch_id=branch_id)
+
+        filename = f"daily_transactions_branch_{branch_id}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        return {"error": str(e)}
