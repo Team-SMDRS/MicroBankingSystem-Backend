@@ -195,7 +195,7 @@ class UserService:
     
     def get_user_roles(self, user_id: str):
         """Get roles for a specific user"""
-        from fastapi import HTTPException
+        
         
         if not self.repo.user_exists(user_id):
             raise HTTPException(status_code=404, detail="User not found")
@@ -230,7 +230,7 @@ class UserService:
 
     def manage_user_roles(self, user_id: str, role_ids: list):
         """Assign roles to a user"""
-        from fastapi import HTTPException
+        
         
         # Validate user exists
         if not self.repo.user_exists(user_id):
@@ -288,7 +288,7 @@ class UserService:
 
     def update_user_password(self, request: Request, old_password: str, new_password: str):
         """Update user password after verifying the old password"""
-        from fastapi import HTTPException
+        
         current_user = getattr(request.state, "user", None)
         # Fetch user login info
         user_id = current_user["user_id"]
@@ -405,3 +405,25 @@ class UserService:
 
         transactions = self.repo.get_transactions_by_user_id_and_date_range(user_id, start_dt, end_dt)
         return transactions
+    
+
+    def users_password_reset(self, request: Request, username: str, new_password: str):
+        """Update user password after verifying the old password"""
+        current_user = getattr(request.state, "user", None)
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        row = self.repo.get_login_by_username(username)
+
+        if not row:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Hash new password
+        new_hashed = hash_password(new_password)
+        
+        # Update password in database
+        success = self.repo.update_user_password(row["user_id"], new_hashed)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update password")
+        
+        return {"msg": "Password updated successfully"}

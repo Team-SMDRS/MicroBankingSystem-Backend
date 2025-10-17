@@ -48,3 +48,7 @@ class UserWithRoles(BaseModel):
 class UpdatePasswordRequest(BaseModel):
     old_password: str
     new_password: str
+
+class PasswordResetRequest(BaseModel):
+    username: str
+    new_password: str
