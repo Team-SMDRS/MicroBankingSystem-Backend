@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from app.middleware.customer_middleware import customer_auth_dependency
 
 
@@ -46,3 +46,26 @@ def get_customer_details_by_nic(nic: str, db=Depends(get_db)):
     repo = CustomerRepository(db)
     service = CustomerService(repo)
     return service.get_customer_details_by_nic(nic)
+
+
+@router.get("/customers_details", dependencies=[Depends(customer_auth_dependency)])
+async def customers_details(request: Request, db=Depends(get_db)):
+    """
+    Get complete customer details including:
+    - Customer profile
+    - All accounts with balances
+    - All transactions
+    - All fixed deposits
+    - Summary statistics
+    """
+    # Get customer_id from the authenticated token
+    customer_id = request.state.customer.get("customer_id")
+    
+    if not customer_id:
+        raise HTTPException(status_code=401, detail="Customer ID not found in token")
+    
+    repo = CustomerRepository(db)
+    service = CustomerService(repo)
+    
+    return service.get_complete_customer_details(customer_id)
+

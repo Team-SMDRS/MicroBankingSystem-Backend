@@ -22,7 +22,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/favicon.ico", 
             "/redoc",
             "/customer_data/login",
-            "/customer_data/my_profile"
+            "/customer_data/my_profile",
+            "/customer_data/customers_details"
         ]
         if request.url.path in public_paths:
             return await call_next(request)
