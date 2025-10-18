@@ -1,4 +1,4 @@
-from app.api import joint_account_management_routes, pdf_report_routes
+from app.api import joint_account_management_routes, pdf_report_routes, branch_stats_routes
 from fastapi import FastAPI, Request
 
 from app.api import customer_branch_routes, savings_plan_routes, transaction_management_routes, user_routes
@@ -64,6 +64,10 @@ app.include_router(customer_routes.router,
 # Simple transaction report routes
 app.include_router(pdf_report_routes.router,
                    prefix='/api/pdf-reports', tags=["PDF Reports"])
+
+# Branch statistics routes
+app.include_router(branch_stats_routes.router,
+                   prefix='/api', tags=["Branch Statistics"])
 
 
 @app.get("/")
