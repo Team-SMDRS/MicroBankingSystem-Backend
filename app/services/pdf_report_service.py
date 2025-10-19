@@ -418,3 +418,170 @@ class PDFReportService:
         doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
         buffer.seek(0)
         return buffer
+
+    def generate_date_range_transactions_report_by_customer(self, customer_id: str, start_date: str, end_date: str) -> BytesIO:
+        """Generate transactions report for a specific customer within a date range."""
+        buffer = BytesIO()
+
+        # Convert string dates to datetime.date
+        start_date_obj = datetime.strptime(start_date, '%Y-%m-%d').date() if isinstance(start_date, str) else start_date
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date() if isinstance(end_date, str) else end_date
+
+        # Get customer details
+        from app.repositories.customer_repo import CustomerRepository
+        from app.services.customer_service import CustomerService
+        
+        customer_repo = CustomerRepository(self.transaction_service.transaction_repo.conn)
+        customer_service = CustomerService(customer_repo)
+        
+        customer = customer_repo.get_customer_by_id(customer_id)
+        customer_name = customer['full_name'] if customer else "Unknown Customer"
+        
+        # Fetch customer transactions within date range
+        transactions = customer_repo.get_customer_transactions(customer_id)
+        
+        # Filter transactions by date range
+        filtered_transactions = []
+        for tx in transactions:
+            tx_date = tx['created_at'].date() if isinstance(tx['created_at'], datetime) else datetime.strptime(str(tx['created_at']).split('T')[0], '%Y-%m-%d').date()
+            if start_date_obj <= tx_date <= end_date_obj:
+                filtered_transactions.append(tx)
+        
+        # Sort transactions by date (most recent first)
+        filtered_transactions.sort(key=lambda x: x['created_at'], reverse=True)
+        
+        # Calculate summary statistics
+        total_deposit = sum(float(tx['amount']) for tx in filtered_transactions if tx['type'].lower() == 'deposit')
+        total_withdrawal = sum(float(tx['amount']) for tx in filtered_transactions if tx['type'].lower() == 'withdrawal')
+        total_transfer_in = sum(float(tx['amount']) for tx in filtered_transactions if tx['type'].lower() == 'banktransfer-in')
+        total_transfer_out = sum(float(tx['amount']) for tx in filtered_transactions if tx['type'].lower() == 'banktransfer-out')
+        net_change = total_deposit + total_transfer_in - total_withdrawal - total_transfer_out
+
+        # Create PDF document
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=1 * inch,
+            leftMargin=1 * inch,
+            topMargin=0.5 * inch,
+            bottomMargin=1 * inch,
+        )
+        elements = []
+
+        styles = getSampleStyleSheet()
+        normal_style = styles['Normal']
+        table_cell_style = ParagraphStyle(
+            name='TableCell',
+            parent=normal_style,
+            fontSize=10,
+            leading=12,
+            wordWrap='CJK',
+        )
+
+        # Header / Title
+        centered_style = ParagraphStyle(
+            name='CenteredHeading',
+            parent=styles['Heading2'],
+            alignment=1,
+        )
+        elements.append(Spacer(1, 1 * inch))
+        elements.append(Paragraph(f"Transaction Report for {customer_name}", centered_style))
+        elements.append(Spacer(1, 0.1 * inch))
+        
+        # Add date range subtitle
+        subtitle_style = ParagraphStyle(
+            name='Subtitle',
+            parent=styles['Normal'],
+            alignment=1,
+            fontSize=11,
+        )
+        elements.append(Paragraph(f"Period: {start_date} to {end_date}", subtitle_style))
+        elements.append(Spacer(1, 0.3 * inch))
+
+        if not filtered_transactions:
+            elements.append(Paragraph("No transactions found for the specified date range.", normal_style))
+        else:
+            # Transaction Table
+            data = [[
+                Paragraph("Date & Time", table_cell_style),
+                Paragraph("Account", table_cell_style),
+                Paragraph("Type", table_cell_style),
+                Paragraph("Amount", table_cell_style),
+                Paragraph("Description", table_cell_style),
+            ]]
+
+            for tx in filtered_transactions:
+                # Format amount
+                amount = f"Rs. {float(tx['amount']):,.2f}" if isinstance(tx['amount'], (Decimal, float, int)) else str(tx['amount'])
+
+                # Extract date and time from created_at
+                if isinstance(tx['created_at'], datetime):
+                    datetime_str = tx['created_at'].strftime('%Y-%m-%d %H:%M')
+                else:
+                    # Handle ISO string like '2025-10-17T23:31:08.549325'
+                    try:
+                        date_part, time_part = tx['created_at'].split('T')
+                        time_part = time_part.split('.')[0]  # Remove microseconds
+                        time_short = ':'.join(time_part.split(':')[:2])  # HH:MM only
+                        datetime_str = f"{date_part} {time_short}"
+                    except Exception:
+                        datetime_str = str(tx['created_at'])
+
+                data.append([
+                    Paragraph(datetime_str, table_cell_style),
+                    Paragraph(str(tx.get('account_no', '')), table_cell_style),
+                    Paragraph(tx.get('type', ''), table_cell_style),
+                    Paragraph(amount, table_cell_style),
+                    Paragraph(tx.get('description', '')[:50], table_cell_style),  # Truncate long descriptions
+                ])
+
+            table = Table(data, colWidths=[1.5*inch, 1.5*inch, 1.3*inch, 1.3*inch, 2.3*inch])
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ]))
+            elements.append(table)
+            elements.append(Spacer(1, 0.3 * inch))
+
+            # Summary Table
+            summary_data = [
+                [Paragraph("<b>Transaction Summary</b>", table_cell_style), ""],
+                ["Total Transactions", str(len(filtered_transactions))],
+                ["Total Deposits", f"Rs. {total_deposit:,.2f}"],
+                ["Total Withdrawals", f"Rs. {total_withdrawal:,.2f}"],
+                ["Bank Transfer In", f"Rs. {total_transfer_in:,.2f}"],
+                ["Bank Transfer Out", f"Rs. {total_transfer_out:,.2f}"],
+                ["Net Change", f"Rs. {net_change:,.2f}"],
+            ]
+
+            summary_table = Table(summary_data, colWidths=[2.5*inch, 2.5*inch])
+            summary_table.setStyle(TableStyle([
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]))
+            elements.append(summary_table)
+
+        # Add header/footer
+        from app.services.report_layout import header as layout_header, footer as layout_footer
+
+        def on_first_page(canvas, doc):
+            logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
+            layout_header(canvas, doc, logo_path=logo_path)
+            layout_footer(canvas, doc)
+
+        def on_later_pages(canvas, doc):
+            layout_header(canvas, doc, logo_path=None)
+            layout_footer(canvas, doc)
+
+        doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
+        buffer.seek(0)
+        return buffer

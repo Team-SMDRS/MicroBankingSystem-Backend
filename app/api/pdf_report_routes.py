@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from app.services.pdf_report_service import PDFReportService
 from fastapi.responses import StreamingResponse
 from app.database.db import get_db
+from app.middleware.customer_middleware import customer_auth_dependency
 router = APIRouter()
 
 
@@ -114,3 +115,146 @@ async def get_users_daily_branch_transactions_report_pdf(start_date: str, end_da
         )
     except Exception as e:
         return {"error": str(e)}
+    
+
+@router.get("/admin/daily_customer_transactions_report/{customer_id}/pdf", tags=["PDF Reports"])
+async def get_admin_daily_customer_transactions_report_pdf(
+    customer_id: str, 
+    start_date: str, 
+    end_date: str, 
+    db=Depends(get_db)
+):
+    """
+    Generate PDF report for customer transactions within a date range (admin).
+    
+    Args:
+        customer_id: UUID of the customer
+        start_date: Start date in format YYYY-MM-DD
+        end_date: End date in format YYYY-MM-DD
+    
+    Returns:
+        PDF file with customer transaction report
+    """
+    from datetime import datetime
+    from fastapi import HTTPException
+    
+    try:
+        # Validate date format
+        try:
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+            end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid date format. Please use YYYY-MM-DD format."
+            )
+        
+        # Validate date range
+        if start_dt > end_dt:
+            raise HTTPException(
+                status_code=400, 
+                detail="Start date cannot be after end date."
+            )
+        
+        # Generate PDF report
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_date_range_transactions_report_by_customer(
+            customer_id=customer_id, 
+            start_date=start_date, 
+            end_date=end_date
+        )
+
+        filename = f"customer_transactions_{customer_id}_{start_date}_to_{end_date}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "Content-Type": "application/pdf"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate PDF report: {str(e)}"
+        )
+
+
+@router.get("/customers/my_transactions_report/pdf", tags=["PDF Reports"], dependencies=[Depends(customer_auth_dependency)])
+async def get_customer_own_transactions_report_pdf(
+    start_date: str, 
+    end_date: str, 
+    request: Request,
+    db=Depends(get_db)
+):
+    """
+    Generate PDF report for authenticated customer's transactions within a date range.
+    Requires customer authentication.
+    
+    Args:
+        start_date: Start date in format YYYY-MM-DD
+        end_date: End date in format YYYY-MM-DD
+    
+    Returns:
+        PDF file with customer transaction report
+    
+    Note: This endpoint should be accessed via /customer_data/my_transactions_report/pdf
+    and requires customer Bearer token authentication.
+    """
+    from datetime import datetime
+    from fastapi import HTTPException
+    
+    try:
+        # Get customer_id from authenticated token (set by customer_auth_dependency middleware)
+        customer = getattr(request.state, "customer", None)
+        customer_id = customer.get("customer_id") if customer else None
+        
+        if not customer_id:
+            raise HTTPException(
+                status_code=401, 
+                detail="Customer authentication required. Please login as a customer first."
+            )
+        
+        # Validate date format
+        try:
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d')
+            end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+        except ValueError:
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid date format. Please use YYYY-MM-DD format."
+            )
+        
+        # Validate date range
+        if start_dt > end_dt:
+            raise HTTPException(
+                status_code=400, 
+                detail="Start date cannot be after end date."
+            )
+        
+        # Generate PDF report
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_date_range_transactions_report_by_customer(
+            customer_id=customer_id, 
+            start_date=start_date, 
+            end_date=end_date
+        )
+
+        filename = f"my_transactions_{start_date}_to_{end_date}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "Content-Type": "application/pdf"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate PDF report: {str(e)}"
+        )

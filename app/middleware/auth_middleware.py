@@ -22,11 +22,22 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/favicon.ico", 
             "/redoc",
             "/customer_data/login",
-            "/customer_data/my_profile",
-            "/customer_data/customers_details"
         ]
+        
+        # Customer routes - these use customer_auth_dependency instead
+        customer_path_prefixes = [
+            "/customer_data/",
+            "/api/pdf-reports/customers/",
+        ]
+        
+        # Check exact public paths
         if request.url.path in public_paths:
             return await call_next(request)
+        
+        # Check if path starts with customer prefix (skip user auth for customer routes)
+        for prefix in customer_path_prefixes:
+            if request.url.path.startswith(prefix):
+                return await call_next(request)
 
         # Extract and validate Authorization header
         auth_header = request.headers.get("Authorization")
