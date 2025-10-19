@@ -282,3 +282,36 @@ class FixedDepositService:
             return fds
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits for the given plan")
+
+    def close_fixed_deposit(self, fd_account_no, closed_by_user_id=None):
+        """Close (soft delete) a fixed deposit by FD account number"""
+        try:
+            # Check if FD exists
+            fd = self.repo.get_fixed_deposit_by_account_number(fd_account_no)
+            if not fd:
+                raise HTTPException(status_code=404, detail="Fixed deposit not found")
+            
+            # Check if FD is already closed
+            if fd['status'] == 'closed':
+                raise HTTPException(status_code=400, detail="Fixed deposit is already closed")
+            
+            #get saving account linked to fd
+            savings_account_id = fd['acc_id']
+            amount = fd['balance']
+            # Withdraw the amount from FD and credit to savings account
+        
+            # Close the FD
+            result = self.repo.close_fixed_deposit(fd_account_no, savings_account_id, amount, closed_by_user_id=closed_by_user_id)
+            if not result:
+                raise HTTPException(status_code=500, detail="Failed to close fixed deposit")
+            
+            return {
+                "message": "Fixed deposit closed successfully",
+                "fd_account_no": fd_account_no,
+                "status": "closed",
+                "withdrawn_amount": str(fd['balance'])
+            }
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to close fixed deposit: {str(e)}")

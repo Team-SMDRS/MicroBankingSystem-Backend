@@ -225,3 +225,11 @@ def get_fixed_deposits_by_plan_id(fd_plan_id: str, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fixed_deposits_by_plan_id(fd_plan_id)
+
+
+@router.post("/close-fixed-deposit/{fd_account_no}")
+def close_fixed_deposit(fd_account_no: str, request: Request, db=Depends(get_db)):
+    current_user = getattr(request.state, "user", None)
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.close_fixed_deposit(fd_account_no, closed_by_user_id=current_user["user_id"] if current_user else None)

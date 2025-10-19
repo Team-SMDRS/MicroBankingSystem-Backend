@@ -1,6 +1,7 @@
 # Fixed Deposit repository - Database operations for fixed deposits
 
 from psycopg2.extras import RealDictCursor
+from sqlalchemy import insert
 
 class FixedDepositRepository:
     def __init__(self, db_conn):
@@ -145,6 +146,7 @@ class FixedDepositRepository:
                 fd.opened_date,
                 fd.maturity_date,
                 fd.fd_plan_id,
+                fd.status,
                 fd.created_at as fd_created_at,
                 fd.updated_at as fd_updated_at,
                 a.account_no,
@@ -369,3 +371,64 @@ class FixedDepositRepository:
             (fd_plan_id,)
         )
         return self.cursor.fetchall()
+    
+
+    def close_fixed_deposit(self, fd_account_no, savings_account_id, amount, closed_by_user_id=None):
+        """
+        Close (mature) a fixed deposit account.
+        """
+        # Start a transaction
+        try:
+            # Validate that the fixed deposit exists and is active
+            self.cursor.execute(
+                "SELECT fd_id, status FROM fixed_deposit WHERE fd_account_no = %s",
+                (fd_account_no,)
+            )
+            fd_check = self.cursor.fetchone()
+            if not fd_check:
+                raise ValueError(f"Fixed deposit with account number {fd_account_no} not found")
+            if fd_check['status'] == 'inactive':
+                raise ValueError(f"Fixed deposit with account number {fd_account_no} is already closed")
+            
+            # Get current savings account balance
+            self.cursor.execute(
+                "SELECT balance FROM account WHERE acc_id = %s",
+                (savings_account_id,)
+            )
+            current_balance = self.cursor.fetchone()
+            if not current_balance:
+                raise ValueError(f"Savings account with ID {savings_account_id} not found")
+            
+            updated_balance = current_balance['balance'] + amount
+            
+            # Insert transaction record for FD closure (credit to savings account)
+            self.cursor.execute(
+                """INSERT INTO transactions (amount, acc_id, type, description, created_by)
+                VALUES (%s, %s, 'Withdrawal', %s, %s)""",
+                (amount, savings_account_id, f'Fixed deposit cloesd', closed_by_user_id)
+            )
+            
+            # Update savings account balance
+            self.cursor.execute(
+                "UPDATE account SET balance = %s WHERE acc_id = %s",
+                (updated_balance, savings_account_id)
+            )
+            
+            # Update fixed deposit status to closed and set balance to 0
+            self.cursor.execute(
+                """UPDATE fixed_deposit 
+                SET balance = 0, status = 'inactive', updated_by = %s, updated_at = CURRENT_TIMESTAMP
+                WHERE fd_account_no = %s
+                RETURNING fd_id, fd_account_no, balance, status""",
+                (closed_by_user_id, fd_account_no)
+            )
+            
+            result = self.cursor.fetchone()
+            if not result:
+                raise ValueError(f"Failed to update fixed deposit with account number {fd_account_no}")
+            
+            self.conn.commit()
+            return result
+        except Exception as e:
+            self.conn.rollback()
+            raise e
