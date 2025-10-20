@@ -65,15 +65,16 @@ class FixedDepositRepository:
     def create_fixed_deposit(self, acc_id, amount, fd_plan_id, created_by_user_id=None):
         """
         Create a new fixed deposit account.
+        Allows creation if previous FD is inactive.
         """
-        # Check if account already has a fixed deposit
+        # Check if account already has an active fixed deposit
         self.cursor.execute(
-            "SELECT fd_id FROM fixed_deposit WHERE acc_id = %s",
+            "SELECT fd_id, status FROM fixed_deposit WHERE acc_id = %s ORDER BY opened_date DESC LIMIT 1",
             (acc_id,)
         )
         existing_fd = self.cursor.fetchone()
-        if existing_fd:
-            raise ValueError("Account already has a fixed deposit. Only one FD allowed per account.")
+        if existing_fd and existing_fd['status'] == 'active':
+            raise ValueError("Account already has an active fixed deposit. Only one active FD allowed per account.")
 
         # Calculate maturity date based on plan duration
         self.cursor.execute(

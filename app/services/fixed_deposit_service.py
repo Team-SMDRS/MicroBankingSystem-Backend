@@ -292,7 +292,7 @@ class FixedDepositService:
                 raise HTTPException(status_code=404, detail="Fixed deposit not found")
             
             # Check if FD is already closed
-            if fd['status'] == 'closed':
+            if fd['status'] == 'inactive':
                 raise HTTPException(status_code=400, detail="Fixed deposit is already closed")
             
             #get saving account linked to fd
@@ -308,7 +308,7 @@ class FixedDepositService:
             return {
                 "message": "Fixed deposit closed successfully",
                 "fd_account_no": fd_account_no,
-                "status": "closed",
+                "status": "inactive",
                 "withdrawn_amount": str(fd['balance'])
             }
         except HTTPException:
