@@ -258,3 +258,101 @@ async def get_customer_own_transactions_report_pdf(
             status_code=500,
             detail=f"Failed to generate PDF report: {str(e)}"
         )
+
+
+@router.get("/admin/accountwise_transactions_report/pdf", tags=["PDF Reports"])
+async def get_admin_accountwise_transactions_report_pdf(
+    account_number: str, 
+    start_date: str = None, 
+    end_date: str = None, 
+    db=Depends(get_db)
+):
+    """
+    Generate PDF report for account transactions within a date range (admin).
+    
+    Args:
+        account_number: Account number to generate report for
+        start_date: Optional start date in format YYYY-MM-DD (defaults to account creation date)
+        end_date: Optional end date in format YYYY-MM-DD (defaults to today)
+    
+    Returns:
+        PDF file with account transaction report
+    """
+    from datetime import datetime, date
+    from fastapi import HTTPException
+    from psycopg2.extras import RealDictCursor
+    
+    try:
+        # Validate account_number format (should be numeric)
+        try:
+            account_num_int = int(account_number)
+        except ValueError:
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid account number format. Account number must be numeric."
+            )
+        
+        # Handle optional dates
+        today = date.today()
+        
+        # If start_date not provided, get account creation date
+        if not start_date:
+            # Query to get account creation date
+            cursor = db.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(
+                "SELECT opened_date FROM account WHERE account_no = %s",
+                (account_number,)
+            )
+            account_data = cursor.fetchone()
+            if not account_data:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"Account with number {account_number} not found."
+                )
+            start_date = account_data['opened_date'].strftime('%Y-%m-%d')
+        
+        # If end_date not provided, use today
+        if not end_date:
+            end_date = today.strftime('%Y-%m-%d')
+        
+        # Validate date format
+        try:
+            start_dt = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_dt = datetime.strptime(end_date, '%Y-%m-%d').date()
+        except ValueError:
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid date format. Please use YYYY-MM-DD format."
+            )
+        
+        # Validate date range
+        if start_dt > end_dt:
+            raise HTTPException(
+                status_code=400, 
+                detail="Start date cannot be after end date."
+            )
+        
+        # Generate PDF report
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_date_range_transactions_report_by_account(
+            account_number=account_number, 
+            start_date=start_date, 
+            end_date=end_date
+        )
+
+        filename = f"account_transactions_{account_number}_{start_date}_to_{end_date}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "Content-Type": "application/pdf"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate PDF report: {str(e)}"
+        )

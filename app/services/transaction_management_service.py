@@ -653,4 +653,59 @@ class TransactionManagementService:
         if not branch_id:
             raise HTTPException(status_code=401, detail="Unauthorized or branch information missing")
 
-        return self.get_branch_transactions_report(branch_id, start_date, end_date, transaction_type)       
+        return self.get_branch_transactions_report(branch_id, start_date, end_date, transaction_type)
+
+    def get_transaction_with_summary(self, acc_id: str, start_date: Optional[date] = None, end_date: Optional[date] = None) -> Dict[str, Any]:
+        """
+        Get transaction summary with complete history for an account (all transactions)
+        
+        Args:
+            acc_id: Account UUID
+            start_date: Optional start date to filter transactions
+            end_date: Optional end date to filter transactions
+        
+        Returns:
+            Dictionary containing:
+            - account info (account_no, acc_id, current_balance)
+            - summary: Transaction statistics
+            - transactions: All transactions for the account (filtered by date if provided)
+            - total_transaction_count
+        """
+        try:
+            # Get all transactions and summary from repository with optional date filtering
+            result = self.transaction_repo.get_transaction_summary_with_history(
+                acc_id=acc_id,
+                page=1,
+                per_page=10000,  # Large number to get all transactions
+                start_date=start_date,
+                end_date=end_date
+            )
+            
+            # Transform transactions to response format
+            transactions = []
+            for tx in result.get('transactions', []):
+                transactions.append({
+                    'transaction_id': str(tx.get('transaction_id')),
+                    'amount': float(tx.get('amount', 0)),
+                    'acc_id': str(tx.get('acc_id')),
+                    'type': tx.get('type'),
+                    'description': tx.get('description'),
+                    'reference_no': int(tx.get('reference_no')) if tx.get('reference_no') else None,
+                    'created_at': tx.get('created_at'),
+                    'created_by': str(tx.get('created_by')) if tx.get('created_by') else None,
+                    'username': tx.get('username')
+                })
+            
+            return {
+                'account_no': result['account_no'],
+                'acc_id': result['acc_id'],
+                'current_balance': result['current_balance'],
+                'summary': result['summary'],
+                'transactions': transactions,
+                'total_transaction_count': result['total_transactions']
+            }
+        
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to get transaction summary with history: {str(e)}")

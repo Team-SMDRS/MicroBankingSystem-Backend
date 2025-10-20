@@ -185,9 +185,9 @@ class TransactionManagementRepository:
         try:
             self.cursor.execute(
                 """
-                SELECT * FROM get_all_transactions_with_account_details(%s, %s)
-                """,
-                (limit, offset)
+                SELECT * FROM get_all_transactions_with_account_details
+                """
+                
             )
             return self.cursor.fetchall()
         except Exception as e:
@@ -651,6 +651,146 @@ class TransactionManagementRepository:
             transactions = self.cursor.fetchall()
             
             return [dict(tx) for tx in transactions]
+        except Exception as e:
+            raise e
+
+    def get_transaction_summary_with_history(
+        self, 
+        acc_id: str, 
+        page: int = 1, 
+        per_page: int = 20,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None
+    ) -> Dict[str, Any]:
+        """
+        Get transaction summary statistics along with paginated transaction history
+        
+        Args:
+            acc_id: Account UUID
+            page: Page number for pagination
+            per_page: Number of transactions per page
+            start_date: Optional start date filter
+            end_date: Optional end date filter
+        
+        Returns:
+        - summary: Transaction statistics (total deposits, withdrawals, transfers, etc.)
+        - transactions: Paginated list of recent transactions
+        - total_count: Total number of transactions
+        - pagination info: page, per_page, total_pages
+        - account info: account_no, balance
+        """
+        try:
+            # Get account details
+            self.cursor.execute(
+                """
+                SELECT 
+                    a.acc_id,
+                    a.account_no,
+                    a.balance
+                FROM account a
+                WHERE a.acc_id = %s::UUID
+                """,
+                (acc_id,)
+            )
+            account = self.cursor.fetchone()
+            
+            if not account:
+                raise Exception(f"Account not found: {acc_id}")
+            
+            # Build date filter clause if provided
+            summary_date_filter = ""
+            transactions_date_filter = ""
+            date_params = []
+            if start_date or end_date:
+                if start_date:
+                    summary_date_filter += " AND DATE(created_at) >= %s"
+                    transactions_date_filter += " AND DATE(t.created_at) >= %s"
+                    date_params.append(start_date)
+                if end_date:
+                    summary_date_filter += " AND DATE(created_at) <= %s"
+                    transactions_date_filter += " AND DATE(t.created_at) <= %s"
+                    date_params.append(end_date)
+            
+            # Get transaction summary statistics
+            summary_query = """
+                SELECT 
+                    COUNT(*) as total_transactions,
+                    COUNT(CASE WHEN type = 'Deposit' THEN 1 END) as total_deposits,
+                    COUNT(CASE WHEN type = 'Withdrawal' THEN 1 END) as total_withdrawals,
+                    COUNT(CASE WHEN type IN ('BankTransfer-In', 'BankTransfer-Out') THEN 1 END) as total_transfers,
+                    SUM(CASE WHEN type = 'Deposit' THEN amount ELSE 0 END) as total_deposit_amount,
+                    SUM(CASE WHEN type = 'Withdrawal' THEN amount ELSE 0 END) as total_withdrawal_amount,
+                    SUM(CASE WHEN type = 'BankTransfer-In' THEN amount ELSE 0 END) as total_transfer_in,
+                    SUM(CASE WHEN type = 'BankTransfer-Out' THEN amount ELSE 0 END) as total_transfer_out,
+                    AVG(amount) as avg_transaction_amount,
+                    MAX(amount) as max_transaction_amount,
+                    MIN(amount) as min_transaction_amount,
+                    MAX(created_at) as last_transaction_date
+                FROM transactions
+                WHERE acc_id = %s::UUID
+            """
+            
+            summary_params = [acc_id] + date_params
+            self.cursor.execute(summary_query + summary_date_filter, summary_params)
+            summary_stats = self.cursor.fetchone()
+            
+            # Get total transaction count
+            total_count = summary_stats['total_transactions'] if summary_stats else 0
+            
+            # Calculate total pages
+            total_pages = (total_count + per_page - 1) // per_page if total_count > 0 else 1
+            
+            # Get paginated transactions
+            offset = (page - 1) * per_page
+            transactions_query = """
+                SELECT 
+                    t.transaction_id,
+                    t.amount,
+                    t.acc_id,
+                    t.type,
+                    t.description,
+                    t.reference_no,
+                    t.created_at,
+                    t.created_by,
+                    u.username
+                FROM transactions t
+                LEFT JOIN user_login u ON t.created_by = u.user_id
+                WHERE t.acc_id = %s::UUID
+            """
+            
+            tx_params = [acc_id] + date_params
+            self.cursor.execute(transactions_query + transactions_date_filter + " ORDER BY t.created_at DESC LIMIT %s OFFSET %s", 
+                              tx_params + [per_page, offset])
+            transactions = self.cursor.fetchall()
+            
+            # Build summary dictionary
+            summary = {
+                'total_transactions': total_count,
+                'total_deposits': summary_stats['total_deposits'] if summary_stats else 0,
+                'total_withdrawals': summary_stats['total_withdrawals'] if summary_stats else 0,
+                'total_transfers': summary_stats['total_transfers'] if summary_stats else 0,
+                'total_deposit_amount': float(summary_stats['total_deposit_amount']) if summary_stats and summary_stats['total_deposit_amount'] else 0.0,
+                'total_withdrawal_amount': float(summary_stats['total_withdrawal_amount']) if summary_stats and summary_stats['total_withdrawal_amount'] else 0.0,
+                'total_transfer_in': float(summary_stats['total_transfer_in']) if summary_stats and summary_stats['total_transfer_in'] else 0.0,
+                'total_transfer_out': float(summary_stats['total_transfer_out']) if summary_stats and summary_stats['total_transfer_out'] else 0.0,
+                'avg_transaction_amount': float(summary_stats['avg_transaction_amount']) if summary_stats and summary_stats['avg_transaction_amount'] else 0.0,
+                'max_transaction_amount': float(summary_stats['max_transaction_amount']) if summary_stats and summary_stats['max_transaction_amount'] else 0.0,
+                'min_transaction_amount': float(summary_stats['min_transaction_amount']) if summary_stats and summary_stats['min_transaction_amount'] else 0.0,
+                'last_transaction_date': summary_stats['last_transaction_date'] if summary_stats else None,
+            }
+            
+            return {
+                'account_no': account['account_no'],
+                'acc_id': str(account['acc_id']),
+                'current_balance': float(account['balance']) if account['balance'] else 0.0,
+                'summary': summary,
+                'transactions': [dict(tx) for tx in transactions],
+                'total_transactions': total_count,
+                'page': page,
+                'per_page': per_page,
+                'total_pages': total_pages
+            }
+        
         except Exception as e:
             raise e
 

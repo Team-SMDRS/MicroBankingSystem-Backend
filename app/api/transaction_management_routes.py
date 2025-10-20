@@ -118,7 +118,7 @@ def get_transaction_details(
     return transaction_service.get_transaction_by_id(transaction_id)
 
 # Date range and reporting endpoints
-@router.post("/report/date-range", response_model=DateRangeTransactionResponse)
+@router.get("/report/date-range", response_model=DateRangeTransactionResponse)
 def get_transactions_by_date_range(
     request: DateRangeRequest,
     current_user: dict = Depends(get_current_user),
@@ -136,7 +136,7 @@ def get_transactions_by_date_range(
     """
     return transaction_service.get_transactions_by_date_range(request)
 
-@router.post("/report/branch/{branch_id}", response_model=BranchTransactionSummary)
+@router.get("/report/branch/{branch_id}", response_model=BranchTransactionSummary)
 def get_branch_transaction_report(
     branch_id: str,
     start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
@@ -173,7 +173,7 @@ def get_branch_transaction_report(
     return transaction_service.get_branch_transaction_report(request)
 
 # Transaction summary endpoints
-@router.post("/summary/{account_no}", response_model=AccountTransactionSummary)
+@router.get("/summary/{account_no}", response_model=AccountTransactionSummary)
 def get_account_transaction_summary(
     account_no: int,
     period: str = Query("monthly", description="Summary period (daily, weekly, monthly, yearly)"),
@@ -503,4 +503,55 @@ def get_users_branch_transactions(
     - Summary statistics including total transactions and amounts
     - Breakdown by transaction type
     """
-    return transaction_service.get_users_branch_transactions_report(current_user, start_date, end_date, transaction_type)
+    return transaction_service.get_users_branch_transactions_report(current_user, start_date, end_date)
+
+@router.get("transactions/{account_no}/summery_with_history", response_model=dict)
+def get_transaction_summary_with_history(
+    account_no: int,
+    start_date: Optional[date] = Query(None, description="Optional start date filter (YYYY-MM-DD)"),
+    end_date: Optional[date] = Query(None, description="Optional end date filter (YYYY-MM-DD)"),
+    transaction_service: TransactionManagementService = Depends(get_transaction_service)
+):
+    """
+    Get transaction summary along with complete transaction history for an account
+    
+    - **account_no**: Account number for summary and history
+    - **start_date**: Optional start date to filter transactions (YYYY-MM-DD)
+    - **end_date**: Optional end date to filter transactions (YYYY-MM-DD)
+    
+    Returns:
+    - Account information (account_no, acc_id, current_balance)
+    - Aggregated transaction summary statistics
+    - Complete list of all transactions for the account (filtered by date if provided)
+    """
+    try:
+        # Validate date range if both provided
+        if start_date and end_date and start_date > end_date:
+            raise HTTPException(status_code=400, detail="Start date must be before or equal to end date")
+        
+        # Get acc_id from account_no
+        acc_id = transaction_service.transaction_repo.get_account_id_by_account_no(account_no)
+        if not acc_id:
+            raise HTTPException(status_code=404, detail=f"Account with number {account_no} not found")
+        
+        # Get summary with all history (with optional date filtering)
+        result = transaction_service.get_transaction_with_summary(
+            acc_id=acc_id,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        return {
+            "success": True,
+            "data": result,
+            "message": "Transaction summary with complete history retrieved successfully",
+            "filters": {
+                "start_date": start_date.isoformat() if start_date else None,
+                "end_date": end_date.isoformat() if end_date else None
+            }
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve transaction summary: {str(e)}")

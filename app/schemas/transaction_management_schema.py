@@ -213,3 +213,18 @@ class AccountBalanceResponse(BaseModel):
     account_holder: Optional[str] = Field(None, description="Account holder name")
     branch_name: Optional[str] = Field(None, description="Branch name")
     message: str = Field(..., description="Response message")
+
+# Transaction summary with history response
+class TransactionSummaryWithHistory(BaseModel):
+    acc_id: str = Field(..., description="Account UUID")
+    account_no: int = Field(..., description="Account number")
+    current_balance: float = Field(..., description="Current account balance")
+    summary: Dict[str, Any] = Field(..., description="Transaction summary statistics")
+    transactions: List[TransactionResponse] = Field(..., description="Recent transaction history")
+    total_transactions: int = Field(..., description="Total number of transactions")
+    page: int = Field(default=1, description="Current page number")
+    per_page: int = Field(default=20, description="Transactions per page")
+    total_pages: int = Field(..., description="Total number of pages")
+    
+    class Config:
+        from_attributes = True
