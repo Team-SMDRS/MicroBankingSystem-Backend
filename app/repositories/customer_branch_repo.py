@@ -105,3 +105,19 @@ class CustomerBranchRepository:
         )
         result = self.cursor.fetchone()
         return result["total_balance"] if result else 0
+
+    def search_customers_by_name(self, name: str):
+        """
+        Search customers by name (case-insensitive partial match).
+        Returns: list of dicts with customer_id, full_name, nic, address, phone_number
+        """
+        self.cursor.execute(
+            """
+            SELECT customer_id, full_name, nic, address, phone_number
+            FROM customer
+            WHERE full_name ILIKE %s
+            ORDER BY full_name
+            """,
+            (f'%{name}%',)
+        )
+        return self.cursor.fetchall()

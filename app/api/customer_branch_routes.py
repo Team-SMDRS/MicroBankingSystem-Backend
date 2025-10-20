@@ -82,3 +82,10 @@ def get_total_balance_by_branch_id(branch_id: str, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.get_total_balance_by_branch_id(branch_id)
+
+# search customers by name
+@router.get("/customers/search")
+def search_customers(name: str, db=Depends(get_db)):
+    repo = CustomerBranchRepository(db)
+    service = CustomerBranchService(repo)
+    return service.search_customers_by_name(name)

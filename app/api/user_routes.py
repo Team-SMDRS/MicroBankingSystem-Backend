@@ -348,7 +348,9 @@ def get_user_branch(user_id: str, db=Depends(get_db)):
     service = UserService(repo)
     
     try:
+        
         result = service.get_user_branch(user_id)
+        
         return result
     except HTTPException as e:
         raise e

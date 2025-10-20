@@ -42,3 +42,11 @@ class TotalBalanceByBranchID(BaseModel):
     branch_id: str
     total_balance: Optional[Decimal] = Decimal('0.00')
 
+
+class CustomerSearchResult(BaseModel):
+    customer_id: str
+    full_name: str
+    nic: str
+    address: str
+    phone_number: str
+

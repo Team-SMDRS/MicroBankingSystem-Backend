@@ -1,7 +1,6 @@
-
 import string
 from fastapi import HTTPException
-from app.schemas.customer_branch_schema import CustomerCount, CustomerNameID, CustomerCountByBranch,  CustomersByBranchID
+from app.schemas.customer_branch_schema import CustomerCount, CustomerNameID, CustomerCountByBranch,  CustomersByBranchID, CustomerSearchResult
 
 
 class CustomerBranchService:
@@ -75,3 +74,20 @@ class CustomerBranchService:
             raise HTTPException(
                 status_code=404, detail="No accounts found in this branch")
         return {"branch_id": branch_id, "total_balance": total_balance}
+
+    def search_customers_by_name(self, name: str):
+        """
+        Search customers by name.
+        Returns: list of CustomerSearchResult
+        """
+        data = self.repo.search_customers_by_name(name)
+        return [
+            CustomerSearchResult(
+                customer_id=item["customer_id"],
+                full_name=item["full_name"],
+                nic=item["nic"],
+                address=item["address"],
+                phone_number=item["phone_number"]
+            )
+            for item in data
+        ]

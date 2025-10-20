@@ -1,4 +1,5 @@
 # All business logics put here
+from psycopg2.extras import RealDictRow
 
 from app.core.utils import (
     hash_password, 
@@ -563,18 +564,17 @@ class UserService:
         # Check if user exists
         if not self.repo.user_exists(user_id):
             raise HTTPException(status_code=404, detail="User not found")
-            
         # Get the branch information for the user
-        branch_info = self.repo.get_user_branch_id(user_id)
+        branch_info = self.repo.get_branch_info_by_user_id(user_id)
         
-        if not branch_info:
+        if not branch_info or 'branch_id' not in branch_info or 'name' not in branch_info:
             raise HTTPException(status_code=404, detail="Branch not found for this user")
-            
         return {
             "user_id": user_id,
-            "branch_id": branch_info["branch_id"],
-            "branch_name": branch_info["branch_name"]
+            "branch_id": str(branch_info["branch_id"]),
+            "branch_name": branch_info["name"]
         }
+
         
     def assign_user_to_branch(self, request: Request, user_id: str, branch_id: str):
         """Assign a user to a branch"""
@@ -600,13 +600,13 @@ class UserService:
             
             if result:
                 # Get branch information to return in response
-                branch_info = self.repo.get_user_branch_id(user_id)
+                branch_info = self.repo.get_branch_info_by_user_id(user_id)
                 return {
                     "success": True, 
                     "message": "User assigned to branch successfully", 
                     "user_id": user_id, 
                     "branch_id": branch_id,
-                    "branch_name": branch_info["branch_name"] if branch_info else None
+                    "branch_name": branch_info["name"] if branch_info else None
                 }
             else:
                 raise HTTPException(status_code=500, detail="Failed to assign user to branch")
