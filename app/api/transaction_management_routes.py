@@ -118,7 +118,7 @@ def get_transaction_details(
     return transaction_service.get_transaction_by_id(transaction_id)
 
 # Date range and reporting endpoints
-@router.get("/report/date-range", response_model=DateRangeTransactionResponse)
+@router.post("/report/date-range", response_model=DateRangeTransactionResponse)
 def get_transactions_by_date_range(
     request: DateRangeRequest,
     current_user: dict = Depends(get_current_user),
@@ -136,7 +136,7 @@ def get_transactions_by_date_range(
     """
     return transaction_service.get_transactions_by_date_range(request)
 
-@router.get("/report/branch/{branch_id}", response_model=BranchTransactionSummary)
+@router.post("/report/branch/{branch_id}", response_model=BranchTransactionSummary)
 def get_branch_transaction_report(
     branch_id: str,
     start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
@@ -173,7 +173,7 @@ def get_branch_transaction_report(
     return transaction_service.get_branch_transaction_report(request)
 
 # Transaction summary endpoints
-@router.get("/summary/{account_no}", response_model=AccountTransactionSummary)
+@router.post("/summary/{account_no}", response_model=AccountTransactionSummary)
 def get_account_transaction_summary(
     account_no: int,
     period: str = Query("monthly", description="Summary period (daily, weekly, monthly, yearly)"),
