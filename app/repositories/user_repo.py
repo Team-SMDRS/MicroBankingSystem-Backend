@@ -471,3 +471,17 @@ class UserRepository:
         except Exception as e:
             self.conn.rollback()
             raise Exception(f"Error assigning user to branch: {e}")
+        
+
+    def get_branch_info_by_user_id(self, user_id: str):
+        """Get branch information for a specific user"""
+        self.cursor.execute(
+            """
+            SELECT b.branch_id, b.name, b.address, b.created_at
+            FROM users_branch ub
+            JOIN branch b ON ub.branch_id = b.branch_id
+            WHERE ub.user_id = %s
+            """,
+            (user_id,)
+        )
+        return self.cursor.fetchone()
