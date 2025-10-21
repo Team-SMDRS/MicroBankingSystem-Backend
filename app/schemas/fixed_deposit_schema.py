@@ -29,6 +29,7 @@ class FDPlanResponse(BaseModel):
     fd_plan_id: UUID
     duration: int
     interest_rate: Decimal
+    min_amount: int
     status: str
     created_at: datetime
     updated_at: datetime

@@ -112,6 +112,7 @@ async def create_fd_plan(
     request: Request,
     duration_months: int,
     interest_rate: float,
+    min_amount: int,
     db=Depends(get_db)
 ):
     """
@@ -120,6 +121,7 @@ async def create_fd_plan(
     Args:
         duration_months: Duration of the FD plan in months
         interest_rate: Annual interest rate (percentage)
+        min_amount: Minimum amount required for this FD plan (in whole units)
         
     Returns:
         Success message with created FD plan details
@@ -127,7 +129,7 @@ async def create_fd_plan(
     current_user = getattr(request.state, "user", None)
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
-    return service.create_fd_plan(duration_months, interest_rate, created_by_user_id=current_user["user_id"])
+    return service.create_fd_plan(duration_months, interest_rate, min_amount, created_by_user_id=current_user["user_id"])
 
 # update fd plan status
 @router.put("/fd-plans/{fd_plan_id}/status", response_model=FDPlanResponse)

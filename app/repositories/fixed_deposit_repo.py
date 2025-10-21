@@ -15,13 +15,13 @@ class FixedDepositRepository:
         self.cursor.execute("SELECT * FROM fixed_deposit_details ORDER BY opened_date DESC")
         return self.cursor.fetchall()
 
-    def create_fd_plan(self, duration_months, interest_rate, created_by_user_id=None):
+    def create_fd_plan(self, duration_months, interest_rate, min_amount, created_by_user_id=None):
         """
         Create a new fixed deposit plan.
         """
         self.cursor.execute(
-        "SELECT * FROM create_fd_plan(%s, %s, %s::uuid)",
-        (duration_months, interest_rate, created_by_user_id)
+        "SELECT * FROM create_fd_plan(%s, %s, %s, %s::uuid)",
+        (duration_months, interest_rate, min_amount, created_by_user_id)
     )
         result = self.cursor.fetchone()
         self.conn.commit()
