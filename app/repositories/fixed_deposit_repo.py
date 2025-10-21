@@ -196,7 +196,7 @@ class FixedDepositRepository:
             """UPDATE fd_plan 
             SET status = %s, updated_by = %s, updated_at = CURRENT_TIMESTAMP
             WHERE fd_plan_id = %s
-            RETURNING fd_plan_id, duration, interest_rate, status, created_at, updated_at, created_by, updated_by""",
+            RETURNING fd_plan_id, duration, interest_rate, min_amount, status, created_at, updated_at, created_by, updated_by""",
             (status, updated_by_user_id, fd_plan_id)
         )
         result = self.cursor.fetchone()
