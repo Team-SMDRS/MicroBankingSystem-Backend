@@ -14,7 +14,7 @@ class FixedDepositService:
         except Exception as e:
             raise HTTPException(status_code=500, detail="Failed to retrieve fixed deposits")
 
-    def create_fd_plan(self, duration_months, interest_rate, created_by_user_id=None):
+    def create_fd_plan(self, duration_months, interest_rate, min_amount, created_by_user_id=None):
         """
         Create a new fixed deposit plan.
         """
@@ -26,8 +26,11 @@ class FixedDepositService:
             if interest_rate <= 0 or interest_rate > 100:
                 raise HTTPException(status_code=400, detail="Interest rate must be between 0 and 100")
             
+            if min_amount <= 0:
+                raise HTTPException(status_code=400, detail="Minimum amount must be greater than 0")
+            
             # Create the FD plan in the database
-            fd_plan = self.repo.create_fd_plan(duration_months, interest_rate, created_by_user_id)
+            fd_plan = self.repo.create_fd_plan(duration_months, interest_rate, min_amount, created_by_user_id)
             
             if not fd_plan:
                 raise HTTPException(status_code=500, detail="Failed to create FD plan")
