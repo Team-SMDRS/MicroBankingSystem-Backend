@@ -55,7 +55,7 @@ class FixedDepositRepository:
         Validate if FD plan exists and is active.
         """
         self.cursor.execute(
-            """SELECT fd_plan_id, duration, interest_rate, status
+            """SELECT fd_plan_id, duration, interest_rate, min_amount, status
             FROM fd_plan 
             WHERE fd_plan_id = %s AND status = 'active'""",
             (plan_id,)

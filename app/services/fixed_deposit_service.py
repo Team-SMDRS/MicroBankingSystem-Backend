@@ -114,6 +114,13 @@ class FixedDepositService:
                     detail="FD plan not found or inactive"
                 )
             
+            # Validate that amount is greater than or equal to minimum amount
+            if amount < fd_plan['min_amount']:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Amount must be greater than or equal to minimum amount of {fd_plan['min_amount']}"
+                )
+            
             # Create the fixed deposit (no deduction from savings account)
             fixed_deposit = self.repo.create_fixed_deposit(
                 savings_account['acc_id'], 
