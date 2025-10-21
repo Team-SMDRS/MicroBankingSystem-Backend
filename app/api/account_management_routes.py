@@ -20,8 +20,7 @@ router = APIRouter()
 
 
 @router.get("/customer/{customer_id}")
-@require_permission("customer view","account-open","deposit","user-create","fd-create","fd-close",
-"account-close","withdrawal","customer-create","transaction")
+@require_permission("customer-view")
 def get_customer_by_id(customer_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
@@ -33,7 +32,7 @@ def get_customer_by_id(customer_id: str, db=Depends(get_db)):
 
 # Route for existing customer to open a new account using NIC
 @router.post("/existing_customer/open_account")
-@require_permission("customer-view","account-open")
+@require_permission("account-open")
 def open_account_for_existing_customer(
     data: ExistingCustomerAccountInput,
     request: Request,
@@ -61,7 +60,7 @@ def open_account_for_existing_customer(
     #return {"msg": "You can view accounts!", "permissions": request.state.user.get("permissions", [])}
 
 @router.post("/register_customer_with_account")
-@require_permission("account-open","customer-create")
+@require_permission("customer-create")
 def register_customer_with_account(
     data: CustomerAccountInput,
     request: Request,
@@ -83,7 +82,7 @@ def register_customer_with_account(
     )
 
 @router.get("/accounts/branch/{branch_id}")
-@require_permission("branch-view","account-view")
+@require_permission("account-open")
 def get_accounts_by_branch(branch_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
@@ -150,7 +149,7 @@ def get_account_details(account_no: str, db=Depends(get_db)):
     return service.get_account_details_by_account_no(account_no)
 
 @router.get("/accounts/branch/{branch_id}/count")
-@require_permission("account-view","branch-view")
+@require_permission("report-view")
 def get_account_count_by_branch(branch_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
