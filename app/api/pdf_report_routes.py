@@ -356,3 +356,23 @@ async def get_admin_accountwise_transactions_report_pdf(
             status_code=500,
             detail=f"Failed to generate PDF report: {str(e)}"
         )
+
+
+
+@router.get("/admin/list_active_fd_with_next_payment_date/pdf", tags=["PDF Reports"])
+async def get_list_active_fd_with_next_payment_date_pdf(
+    db=Depends(get_db)
+):
+    """Generate PDF report listing all active fixed deposits with their next interest payment date (admin)."""
+    try:
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_active_fd_with_next_interest_payment_date_report()
+
+        filename = f"active_fd_next_interest_payment_date_report.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        return {"error": str(e)}

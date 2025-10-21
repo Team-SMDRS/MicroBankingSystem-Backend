@@ -433,3 +433,21 @@ class FixedDepositRepository:
         except Exception as e:
             self.conn.rollback()
             raise e
+
+
+
+    def get_fd_accounts_with_next_interest_payment_date(self):        
+        """Get FD accounts with their next interest payment date
+        """ 
+        try:
+            self.cursor.execute(
+                """
+                SELECT fd_id, fd_account_no, next_interest_day, maturity_date
+                FROM fixed_deposit fd
+                WHERE fd.status = 'active'
+                ORDER BY fd.next_interest_day ASC
+                """
+            )
+            return self.cursor.fetchall()
+        except Exception as e:
+            raise e

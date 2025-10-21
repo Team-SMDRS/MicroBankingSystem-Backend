@@ -15,6 +15,8 @@ from app.services.transaction_management_service import TransactionManagementSer
 from app.repositories.transaction_management_repo import TransactionManagementRepository
 from app.services.branch_service import BranchService
 from app.repositories.branch_repo import BranchRepository
+from app.services.fixed_deposit_service import FixedDepositService
+from app.repositories.fixed_deposit_repo import FixedDepositRepository
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import os
 from reportlab.lib.utils import ImageReader
@@ -27,6 +29,7 @@ class PDFReportService:
         self.user_service = UserService(UserRepository(repo))
         self.transaction_service = TransactionManagementService(TransactionManagementRepository(repo))
         self.branch_service = BranchService(BranchRepository(repo))
+        self.fixed_deposit_service = FixedDepositService(FixedDepositRepository(repo))
   
 
     def generate_users_all_transaction_report_by_id(self, user_id: str) -> BytesIO:
@@ -754,4 +757,101 @@ class PDFReportService:
         buffer.seek(0)
         return buffer
 
+
+
+    def generate_active_fd_with_next_interest_payment_date_report(self) -> BytesIO:
+        """Generate report of active fixed deposits with next interest payment date."""
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=1 * inch,
+            leftMargin=1 * inch,
+            topMargin=0.5 * inch,
+            bottomMargin=1 * inch,
+        )
+        elements = []
+
+        styles = getSampleStyleSheet()
+        normal_style = styles['Normal']
+        table_cell_style = ParagraphStyle(
+            name='TableCell',
+            parent=normal_style,
+            fontSize=10,
+            leading=12,
+            wordWrap='CJK',
+        )
+
+        # Header and Title
+        logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
+        
+        elements.append(Spacer(1, 0.8 * inch))
+        centered_style = ParagraphStyle(
+            name='CenteredHeading',
+            parent=styles['Heading2'],
+            alignment=1,
+        )
+        elements.append(Paragraph(f"Active Fixed Deposits with Next Interest Payment Date", centered_style))
+        elements.append(Spacer(1, 0.3 * inch))
+
+        # Get active FD data
+        fds = self.fixed_deposit_service.get_fd_accounts_with_next_interest_payment_date()
+        
+        if not fds:
+            elements.append(Paragraph("No active fixed deposits found.", styles['Normal']))
+        else:
+            # Table headers
+            data = [[
+                Paragraph("Account No", table_cell_style),
+                Paragraph("Next Interest Payment Date", table_cell_style),
+                Paragraph("Maturity Date", table_cell_style),
+            ]]
+
+            # Table rows
+            for fd in fds:
+                account_no = str(fd['fd_account_no']) if 'fd_account_no' in fd else str(fd.get('account_no', ''))
+                next_interest_date = fd['next_interest_day'].strftime('%Y-%m-%d') if isinstance(fd['next_interest_day'], (datetime, date)) else str(fd['next_interest_day'])
+                maturity_date = fd['maturity_date'].strftime('%Y-%m-%d') if isinstance(fd['maturity_date'], datetime) else str(fd['maturity_date'])
+
+                data.append([
+                    Paragraph(account_no, table_cell_style),
+                    Paragraph(next_interest_date, table_cell_style),
+                    Paragraph(maturity_date, table_cell_style),
+                ])
+
+            # Create table with adjusted column widths
+            table = Table(data, colWidths=[
+                2.5 * inch,  # Account No
+                2.5 * inch,  # Next Interest Payment Date
+                2.5 * inch,  # Maturity Date
+            ])
+
+            table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ]))
+
+            elements.append(table)
+
+        # Add header/footer using shared layout helpers
+        from app.services.report_layout import header as layout_header, footer as layout_footer
+
+        def on_first_page(canvas, doc):
+            layout_header(canvas, doc, logo_path=logo_path)
+            layout_footer(canvas, doc)
+
+        def on_later_pages(canvas, doc):
+            layout_header(canvas, doc, logo_path=None)
+            layout_footer(canvas, doc)
+
+        doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
+        buffer.seek(0)
+        return buffer
         

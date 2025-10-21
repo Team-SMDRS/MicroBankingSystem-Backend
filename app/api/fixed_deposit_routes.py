@@ -233,3 +233,10 @@ def close_fixed_deposit(fd_account_no: str, request: Request, db=Depends(get_db)
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.close_fixed_deposit(fd_account_no, closed_by_user_id=current_user["user_id"] if current_user else None)
+
+
+@router.get("/fd_accounts_with_next_interest_payment_date")
+def get_fd_accounts_with_next_interest_payment_date(db=Depends(get_db)):
+    repo = FixedDepositRepository(db)
+    service = FixedDepositService(repo)
+    return service.get_fd_accounts_with_next_interest_payment_date()

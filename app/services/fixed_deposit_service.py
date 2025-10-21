@@ -315,3 +315,14 @@ class FixedDepositService:
             raise
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Failed to close fixed deposit: {str(e)}")
+        
+
+
+
+    def get_fd_accounts_with_next_interest_payment_date(self):
+        """Get FD accounts with their next interest payment date"""
+        try:
+            fds = self.repo.get_fd_accounts_with_next_interest_payment_date()
+            return fds
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Failed to retrieve FD accounts with next interest payment date")   
