@@ -1,0 +1,8 @@
+FROM postgres:17.5
+
+# Install pg_cron
+RUN apt-get update && \
+    apt-get install -y postgresql-17-cron && \
+    rm -rf /var/lib/apt/lists/*
+
+# pg_cron is now available in this image
