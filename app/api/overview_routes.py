@@ -1,6 +1,6 @@
 """Overview routes - API endpoints for reports and summaries"""
 
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from app.database.db import get_db
 from app.repositories.overview_repo import OverviewRepository
 from app.repositories.customer_repo import CustomerRepository
@@ -178,3 +178,98 @@ def get_complete_customer_details(
     
     return service.get_complete_customer_details(customer_id)
 
+
+
+@router.get("/by-branch/{branch_id}")
+def get_branch_overview(
+    branch_id: str,
+    db=Depends(get_db)
+):
+    """
+    Get comprehensive overview of a specific branch with data for graphs and charts.
+
+    - **branch_id**: Unique identifier for the branch
+
+    Returns:
+    - Branch basic info
+    - Account statistics (total, active, balance)
+    - Accounts by savings plan (pie chart data)
+    - Daily transactions for last 30 days (line/bar chart)
+    - Transaction types distribution (pie chart)
+    - Account status breakdown (pie chart)
+    - Top 10 accounts by balance (horizontal bar chart)
+    - Monthly transaction trend (line chart)
+    - Weekly interest trend (bar chart)
+    """
+    repo = OverviewRepository(db)
+    service = OverviewService(repo)
+    return service.get_branch_overview(branch_id=branch_id)
+
+
+@router.get("/by-users_branch")
+def get_branch_overview_by_user(
+    request: Request,
+    db=Depends(get_db)
+):
+    """
+    Get comprehensive overview of authenticated user's branch with data for graphs and charts.
+    Uses the branch_id from the authenticated user's token/session.
+
+    Returns:
+    - Branch basic info
+    - Account statistics (total, active, balance)
+    - Accounts by savings plan (pie chart data)
+    - Daily transactions for last 30 days (line/bar chart)
+    - Transaction types distribution (pie chart)
+    - Account status breakdown (pie chart)
+    - Top 10 accounts by balance (horizontal bar chart)
+    - Monthly transaction trend (line chart)
+    - Weekly interest trend (bar chart)
+    """
+    # Get branch_id from authenticated user's request state
+    user = getattr(request.state, "user", None)
+    branch_id = user.get("branch_id") if user else None
+    
+    if not branch_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Branch ID not found in user authentication. User must be authenticated with a branch."
+        )
+    
+    repo = OverviewRepository(db)
+    service = OverviewService(repo)
+    return service.get_branch_overview(branch_id=branch_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@router.get("/branch-comparison")
+def get_branch_comparison(db=Depends(get_db)):
+    """
+    Get comparison data for all branches.
+    
+    Returns data suitable for comparative bar charts across branches:
+    - Total accounts per branch
+    - Total balance per branch
+    - Total transactions per branch
+    - Total interest per branch
+    """
+    repo = OverviewRepository(db)
+    service = OverviewService(repo)
+    return service.get_branch_comparison()

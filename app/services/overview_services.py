@@ -259,3 +259,102 @@ class OverviewService:
         summary["grand_total_interest"] = float(total_interest)
 
         return summary
+    
+    def get_branch_overview(self, branch_id: str):
+        """Get comprehensive branch overview with chart data."""
+        
+        result = self.repo.get_branch_overview(branch_id)
+        if not result:
+            raise ValueError(f"Branch {branch_id} not found")
+
+        return {
+            "branch": {
+                "id": str(result['branch']['branch_id']),
+                "name": result['branch']['name'],
+                "address": result['branch']['address']
+            },
+            "account_statistics": {
+                "total_accounts": result['account_stats']['total_accounts'] or 0,
+                "active_accounts": result['account_stats']['active_accounts'] or 0,
+                "total_balance": float(result['account_stats']['total_balance'] or 0),
+                "average_balance": float(result['account_stats']['average_balance'] or 0)
+            },
+            "accounts_by_plan": [
+                {
+                    "plan_name": row['plan_name'] or "Unassigned",
+                    "count": row['account_count'],
+                    "total_balance": float(row['total_balance'] or 0)
+                }
+                for row in result['accounts_by_plan']
+            ],
+            "daily_transactions": [
+                {
+                    "date": row['transaction_date'].isoformat() if row['transaction_date'] else None,
+                    "count": row['transaction_count'],
+                    "amount": float(row['total_amount'] or 0)
+                }
+                for row in result['daily_transactions']
+            ],
+            "transaction_types": [
+                {
+                    "type": row['type'],
+                    "count": row['transaction_count'],
+                    "total_amount": float(row['total_amount'] or 0)
+                }
+                for row in result['transaction_types']
+            ],
+            "account_status": [
+                {
+                    "status": row['status'],
+                    "count": row['count'],
+                    "total_balance": float(row['total_balance'] or 0)
+                }
+                for row in result['account_status']
+            ],
+            "top_accounts": [
+                {
+                    "account_no": str(row['account_no']),
+                    "balance": float(row['balance'] or 0),
+                    "status": row['status'],
+                    "plan": row['plan_name']
+                }
+                for row in result['top_accounts']
+            ],
+            "monthly_trend": [
+                {
+                    "year": int(row['year']),
+                    "month": int(row['month']),
+                    "transaction_count": row['transaction_count'],
+                    "total_amount": float(row['total_amount'] or 0)
+                }
+                for row in result['monthly_trend']
+            ],
+            "weekly_interest": [
+                {
+                    "week_start": row['week_start'].isoformat() if row['week_start'] else None,
+                    "total_interest": float(row['total_interest'] or 0),
+                    "count": row['interest_count']
+                }
+                for row in result['weekly_interest']
+            ]
+        }
+
+    def get_branch_comparison(self):
+        """Get comparative data for all branches."""
+        results = self.repo.get_branch_comparison()
+        
+        return {
+            "branches": [
+                {
+                    "branch_id": str(row['branch_id']),
+                    "branch_name": row['branch_name'],
+                    "total_accounts": row['total_accounts'] or 0,
+                    "active_accounts": row['active_accounts'] or 0,
+                    "total_balance": float(row['total_balance'] or 0),
+                    "total_transactions": row['total_transactions'] or 0,
+                    "total_interest": float(row['total_interest'] or 0)
+                }
+                for row in results
+            ],
+            "total_all_branches": sum(float(row['total_balance'] or 0) for row in results)
+        }
