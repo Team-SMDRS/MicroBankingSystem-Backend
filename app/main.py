@@ -9,6 +9,7 @@ from app.middleware.auth_middleware import AuthMiddleware
 from app.api import account_management_routes
 from app.api import fixed_deposit_routes
 from app.api import test_account_routes
+from app.api import overview_routes
 
 from fastapi.responses import JSONResponse
 from app.api import customer_routes
@@ -64,6 +65,10 @@ app.include_router(customer_routes.router,
 # Simple transaction report routes
 app.include_router(pdf_report_routes.router,
                    prefix='/api/pdf-reports', tags=["PDF Reports"])
+
+# Overview and reports routes
+app.include_router(overview_routes.router,
+                   prefix='/api/overview', tags=["Overview & Reports"])
 
 
 @app.get("/")
