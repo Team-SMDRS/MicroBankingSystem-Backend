@@ -854,4 +854,245 @@ class PDFReportService:
         doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
         buffer.seek(0)
         return buffer
+
+    def generate_complete_customer_details_report(self, customer_data: dict) -> BytesIO:
+        """Generate comprehensive PDF report for complete customer details."""
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            rightMargin=1 * inch,
+            leftMargin=1 * inch,
+            topMargin=0.5 * inch,
+            bottomMargin=1 * inch,
+        )
+        elements = []
+
+        styles = getSampleStyleSheet()
+        normal_style = styles['Normal']
+        table_cell_style = ParagraphStyle(
+            name='TableCell',
+            parent=normal_style,
+            fontSize=9,
+            leading=11,
+            wordWrap='CJK',
+        )
+        heading_style = ParagraphStyle(
+            name='Heading',
+            parent=styles['Heading2'],
+            fontSize=12,
+            textColor=colors.HexColor('#1f4788'),
+            spaceAfter=12,
+        )
+
+        # Logo path
+        logo_path = os.path.join(os.path.dirname(__file__), '..', 'static', 'images', 'logo.png')
+        
+        elements.append(Spacer(1, 0.5 * inch))
+        
+        # Title
+        centered_style = ParagraphStyle(
+            name='CenteredHeading',
+            parent=styles['Heading1'],
+            alignment=1,
+            fontSize=16,
+        )
+        elements.append(Spacer(1, 0.5 * inch))
+        elements.append(Paragraph("Customer Details Report", centered_style))
+        elements.append(Spacer(1, 0.3 * inch))
+
+        # Customer Profile Section
+        customer_profile = customer_data.get('customer_profile', {})
+        elements.append(Paragraph("CUSTOMER PROFILE", heading_style))
+        
+        profile_data = [
+            ["Full Name", customer_profile.get('full_name', '')],
+            ["Customer ID", str(customer_profile.get('customer_id', ''))],
+            ["NIC", customer_profile.get('nic', '')],
+            ["Address", customer_profile.get('address', '')],
+            ["Phone Number", customer_profile.get('phone_number', '')],
+            ["Date of Birth", customer_profile.get('dob', '')],
+            ["Account Created", customer_profile.get('created_at', '')],
+        ]
+        
+        profile_table = Table(profile_data, colWidths=[2 * inch, 4 * inch])
+        profile_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ]))
+        elements.append(profile_table)
+        elements.append(Spacer(1, 0.3 * inch))
+
+        # Summary Section
+        summary = customer_data.get('summary', {})
+        elements.append(Paragraph("ACCOUNT SUMMARY", heading_style))
+        
+        summary_data = [
+            ["Total Accounts", str(summary.get('total_accounts', 0))],
+            ["Active Accounts", str(summary.get('active_accounts', 0))],
+            ["Total Savings Balance", f"Rs. {summary.get('total_savings_balance', 0):,.2f}"],
+            ["Total FD Balance", f"Rs. {summary.get('total_fd_balance', 0):,.2f}"],
+            ["Total Balance", f"Rs. {summary.get('total_balance', 0):,.2f}"],
+            ["Total Transactions", str(summary.get('total_transactions', 0))],
+            ["Total Fixed Deposits", str(summary.get('total_fixed_deposits', 0))],
+            ["Active Fixed Deposits", str(summary.get('active_fixed_deposits', 0))],
+        ]
+        
+        summary_table = Table(summary_data, colWidths=[2 * inch, 4 * inch])
+        summary_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ]))
+        elements.append(summary_table)
+        elements.append(Spacer(1, 0.3 * inch))
+
+        # Accounts Section
+        accounts = customer_data.get('accounts', [])
+        if accounts:
+            elements.append(Paragraph("SAVINGS ACCOUNTS", heading_style))
+            
+            accounts_data = [[
+                Paragraph("Account No", table_cell_style),
+                Paragraph("Balance", table_cell_style),
+                Paragraph("Status", table_cell_style),
+                Paragraph("Opened Date", table_cell_style),
+                Paragraph("Branch", table_cell_style),
+                Paragraph("Plan", table_cell_style),
+            ]]
+            
+            for acc in accounts:
+                balance = f"Rs. {float(acc.get('balance', 0)):,.2f}"
+                opened_date = acc.get('opened_date', '').split('T')[0] if acc.get('opened_date') else ''
+                
+                accounts_data.append([
+                    Paragraph(str(acc.get('account_no', '')), table_cell_style),
+                    Paragraph(balance, table_cell_style),
+                    Paragraph(acc.get('status', ''), table_cell_style),
+                    Paragraph(opened_date, table_cell_style),
+                    Paragraph(acc.get('branch_name', ''), table_cell_style),
+                    Paragraph(acc.get('savings_plan', ''), table_cell_style),
+                ])
+            
+            accounts_table = Table(accounts_data, colWidths=[1.2*inch, 1.2*inch, 0.8*inch, 1.1*inch, 0.9*inch, 0.8*inch])
+            accounts_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ]))
+            elements.append(accounts_table)
+            elements.append(Spacer(1, 0.3 * inch))
+
+        # Fixed Deposits Section
+        fixed_deposits = customer_data.get('fixed_deposits', [])
+        if fixed_deposits:
+            elements.append(Paragraph("FIXED DEPOSITS", heading_style))
+            
+            fd_data = [[
+                Paragraph("FD Account No", table_cell_style),
+                Paragraph("Balance", table_cell_style),
+                Paragraph("Duration", table_cell_style),
+                Paragraph("Interest Rate", table_cell_style),
+                Paragraph("Status", table_cell_style),
+                Paragraph("Maturity Date", table_cell_style),
+            ]]
+            
+            for fd in fixed_deposits:
+                balance = f"Rs. {float(fd.get('balance', 0)):,.2f}"
+                maturity_date = fd.get('maturity_date', '').split('T')[0] if fd.get('maturity_date') else ''
+                
+                fd_data.append([
+                    Paragraph(str(fd.get('fd_account_no', '')), table_cell_style),
+                    Paragraph(balance, table_cell_style),
+                    Paragraph(str(fd.get('duration', '')), table_cell_style),
+                    Paragraph(f"{fd.get('interest_rate', 0)}%", table_cell_style),
+                    Paragraph(fd.get('status', ''), table_cell_style),
+                    Paragraph(maturity_date, table_cell_style),
+                ])
+            
+            fd_table = Table(fd_data, colWidths=[1.2*inch, 1.2*inch, 0.9*inch, 1*inch, 0.8*inch, 1.2*inch])
+            fd_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ]))
+            elements.append(fd_table)
+            elements.append(Spacer(1, 0.3 * inch))
+
+        # Transactions Section
+        transactions = customer_data.get('transactions', [])
+        if transactions:
+            elements.append(Paragraph("RECENT TRANSACTIONS", heading_style))
+            
+            trans_data = [[
+                Paragraph("Date & Time", table_cell_style),
+                Paragraph("Type", table_cell_style),
+                Paragraph("Amount", table_cell_style),
+                Paragraph("Account No", table_cell_style),
+                Paragraph("Description", table_cell_style),
+            ]]
+            
+            # Show last 20 transactions
+            for trans in transactions[:20]:
+                amount = f"Rs. {float(trans.get('amount', 0)):,.2f}"
+                created_at = trans.get('created_at', '').replace('T', ' ')
+                if '.' in created_at:
+                    created_at = created_at.split('.')[0]
+                
+                trans_data.append([
+                    Paragraph(created_at, table_cell_style),
+                    Paragraph(trans.get('type', ''), table_cell_style),
+                    Paragraph(amount, table_cell_style),
+                    Paragraph(str(trans.get('account_no', '')), table_cell_style),
+                    Paragraph(trans.get('description', '')[:40], table_cell_style),
+                ])
+            
+            trans_table = Table(trans_data, colWidths=[1.4*inch, 1*inch, 1.2*inch, 1.1*inch, 1.3*inch])
+            trans_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ]))
+            elements.append(trans_table)
+
+        # Add header/footer
+        from app.services.report_layout import header as layout_header, footer as layout_footer
+
+        def on_first_page(canvas, doc):
+            layout_header(canvas, doc, logo_path=logo_path)
+            layout_footer(canvas, doc)
+
+        def on_later_pages(canvas, doc):
+            layout_header(canvas, doc, logo_path=None)
+            layout_footer(canvas, doc)
+
+        doc.build(elements, onFirstPage=on_first_page, onLaterPages=on_later_pages)
+        buffer.seek(0)
+        return buffer
         

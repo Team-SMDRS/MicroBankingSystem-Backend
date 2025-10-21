@@ -5,8 +5,9 @@ Simple Transaction Report API
 
 from re import I
 from webbrowser import get
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from pydantic import BaseModel
+from app.services import customer_service, overview_services
 from app.services.pdf_report_service import PDFReportService
 from fastapi.responses import StreamingResponse
 from app.database.db import get_db
@@ -376,3 +377,61 @@ async def get_list_active_fd_with_next_payment_date_pdf(
         )
     except Exception as e:
         return {"error": str(e)}
+    
+
+@router.get("/customers/complete_details/report/pdf", tags=["PDF Reports"])
+def get_complete_customer_details_report_pdf(
+    customer_nic: str,
+    db=Depends(get_db)
+):
+    """
+    Generate PDF report for customer's complete details by NIC.
+    Includes profile, accounts, fixed deposits, and transactions.
+    
+    Args:
+        customer_nic: Customer's NIC number
+    
+    Returns:
+        PDF file with complete customer details report
+    """
+    try:
+        # Get customer by NIC
+        from app.repositories.customer_repo import CustomerRepository
+        from app.services.customer_service import CustomerService
+        
+        customer_repo = CustomerRepository(db)
+        customer_service = CustomerService(customer_repo)
+        
+        # First get customer by NIC to get customer_id
+        customer_basic = customer_repo.get_customer_by_nic(customer_nic)
+        if not customer_basic:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Customer with NIC {customer_nic} not found."
+            )
+        
+        customer_id = customer_basic['customer_id']
+        
+        # Get complete customer details
+        customer_data = customer_service.get_complete_customer_details(customer_id)
+        
+        # Generate PDF report
+        pdf_service = PDFReportService(db)
+        pdf_buffer = pdf_service.generate_complete_customer_details_report(customer_data)
+
+        filename = f"customer_details_{customer_nic}.pdf"
+        return StreamingResponse(
+            iter([pdf_buffer.getvalue()]),
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename={filename}",
+                "Content-Type": "application/pdf"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate PDF report: {str(e)}"
+        )
