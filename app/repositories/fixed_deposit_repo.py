@@ -32,7 +32,7 @@ class FixedDepositRepository:
         Get all fixed deposit plans.
         """
         self.cursor.execute(
-            """SELECT fd_plan_id, duration, interest_rate, status, created_at, updated_at, created_by, updated_by
+            """SELECT fd_plan_id, duration, interest_rate, min_amount, status, created_at, updated_at, created_by, updated_by
             FROM fd_plan
             ORDER BY duration ASC"""
         )
