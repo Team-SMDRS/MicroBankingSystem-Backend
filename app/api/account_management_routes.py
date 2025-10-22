@@ -13,12 +13,14 @@ from app.database.db import get_db
 from app.repositories.account_management_repo import AccountManagementRepository
 from app.repositories.user_repo import UserRepository
 from app.services.account_management_service import AccountManagementService
+# from app.docs.import roles.md
 
 
 router = APIRouter()
 
 
 @router.get("/customer/{customer_id}")
+@require_permission("customer-view")
 def get_customer_by_id(customer_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
@@ -30,6 +32,7 @@ def get_customer_by_id(customer_id: str, db=Depends(get_db)):
 
 # Route for existing customer to open a new account using NIC
 @router.post("/existing_customer/open_account")
+@require_permission("account-open")
 def open_account_for_existing_customer(
     data: ExistingCustomerAccountInput,
     request: Request,
@@ -57,6 +60,7 @@ def open_account_for_existing_customer(
     #return {"msg": "You can view accounts!", "permissions": request.state.user.get("permissions", [])}
 
 @router.post("/register_customer_with_account")
+@require_permission("customer-create")
 def register_customer_with_account(
     data: CustomerAccountInput,
     request: Request,
@@ -78,18 +82,21 @@ def register_customer_with_account(
     )
 
 @router.get("/accounts/branch/{branch_id}")
+@require_permission("account-open")
 def get_accounts_by_branch(branch_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_accounts_by_branch(branch_id)
 
 @router.get("/account/balance/{account_no}")
+@require_permission("account-view")
 def get_account_balance(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_balance_by_account_no(account_no)
 
 @router.get("/account/{account_no}/owner")
+@require_permission("account-view")
 def get_account_owner(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     owners = repo.get_account_owner(account_no)
@@ -99,6 +106,7 @@ def get_account_owner(account_no: str, db=Depends(get_db)):
 
 # Route to get all accounts for a given NIC number
 @router.get("/accounts/by-nic/{nic}")
+@require_permission("account-view")
 def get_accounts_by_nic(nic: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_accounts_by_nic(nic)
@@ -107,6 +115,7 @@ def get_accounts_by_nic(nic: str, db=Depends(get_db)):
 
 # Route to close an account (soft delete) by account number
 @router.post("/account/close")
+@require_permission("account-close")
 def close_account(input_data: CloseAccountInput, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
@@ -117,6 +126,7 @@ def close_account(input_data: CloseAccountInput, request: Request, db=Depends(ge
 
 # Route to update customer details
 @router.put("/customer/{customer_id}")
+@require_permission("customer-update")
 def update_customer(customer_id: str, update_data: UpdateCustomerInput, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     updated = repo.update_customer(customer_id, update_data.dict(exclude_unset=True))
@@ -125,24 +135,28 @@ def update_customer(customer_id: str, update_data: UpdateCustomerInput, db=Depen
     return updated if updated else {"detail": "Customer not found or not updated."}
 
 @router.get("/accounts/all")
+@require_permission("account-view")
 def get_all_accounts(db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_all_accounts()
     return accounts
 
 @router.get("/account/details/{account_no}")
+@require_permission("account-view")
 def get_account_details(account_no: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_details_by_account_no(account_no)
 
 @router.get("/accounts/branch/{branch_id}/count")
+@require_permission("report-view")
 def get_account_count_by_branch(branch_id: str, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_count_by_branch(branch_id)
 
 @router.get("/accounts/count")
+@require_permission("report-view")
 def get_total_account_count(db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
