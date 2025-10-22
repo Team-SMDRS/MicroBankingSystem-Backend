@@ -1,5 +1,6 @@
 # /login, /register
 
+from app.middleware.require_permission import require_permission
 from fastapi import APIRouter, Depends, Request, HTTPException
 from app.schemas.user_schema import RegisterUser, LoginUser, ManageUserRoles, UpdatePasswordRequest, UpdateUserRequest, DeactivateUserRequest, ActivateUserRequest, PasswordResetRequest, AssignUserToBranchRequest
 from app.database.db import get_db
@@ -13,6 +14,7 @@ router = APIRouter()
 
 
 @router.post("/register")
+@require_permission("admin")
 def register(user: RegisterUser, request: Request, db=Depends(get_db)):
     repo = UserRepository(db)
     service = UserService(repo)
@@ -100,7 +102,8 @@ def protected(request: Request):
     return {"user": request.state.user, "message": "This is a protected route"}
 
 @router.get("/roles/{user_id}")
-def get_user_roles(user_id: str, db=Depends(get_db)):
+@require_permission("admin")
+def get_user_roles(request: Request, user_id: str, db=Depends(get_db)):
     """Get all roles for a specific user"""
     repo = UserRepository(db)
     service = UserService(repo)
@@ -115,7 +118,8 @@ def get_user_roles(user_id: str, db=Depends(get_db)):
 
 
 @router.get("/api/all_users")
-def get_all_users(db=Depends(get_db)):
+@require_permission("admin")
+def get_all_users(request: Request, db=Depends(get_db)):
     """Get all users with their roles"""
     repo = UserRepository(db)
     service = UserService(repo)
@@ -128,7 +132,8 @@ def get_all_users(db=Depends(get_db)):
 
 
 @router.get("/api/all_roles")
-def get_all_roles(db=Depends(get_db)):
+@require_permission("admin")
+def get_all_roles(request: Request, db=Depends(get_db)):
     """Get all available roles"""
     repo = UserRepository(db)
     service = UserService(repo)
@@ -141,6 +146,7 @@ def get_all_roles(db=Depends(get_db)):
 
 
 @router.post("/user/manage_roles")
+@require_permission("admin")
 def manage_user_roles(role_data: ManageUserRoles, request: Request, db=Depends(get_db)):
     """Assign roles to a user"""
     repo = UserRepository(db)
@@ -157,6 +163,7 @@ def manage_user_roles(role_data: ManageUserRoles, request: Request, db=Depends(g
   
 
 @router.post("/update_password")
+@require_permission("agent")
 def update_password(password_data: UpdatePasswordRequest, request: Request, db=Depends(get_db)):
     """Update user password"""
     repo = UserRepository(db)
@@ -172,6 +179,7 @@ def update_password(password_data: UpdatePasswordRequest, request: Request, db=D
     
 
 @router.get("/user_data")
+@require_permission("agent")
 def get_user_data(request: Request, db=Depends(get_db)):
     """Get user data from access token"""
     repo = UserRepository(db)
@@ -191,6 +199,7 @@ def get_user_data(request: Request, db=Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
 @router.get("/user/transactions_history")
+@require_permission("agent")
 def get_user_transactions(request: Request, db=Depends(get_db)):
     """Get transactions for the logged-in user"""
     repo = UserRepository(db)
@@ -211,6 +220,7 @@ def get_user_transactions(request: Request, db=Depends(get_db)):
 
 
 @router.get("/user/today_transactions")
+@require_permission("agent")
 def get_user_today_transactions(request: Request, db=Depends(get_db)):
     """Get today's transactions for the logged-in user"""
     repo = UserRepository(db)
@@ -230,6 +240,7 @@ def get_user_today_transactions(request: Request, db=Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
 @router.get("/user/transactions_by_date_range")
+@require_permission("agent")
 def get_user_transactions_by_date_range(start_date: str, end_date: str, request: Request, db=Depends(get_db)):
     """Get transactions for the logged-in user by date range"""
     repo = UserRepository(db)
@@ -249,6 +260,7 @@ def get_user_transactions_by_date_range(start_date: str, end_date: str, request:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
         
 @router.put("/user/update_details")
+@require_permission("admin")
 def update_user_details(user_data: UpdateUserRequest, request: Request, db=Depends(get_db)):
     """Update user details (first name, last name, phone number, address, email) of a specific user"""
     repo = UserRepository(db)
@@ -263,6 +275,7 @@ def update_user_details(user_data: UpdateUserRequest, request: Request, db=Depen
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
 @router.post("/users_password_reset")
+@require_permission("admin")
 def users_password_reset(password_data: PasswordResetRequest, request: Request, db=Depends(get_db)):
     """Update users password"""
     repo = UserRepository(db)
@@ -280,6 +293,7 @@ def users_password_reset(password_data: PasswordResetRequest, request: Request, 
 
 
 @router.get("/user/transactions_history_by_user/{user_id}")
+@require_permission("admin")
 def get_user_transactions(request: Request, user_id: str, db=Depends(get_db)):
     """Get transactions for the specified user"""
     repo = UserRepository(db)
@@ -300,6 +314,7 @@ def get_user_transactions(request: Request, user_id: str, db=Depends(get_db)):
 
 
 @router.put("/user/deactivate")
+@require_permission("admin")
 def deactivate_user(user_data: DeactivateUserRequest, request: Request, db=Depends(get_db)):
     """Deactivate a user by setting their status to 'inactive'"""
     repo = UserRepository(db)
@@ -314,7 +329,8 @@ def deactivate_user(user_data: DeactivateUserRequest, request: Request, db=Depen
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
         
 @router.get("/user/status/{user_id}")
-def check_user_status(user_id: str, db=Depends(get_db)):
+@require_permission("admin")
+def check_user_status(user_id: str, request: Request, db=Depends(get_db)):
     """Check if a user is active or inactive"""
     repo = UserRepository(db)
     service = UserService(repo)
@@ -328,6 +344,7 @@ def check_user_status(user_id: str, db=Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
         
 @router.put("/user/activate")
+@require_permission("admin")
 def activate_user(user_data: ActivateUserRequest, request: Request, db=Depends(get_db)):
     """Activate a user by setting their status to 'active'"""
     repo = UserRepository(db)
@@ -342,7 +359,8 @@ def activate_user(user_data: ActivateUserRequest, request: Request, db=Depends(g
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
         
 @router.get("/user/branch/{user_id}")
-def get_user_branch(user_id: str, db=Depends(get_db)):
+@require_permission("admin")
+def get_user_branch(user_id: str, request: Request, db=Depends(get_db)):
     """Get the branch information (branch_id and branch_name) for a specific user"""
     repo = UserRepository(db)
     service = UserService(repo)
@@ -358,6 +376,7 @@ def get_user_branch(user_id: str, db=Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
         
 @router.put("/user/assign-branch")
+@require_permission("admin")
 def assign_user_to_branch(assignment_data: AssignUserToBranchRequest, request: Request, db=Depends(get_db)):
     """Assign a user to a branch. User can only have one branch."""
     repo = UserRepository(db)
