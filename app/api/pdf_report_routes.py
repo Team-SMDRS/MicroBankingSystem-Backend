@@ -193,9 +193,11 @@ async def get_admin_daily_customer_transactions_report_pdf(
 
 @router.get("/customers/my_transactions_report/pdf", tags=["PDF Reports"], dependencies=[Depends(customer_auth_dependency)])
 async def get_customer_own_transactions_report_pdf(
+    request: Request,
     start_date: str, 
     end_date: str, 
     db=Depends(get_db)
+    
 ):
     """
     Generate PDF report for authenticated customer's transactions within a date range.
