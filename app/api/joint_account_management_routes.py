@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request
+from app.middleware.require_permission import require_permission
 from app.schemas.joint_account_management_schema import (
     JointAccountCreateRequest,
     JointAccountWithNewCustomersRequest,
@@ -11,6 +12,7 @@ router = APIRouter()
 
 
 @router.post("/joint-account/create")
+@require_permission("account-open")
 def create_joint_account(request_body: JointAccountCreateRequest, request: Request, db=Depends(get_db)):
     user = getattr(request.state, "user", None)
     user_id = user["user_id"] if user and "user_id" in user else None
@@ -23,6 +25,7 @@ def create_joint_account(request_body: JointAccountCreateRequest, request: Reque
 
 
 @router.post("/joint-account/create-with-new-customers")
+@require_permission("account-open")
 def create_joint_account_with_new_customers(request_body: JointAccountWithNewCustomersRequest, request: Request, db=Depends(get_db)):
     user = getattr(request.state, "user", None)
     user_id = user["user_id"] if user and "user_id" in user else None
@@ -45,6 +48,7 @@ def create_joint_account_with_new_customers(request_body: JointAccountWithNewCus
 
 
 @router.post("/joint-account/create-with-existing-and-new-customer")
+@require_permission("account-open")
 def create_joint_account_with_existing_and_new_customer(request_body: JointAccountWithExistingAndNewCustomerRequest, request: Request, db=Depends(get_db)):
     user = getattr(request.state, "user", None)
     user_id = user["user_id"] if user and "user_id" in user else None
