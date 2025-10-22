@@ -10,6 +10,7 @@ router = APIRouter()
 
 # Route to create a new savings plan
 @router.post("/savings_plan/create")
+@require_permission("admin")
 def create_savings_plan(plan: SavingsPlanCreate, request: Request, db=Depends(get_db)):
     repo = SavingsPlanRepository(db)
     service = SavingsPlanService(repo)
@@ -25,6 +26,7 @@ def create_savings_plan(plan: SavingsPlanCreate, request: Request, db=Depends(ge
 
 # Route to update a savings plan's interest rate
 @router.put("/savings_plan/{savings_plan_id}/interest_rate")
+@require_permission("admin")
 def update_savings_plan_interest_rate(savings_plan_id: str, new_interest_rate: float, request: Request, db=Depends(get_db)):
     repo = SavingsPlanRepository(db)
     service = SavingsPlanService(repo)
@@ -39,6 +41,7 @@ def update_savings_plan_interest_rate(savings_plan_id: str, new_interest_rate: f
 
 # Route to list all savings plans (id and name)
 @router.get("/savings_plans")
+@require_permission("agent")
 def list_savings_plans(request: Request, db=Depends(get_db)):
     repo = SavingsPlanRepository(db)
     service = SavingsPlanService(repo)
@@ -50,6 +53,7 @@ def list_savings_plans(request: Request, db=Depends(get_db)):
 
 # Route to list all savings plans with details (id, name, interest_rate, minimum_balance)
 @router.get("/savings_plans/details")
+@require_permission("agent")
 def list_savings_plan_details(request: Request, db=Depends(get_db)):
     repo = SavingsPlanRepository(db)
     service = SavingsPlanService(repo)
