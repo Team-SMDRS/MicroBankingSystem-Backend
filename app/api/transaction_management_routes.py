@@ -1,5 +1,6 @@
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from app.middleware.require_permission import require_permission
 from app.schemas.transaction_management_schema import (
     DepositRequest, WithdrawRequest, TransferRequest, TransactionResponse, TransactionStatusResponse,
     AccountTransactionHistory, DateRangeRequest, DateRangeTransactionResponse,
@@ -28,8 +29,10 @@ def get_current_user(request: Request):
 
 # Core transaction endpoints
 @router.post("/deposit", response_model=TransactionStatusResponse)
+@require_permission("deposit")
 def process_deposit(
-    request: DepositRequest,
+    request: Request,
+    deposit_request: DepositRequest,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
 ):
@@ -43,11 +46,13 @@ def process_deposit(
     Returns transaction status with auto-generated transaction_id and reference_no
     """
     user_id = current_user.get('user_id')
-    return transaction_service.process_deposit(request, user_id)
+    return transaction_service.process_deposit(deposit_request, user_id)
 
 @router.post("/withdraw", response_model=TransactionStatusResponse)
+@require_permission("withdrawal")
 def process_withdrawal(
-    request: WithdrawRequest,
+    request: Request,
+    withdraw_request: WithdrawRequest,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
 ):
@@ -61,11 +66,13 @@ def process_withdrawal(
     Returns transaction status with auto-generated transaction_id and reference_no, or error if insufficient funds
     """
     user_id = current_user.get('user_id')
-    return transaction_service.process_withdrawal(request, user_id)
+    return transaction_service.process_withdrawal(withdraw_request, user_id)
 
 @router.post("/transfer", response_model=TransactionStatusResponse)
+@require_permission("transfer")
 def process_transfer(
-    request: TransferRequest,
+    request: Request,
+    transfer_request: TransferRequest,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
 ):
@@ -80,11 +87,13 @@ def process_transfer(
     Returns transaction status with auto-generated transaction_id and reference_no, or error if insufficient funds or invalid accounts
     """
     user_id = current_user.get('user_id')
-    return transaction_service.process_transfer(request, user_id)
+    return transaction_service.process_transfer(transfer_request, user_id)
 
 # Transaction history and retrieval endpoints
 @router.get("/account/{account_no}", response_model=AccountTransactionHistory)
+@require_permission("agent")
 def get_account_transactions(
+    request: Request,
     account_no: int,
     current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1, description="Page number (starts from 1)"),
@@ -103,7 +112,9 @@ def get_account_transactions(
     return transaction_service.get_account_transactions_by_account_no(account_no, page, per_page)
 
 @router.get("/transaction/{transaction_id}", response_model=TransactionResponse)
+@require_permission("agent")
 def get_transaction_details(
+    request: Request,
     transaction_id: str,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
@@ -119,8 +130,10 @@ def get_transaction_details(
 
 # Date range and reporting endpoints
 @router.post("/report/date-range", response_model=DateRangeTransactionResponse)
+@require_permission("agent")
 def get_transactions_by_date_range(
-    request: DateRangeRequest,
+    request: Request,
+    date_range_request: DateRangeRequest,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
 ):
@@ -134,10 +147,12 @@ def get_transactions_by_date_range(
     
     Returns transactions with summary statistics
     """
-    return transaction_service.get_transactions_by_date_range(request)
+    return transaction_service.get_transactions_by_date_range(date_range_request)
 
 @router.post("/report/branch/{branch_id}", response_model=BranchTransactionSummary)
+@require_permission("manager")
 def get_branch_transaction_report(
+    request: Request,
     branch_id: str,
     start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
     end_date: date = Query(..., description="End date for the report (YYYY-MM-DD)"),
@@ -174,7 +189,9 @@ def get_branch_transaction_report(
 
 # Transaction summary endpoints
 @router.post("/summary/{account_no}", response_model=AccountTransactionSummary)
+@require_permission("agent")
 def get_account_transaction_summary(
+    request: Request,
     account_no: int,
     period: str = Query("monthly", description="Summary period (daily, weekly, monthly, yearly)"),
     start_date: Optional[date] = Query(None, description="Optional start date"),
@@ -212,7 +229,9 @@ def get_account_transaction_summary(
 
 # Analytics endpoints
 @router.get("/analytics/{account_no}", response_model=TransactionAnalytics)
+@require_permission("agent")
 def get_transaction_analytics(
+    request: Request,
     account_no: int,
     days: int = Query(30, ge=1, le=365, description="Number of days to analyze (max 365)"),
     current_user: dict = Depends(get_current_user),
@@ -235,7 +254,9 @@ def get_transaction_analytics(
 
 # Account balance endpoint
 @router.get("/account/{account_no}/balance", response_model=AccountBalanceResponse)
+@require_permission("agent")
 def get_account_balance(
+    request: Request,
     account_no: int,
     current_user: dict = Depends(get_current_user),
     transaction_service: TransactionManagementService = Depends(get_transaction_service)
@@ -314,7 +335,9 @@ def get_account_balance(
 
 # Advanced reporting endpoints
 @router.get("/report/all-transactions")
+@require_permission("admin")
 def get_all_transactions_report(
+    request: Request,
     page: int = Query(1, ge=1, description="Page number"),
     per_page: int = Query(100, ge=1, le=500, description="Records per page (max 500)"),
     acc_id: Optional[str] = Query(None, description="Filter by account ID"),
@@ -438,7 +461,9 @@ def get_all_transactions_report(
 # =============================================================================
 
 @router.get("/accounttransactions/{account_id}", response_model=AccountTransactionHistory)
+@require_permission("agent")
 def get_account_transactions_by_uuid(
+    request: Request,
     account_id: str,
     current_user: dict = Depends(get_current_user),
     page: int = Query(1, ge=1, description="Page number (starts from 1)"),
@@ -458,7 +483,9 @@ def get_account_transactions_by_uuid(
 
 
 @router.get("/transactions/branch/{branch_id}")
+@require_permission("manager")
 def get_branch_transactions_report_by_date(
+    request: Request,
     branch_id: str,
     start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
     end_date: date = Query(..., description="End date for the report (YYYY-MM-DD)"),
@@ -483,6 +510,7 @@ def get_branch_transactions_report_by_date(
 
 
 @router.get("/transactions/users_branch")
+@require_permission("manager")
 def get_users_branch_transactions(
     request: Request,
     start_date: date = Query(..., description="Start date for the report (YYYY-MM-DD)"),
@@ -506,7 +534,9 @@ def get_users_branch_transactions(
     return transaction_service.get_users_branch_transactions_report(current_user, start_date, end_date)
 
 @router.get("transactions/{account_no}/summery_with_history", response_model=dict)
+@require_permission("agent")
 def get_transaction_summary_with_history(
+    request: Request,
     account_no: int,
     start_date: Optional[date] = Query(None, description="Optional start date filter (YYYY-MM-DD)"),
     end_date: Optional[date] = Query(None, description="Optional end date filter (YYYY-MM-DD)"),

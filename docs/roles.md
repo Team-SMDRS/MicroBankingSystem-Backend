@@ -8,6 +8,7 @@ account-close
 account-update
 deposit
 withdrawal
+transfer
 transaction-view
 fd-create
 fd-close
