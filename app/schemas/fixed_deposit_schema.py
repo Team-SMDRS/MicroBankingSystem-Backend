@@ -14,12 +14,15 @@ class FixedDepositResponse(BaseModel):
     opened_date: datetime
     maturity_date: datetime
     fd_plan_id: UUID
-    fd_created_at: datetime   # match SQL alias
-    fd_updated_at: datetime   # match SQL alias
+    fd_created_at: datetime
+    fd_updated_at: datetime
     account_no: int
     branch_name: str
     plan_duration: int
     plan_interest_rate: Decimal
+    status: str
+    next_interest_day: datetime
+
 
 
     class Config:
