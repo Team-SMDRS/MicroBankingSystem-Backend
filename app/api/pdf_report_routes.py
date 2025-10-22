@@ -7,6 +7,7 @@ from re import I
 from webbrowser import get
 from fastapi import APIRouter, Depends, Request, HTTPException
 from pydantic import BaseModel
+from app.middleware.require_permission import require_permission
 from app.services import customer_service, overview_services
 from app.services.pdf_report_service import PDFReportService
 from fastapi.responses import StreamingResponse
@@ -23,6 +24,7 @@ class SimplePDFRequest(BaseModel):
 
 
 @router.get("/users/report/pdf", tags=["PDF Reports"])
+@require_permission("agent")
 async def get_own_users_transaction_report_pdf(request: Request, db=Depends(get_db)):
     """Generate PDF report for the authenticated users transactions."""
     user = getattr(request.state, "user", None)
@@ -42,7 +44,8 @@ async def get_own_users_transaction_report_pdf(request: Request, db=Depends(get_
 
 
 @router.get("/admin/users/{user_id}/report/pdf", tags=["PDF Reports"])
-async def get_admin_users_all_transaction_report_pdf(user_id: str, db=Depends(get_db)):
+@require_permission("admin")
+async def get_admin_users_all_transaction_report_pdf(user_id: str, request: Request, db=Depends(get_db)):
     """Generate PDF report for a specific user's transactions (admin)."""
     try:
         pdf_service = PDFReportService(db)
@@ -60,6 +63,7 @@ async def get_admin_users_all_transaction_report_pdf(user_id: str, db=Depends(ge
 
 
 @router.get("/users/transaction/today_report", tags=["PDF Reports"])
+@require_permission("agent")
 async def get_own_users_today_transaction_report_pdf(request: Request, db=Depends(get_db)):
     """Generate PDF report for the authenticated users today's transactions."""
     user = getattr(request.state, "user", None)
@@ -80,7 +84,8 @@ async def get_own_users_today_transaction_report_pdf(request: Request, db=Depend
 
 
 @router.get("/admin/daily_transactions_by_branch/report/pdf", tags=["PDF Reports"])
-async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, start_date: str, end_date: str, db=Depends(get_db)):
+@require_permission("admin")
+async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, start_date: str, end_date: str, request: Request, db=Depends(get_db)):
     """Generate PDF report for daily transactions by branch (admin)."""
     try:
         pdf_service = PDFReportService(db)
@@ -97,6 +102,7 @@ async def get_admin_daily_transactions_by_branch_report_pdf(branch_id: str, star
     
 
 @router.get("/users/daily_branch_transactions/report/pdf", tags=["PDF Reports"])
+@require_permission("manager")
 async def get_users_daily_branch_transactions_report_pdf(start_date: str, end_date: str, request: Request, db=Depends(get_db)):
     """Generate PDF report for daily branch transactions for the authenticated user."""
   
@@ -119,10 +125,12 @@ async def get_users_daily_branch_transactions_report_pdf(start_date: str, end_da
     
 
 @router.get("/admin/daily_customer_transactions_report/{customer_id}/pdf", tags=["PDF Reports"])
+@require_permission("admin")
 async def get_admin_daily_customer_transactions_report_pdf(
     customer_id: str, 
     start_date: str, 
     end_date: str, 
+    request: Request,
     db=Depends(get_db)
 ):
     """
@@ -187,7 +195,6 @@ async def get_admin_daily_customer_transactions_report_pdf(
 async def get_customer_own_transactions_report_pdf(
     start_date: str, 
     end_date: str, 
-    request: Request,
     db=Depends(get_db)
 ):
     """
@@ -262,7 +269,9 @@ async def get_customer_own_transactions_report_pdf(
 
 
 @router.get("/admin/accountwise_transactions_report/pdf", tags=["PDF Reports"])
+@require_permission("admin")
 async def get_admin_accountwise_transactions_report_pdf(
+    request: Request,
     account_number: str, 
     start_date: str = None, 
     end_date: str = None, 
@@ -361,7 +370,9 @@ async def get_admin_accountwise_transactions_report_pdf(
 
 
 @router.get("/admin/list_active_fd_with_next_payment_date/pdf", tags=["PDF Reports"])
+@require_permission("admin")
 async def get_list_active_fd_with_next_payment_date_pdf(
+    request: Request,
     db=Depends(get_db)
 ):
     """Generate PDF report listing all active fixed deposits with their next interest payment date (admin)."""
@@ -380,7 +391,9 @@ async def get_list_active_fd_with_next_payment_date_pdf(
     
 
 @router.get("/customers/complete_details/report/pdf", tags=["PDF Reports"])
+@require_permission("admin")
 def get_complete_customer_details_report_pdf(
+    request: Request,
     customer_nic: str,
     db=Depends(get_db)
 ):
