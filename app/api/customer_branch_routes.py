@@ -11,7 +11,8 @@ router = APIRouter()
 
 
 @router.get("/customers")
-def get_all_customers(db=Depends(get_db)):
+@require_permission("admin")
+def get_all_customers(request: Request, db=Depends(get_db)):
 
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
@@ -20,6 +21,7 @@ def get_all_customers(db=Depends(get_db)):
 
 # get all customers of users branch
 @router.get("/customers/users_branch")
+@require_permission("agent")
 def get_customers_by_branch(request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     user_repo = UserRepository(db)
@@ -31,7 +33,8 @@ def get_customers_by_branch(request: Request, db=Depends(get_db)):
 
 # get all customers count
 @router.get("/customers/count")
-def get_customers_count(db=Depends(get_db)):
+@require_permission("admin")
+def get_customers_count(request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.get_customers_count()
@@ -40,6 +43,7 @@ def get_customers_count(db=Depends(get_db)):
 # get count of all customers in the current user's branch
 
 @router.get("/customers/users_branch/count")
+@require_permission("agent")
 def get_customers_count_by_branch(request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     user_repo = UserRepository(db)
@@ -60,7 +64,8 @@ def get_customers_count_by_branch(request: Request, db=Depends(get_db)):
 
 # get all customers by branch id
 @router.get("/customers/branch/{branch_id}")
-def get_customers_by_branch_id(branch_id: str, db=Depends(get_db)):
+@require_permission("admin")
+def get_customers_by_branch_id(branch_id: str, request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.get_customers_by_branch_id(branch_id)
@@ -69,7 +74,8 @@ def get_customers_by_branch_id(branch_id: str, db=Depends(get_db)):
 
 
 @router.get("/accounts/branch/{branch_id}/count")
-def get_accounts_count_by_branch_id(branch_id: str, db=Depends(get_db)):
+@require_permission("manager")
+def get_accounts_count_by_branch_id(branch_id: str, request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.get_accounts_count_by_branch_id(branch_id)
@@ -78,14 +84,16 @@ def get_accounts_count_by_branch_id(branch_id: str, db=Depends(get_db)):
 
 
 @router.get("/accounts/branch/{branch_id}/total_balance")
-def get_total_balance_by_branch_id(branch_id: str, db=Depends(get_db)):
+@require_permission("manager")
+def get_total_balance_by_branch_id(branch_id: str, request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.get_total_balance_by_branch_id(branch_id)
 
 # search customers by name
 @router.get("/customers/search")
-def search_customers(name: str, db=Depends(get_db)):
+@require_permission("agent")
+def search_customers(name: str, request: Request, db=Depends(get_db)):
     repo = CustomerBranchRepository(db)
     service = CustomerBranchService(repo)
     return service.search_customers_by_name(name)

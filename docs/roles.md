@@ -20,3 +20,4 @@ report-view
 
 admin
 agent
+manager
