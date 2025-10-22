@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, Request, Query
 from typing import List
 
+from app.middleware.require_permission import require_permission
 from app.schemas.fixed_deposit_schema import (
     FixedDepositPlanResponse, 
     FixedDepositResponse, 
@@ -18,7 +19,8 @@ router = APIRouter()
 
 # get all fixed deposits 
 @router.get("/fixed-deposits", response_model=List[FixedDepositResponse])
-def get_all_fixed_deposits(db=Depends(get_db)):
+@require_permission("agent")
+def get_all_fixed_deposits(request: Request, db=Depends(get_db)):
     """Get all fixed deposit accounts"""
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -28,21 +30,24 @@ def get_all_fixed_deposits(db=Depends(get_db)):
 
 #get fixed deposit by fd_id
 @router.get("/fixed-deposits/fd/{fd_id}", response_model=FixedDepositResponse)
-def get_fixed_deposit_by_fd_id(fd_id: str, db=Depends(get_db)):
+@require_permission("fd-view")
+def get_fixed_deposit_by_fd_id(fd_id: str, request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fixed_deposit_by_fd_id(fd_id)
 
 # get fixed deposit by saving account account number
 @router.get("/fixed-deposits/savings/{savings_account_no}", response_model=List[FixedDepositResponse])
-def get_fixed_deposits_by_savings_account(savings_account_no: str, db=Depends(get_db)):
+@require_permission("fd-view")
+def get_fixed_deposits_by_savings_account(savings_account_no: str, request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fixed_deposits_by_savings_account(savings_account_no)
 
 #get fixed depost by customer id
 @router.get("/fixed-deposits/customer/{customer_id}", response_model=List[FixedDepositResponse])
-def get_fixed_deposits_by_customer_id(customer_id: str, db=Depends(get_db)):
+@require_permission("fd-view")
+def get_fixed_deposits_by_customer_id(customer_id: str, request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fixed_deposits_by_customer_id(customer_id)
@@ -53,6 +58,7 @@ def get_fixed_deposits_by_customer_id(customer_id: str, db=Depends(get_db)):
 
 # create new fixed deposit account 
 @router.post("/fixed-deposits", response_model=FixedDepositResponse)
+@require_permission("fd-create")
 async def create_fixed_deposit(
     request: Request,
     fd_request: CreateFixedDepositRequest,
@@ -85,7 +91,8 @@ async def create_fixed_deposit(
 
 # get fixed deposit by fd account number
 @router.get("/fixed-deposits/account/{fd_account_no}", response_model=FixedDepositResponse)
-def get_fixed_deposit_by_account_number(fd_account_no: str, db=Depends(get_db)):
+@require_permission("fd-view")
+def get_fixed_deposit_by_account_number(fd_account_no: str, request: Request, db=Depends(get_db)):
 
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -93,14 +100,16 @@ def get_fixed_deposit_by_account_number(fd_account_no: str, db=Depends(get_db)):
 
 # get fd_plan by fd_id
 @router.get("/fixed-deposits/{fd_id}/plan", response_model=FixedDepositPlanResponse)
-def get_fd_plan_by_fd_id(fd_id: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_fd_plan_by_fd_id(fd_id: str, request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fd_plan_by_fd_id(fd_id)
 
 # get all fd plans
 @router.get("/fd-plans", response_model=List[FDPlanResponse])
-def get_all_fd_plans(db=Depends(get_db)):
+@require_permission("agent")
+def get_all_fd_plans(request: Request,db=Depends(get_db)):
    
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -108,6 +117,7 @@ def get_all_fd_plans(db=Depends(get_db)):
 
 # create new fd plan
 @router.post("/fd-plans", response_model=CreateFDPlanResponse)
+@require_permission("admin")
 async def create_fd_plan(
     request: Request,
     duration_months: int,
@@ -133,6 +143,7 @@ async def create_fd_plan(
 
 # update fd plan status
 @router.put("/fd-plans/{fd_plan_id}/status", response_model=FDPlanResponse)
+@require_permission("admin")
 async def update_fd_plan_status(
     request: Request,
     fd_plan_id: str,
@@ -156,7 +167,8 @@ async def update_fd_plan_status(
 
 # get saving account by fd account number
 @router.get("/fixed-deposits/{fd_account_no}/savings-account")
-def get_savings_account_by_fd_number(fd_account_no: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_savings_account_by_fd_number(fd_account_no: str, request: Request, db=Depends(get_db)):
 
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -164,7 +176,8 @@ def get_savings_account_by_fd_number(fd_account_no: str, db=Depends(get_db)):
 
 #get owner by fd account number
 @router.get("/fixed-deposits/{fd_account_no}/owner")
-def get_owner_by_fd_number(fd_account_no: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_owner_by_fd_number(fd_account_no: str, request: Request, db=Depends(get_db)):
    
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -172,7 +185,8 @@ def get_owner_by_fd_number(fd_account_no: str, db=Depends(get_db)):
 
 # get branch by fd account number
 @router.get("/fixed-deposits/{fd_account_no}/branch")
-def get_branch_by_fd_number(fd_account_no: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_branch_by_fd_number(fd_account_no: str, request: Request, db=Depends(get_db)):
     
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -180,7 +194,8 @@ def get_branch_by_fd_number(fd_account_no: str, db=Depends(get_db)):
 
 # get all fixed deposits of a branch id
 @router.get("/branches/{branch_id}/fixed-deposits", response_model=List[FixedDepositResponse])
-def get_fixed_deposits_by_branch(branch_id: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_fixed_deposits_by_branch(branch_id: str, request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fixed_deposits_by_branch(branch_id)
@@ -198,7 +213,8 @@ def get_fixed_deposits_by_branch(branch_id: str, db=Depends(get_db)):
 
 # get all active fd plans
 @router.get("/active-fd-plans", response_model=List[FDPlanResponse])
-def get_active_fd_plans(db=Depends(get_db)):
+@require_permission("agent")
+def get_active_fd_plans(request: Request, db=Depends(get_db)):
     """Get all active FD plans only"""
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -206,7 +222,8 @@ def get_active_fd_plans(db=Depends(get_db)):
 
 # get fixed deposits by status
 @router.get("/fixed-deposits/status/{status}", response_model=List[FixedDepositResponse])
-def get_fixed_deposits_by_status(status: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_fixed_deposits_by_status(status: str, request: Request, db=Depends(get_db)):
     """Get all fixed deposits by status (active, matured, etc.)"""
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -214,7 +231,8 @@ def get_fixed_deposits_by_status(status: str, db=Depends(get_db)):
 
 # get matured fixed deposits
 @router.get("/fixed-deposits/matured", response_model=List[FixedDepositResponse])
-def get_matured_fixed_deposits(db=Depends(get_db)):
+@require_permission("agent")
+def get_matured_fixed_deposits(request: Request, db=Depends(get_db)):
     """Get all matured fixed deposits"""
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -222,7 +240,8 @@ def get_matured_fixed_deposits(db=Depends(get_db)):
 
 # get fixed deposits by plan id
 @router.get("/fd-plans/{fd_plan_id}/fixed-deposits", response_model=List[FixedDepositResponse])
-def get_fixed_deposits_by_plan_id(fd_plan_id: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_fixed_deposits_by_plan_id(fd_plan_id: str, request: Request, db=Depends(get_db)):
     """Get all fixed deposit accounts for a given FD plan ID"""
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
@@ -230,6 +249,7 @@ def get_fixed_deposits_by_plan_id(fd_plan_id: str, db=Depends(get_db)):
 
 
 @router.post("/close-fixed-deposit/{fd_account_no}")
+@require_permission("fd-close")
 def close_fixed_deposit(fd_account_no: str, request: Request, db=Depends(get_db)):
     current_user = getattr(request.state, "user", None)
     repo = FixedDepositRepository(db)
@@ -238,7 +258,8 @@ def close_fixed_deposit(fd_account_no: str, request: Request, db=Depends(get_db)
 
 
 @router.get("/fd_accounts_with_next_interest_payment_date")
-def get_fd_accounts_with_next_interest_payment_date(db=Depends(get_db)):
+@require_permission("agent")
+def get_fd_accounts_with_next_interest_payment_date(request: Request, db=Depends(get_db)):
     repo = FixedDepositRepository(db)
     service = FixedDepositService(repo)
     return service.get_fd_accounts_with_next_interest_payment_date()
