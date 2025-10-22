@@ -22,8 +22,8 @@ def require_permission(permission: str):
                 user_perms = []
             user_perms = [p.strip() for p in user_perms]
 
-            print("Need permission:", permission)
-            print("User permissions:", user_perms)
+            # print("Need permission:", permission)
+            # print("User permissions:", user_perms)
 
             if permission not in user_perms:
                 raise HTTPException(status_code=403, detail=f"Permission '{permission}' denied")
