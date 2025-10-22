@@ -21,7 +21,7 @@ router = APIRouter()
 
 @router.get("/customer/{customer_id}")
 @require_permission("customer-view")
-def get_customer_by_id(customer_id: str, db=Depends(get_db)):
+async def get_customer_by_id(customer_id: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     result = service.get_customer_by_id(customer_id)
@@ -33,7 +33,7 @@ def get_customer_by_id(customer_id: str, db=Depends(get_db)):
 # Route for existing customer to open a new account using NIC
 @router.post("/existing_customer/open_account")
 @require_permission("account-open")
-def open_account_for_existing_customer(
+async def open_account_for_existing_customer(
     data: ExistingCustomerAccountInput,
     request: Request,
     db=Depends(get_db)
@@ -60,8 +60,8 @@ def open_account_for_existing_customer(
     #return {"msg": "You can view accounts!", "permissions": request.state.user.get("permissions", [])}
 
 @router.post("/register_customer_with_account")
-@require_permission("customer-create")
-def register_customer_with_account(
+@require_permission("account-open")
+async def register_customer_with_account(
     data: CustomerAccountInput,
     request: Request,
     db=Depends(get_db)
@@ -82,22 +82,22 @@ def register_customer_with_account(
     )
 
 @router.get("/accounts/branch/{branch_id}")
-@require_permission("account-open")
-def get_accounts_by_branch(branch_id: str, db=Depends(get_db)):
+@require_permission("account-view")
+async def get_accounts_by_branch(branch_id: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_accounts_by_branch(branch_id)
 
 @router.get("/account/balance/{account_no}")
 @require_permission("account-view")
-def get_account_balance(account_no: str, db=Depends(get_db)):
+async def get_account_balance(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_balance_by_account_no(account_no)
 
 @router.get("/account/{account_no}/owner")
 @require_permission("account-view")
-def get_account_owner(account_no: str, db=Depends(get_db)):
+async def get_account_owner(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     owners = repo.get_account_owner(account_no)
     if not owners:
@@ -107,7 +107,7 @@ def get_account_owner(account_no: str, db=Depends(get_db)):
 # Route to get all accounts for a given NIC number
 @router.get("/accounts/by-nic/{nic}")
 @require_permission("account-view")
-def get_accounts_by_nic(nic: str, db=Depends(get_db)):
+async def get_accounts_by_nic(nic: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_accounts_by_nic(nic)
     return accounts
@@ -116,7 +116,7 @@ def get_accounts_by_nic(nic: str, db=Depends(get_db)):
 # Route to close an account (soft delete) by account number
 @router.post("/account/close")
 @require_permission("account-close")
-def close_account(input_data: CloseAccountInput, request: Request, db=Depends(get_db)):
+async def close_account(input_data: CloseAccountInput, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     current_user = getattr(request.state, "user", None)
@@ -127,7 +127,7 @@ def close_account(input_data: CloseAccountInput, request: Request, db=Depends(ge
 # Route to update customer details
 @router.put("/customer/{customer_id}")
 @require_permission("customer-update")
-def update_customer(customer_id: str, update_data: UpdateCustomerInput, db=Depends(get_db)):
+async def update_customer(customer_id: str, update_data: UpdateCustomerInput, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     updated = repo.update_customer(customer_id, update_data.dict(exclude_unset=True))
     if updated is None:
@@ -136,28 +136,28 @@ def update_customer(customer_id: str, update_data: UpdateCustomerInput, db=Depen
 
 @router.get("/accounts/all")
 @require_permission("account-view")
-def get_all_accounts(db=Depends(get_db)):
+async def get_all_accounts(request: Request,db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_all_accounts()
     return accounts
 
 @router.get("/account/details/{account_no}")
-@require_permission("account-view")
-def get_account_details(account_no: str, db=Depends(get_db)):
+@require_permission("account-view") 
+async def get_account_details(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_details_by_account_no(account_no)
 
 @router.get("/accounts/branch/{branch_id}/count")
 @require_permission("report-view")
-def get_account_count_by_branch(branch_id: str, db=Depends(get_db)):
+async def get_account_count_by_branch(branch_id: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_count_by_branch(branch_id)
 
 @router.get("/accounts/count")
 @require_permission("report-view")
-def get_total_account_count(db=Depends(get_db)):
+async def get_total_account_count(request: Request,db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_total_account_count()

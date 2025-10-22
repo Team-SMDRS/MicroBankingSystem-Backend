@@ -3,14 +3,19 @@ from functools import wraps
 import inspect
 
 def require_permission(permission: str):
+    print(f"Setting up permission requirement for: {permission}")
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
             # Look for request in both args and kwargs
-            request: Request = kwargs.get("request") or next((a for a in args if isinstance(a, Request)), None)
+            try:
+                request: Request = kwargs.get("request") or next((a for a in args if isinstance(a, Request)), None)
 
-            if not request or not getattr(request.state, "user", None):
-                raise HTTPException(status_code=401, detail="Unauthorized")
+                if not request or not getattr(request.state, "user", None):
+                    raise HTTPException(status_code=401, detail="Unauthorized")
+            except Exception as e:
+                print(f"Error: {e}")
+                raise
 
             user_perms = request.state.user.get("permissions", [])
             if not isinstance(user_perms, list):
