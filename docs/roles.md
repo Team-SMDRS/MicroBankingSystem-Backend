@@ -17,3 +17,6 @@ user-view
 user-update
 branch-view
 report-view
+
+admin
+agent

@@ -8,13 +8,15 @@ from app.schemas.branch_schema import BranchResponse, UpdateBranch, CreateBranch
 from app.database.db import get_db
 from app.repositories.branch_repo import BranchRepository
 from app.services.branch_service import BranchService
+from app.middleware.require_permission import require_permission
 
 router = APIRouter()
 # get all branches
 
 
 @router.get("/branches", response_model=List[BranchResponse])
-def get_all_branches(db=Depends(get_db)):
+@require_permission("admin")
+async def get_all_branches( request: Request, db=Depends(get_db)):
     """Get all branches"""
     repo = BranchRepository(db)
     service = BranchService(repo)
@@ -23,7 +25,8 @@ def get_all_branches(db=Depends(get_db)):
 
 # get branch by id as a list
 @router.get("/branches/{branch_id}", response_model=List[BranchResponse])
-def get_branch_by_id(branch_id: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_branch_by_id(branch_id: str, request: Request, db=Depends(get_db)):
     """Get branch by ID"""
     repo = BranchRepository(db)
     service = BranchService(repo)
@@ -33,7 +36,8 @@ def get_branch_by_id(branch_id: str, db=Depends(get_db)):
 
 
 @router.get("/branches/name/{branch_name}", response_model=List[BranchResponse])
-def get_branch_by_name(branch_name: str, db=Depends(get_db)):
+@require_permission("agent")
+def get_branch_by_name(branch_name: str, request: Request, db=Depends(get_db)):
     """Get branch by name"""
     repo = BranchRepository(db)
     service = BranchService(repo)
@@ -42,6 +46,7 @@ def get_branch_by_name(branch_name: str, db=Depends(get_db)):
 
 # update branch details (name, address) by branch id PUT /branches/{branch_id}
 @router.put("/branches/{branch_id}", response_model=BranchResponse)
+@require_permission("admin")
 def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, db=Depends(get_db)):
     """Update branch details by branch ID"""
     repo = BranchRepository(db)
@@ -53,6 +58,7 @@ def update_branch(branch_id: str, update_data: UpdateBranch, request: Request, d
 
 # create new branch
 @router.post("/branches", response_model=BranchResponse)
+@require_permission("admin")
 def create_branch(branch_data: CreateBranch, request: Request, db=Depends(get_db)):
     """Create a new branch"""
     repo = BranchRepository(db)
