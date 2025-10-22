@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from app.database.db import get_db
+from app.middleware.require_permission import require_permission
 from app.repositories.overview_repo import OverviewRepository
 from app.repositories.customer_repo import CustomerRepository
 from app.services.overview_services import OverviewService
@@ -21,7 +22,9 @@ router = APIRouter()
     "/monthly_interest_distribution_summary",
     response_model=MonthlyInterestByAccountTypeResponse
 )
+@require_permission("admin")
 def get_monthly_interest_distribution_summary(
+    request: Request,
     month: int = Query(None, ge=1, le=12, description="Month number (1-12)"),
     year: int = Query(None, ge=2020, description="Year"),
     db=Depends(get_db)
@@ -43,7 +46,9 @@ def get_monthly_interest_distribution_summary(
     "/monthly_interest_by_savings_plan",
     response_model=MonthlyInterestBySavingsPlanResponse
 )
+@require_permission("admin")
 def get_monthly_interest_by_savings_plan(
+    request: Request,
     month: int = Query(None, ge=1, le=12, description="Month number (1-12)"),
     year: int = Query(None, ge=2020, description="Year"),
     db=Depends(get_db)
@@ -65,7 +70,9 @@ def get_monthly_interest_by_savings_plan(
     "/monthly_interest_by_fd_plan",
     response_model=MonthlyInterestByFDPlanResponse
 )
+@require_permission("admin")
 def get_monthly_interest_by_fd_plan(
+    request: Request,
     month: int = Query(None, ge=1, le=12, description="Month number (1-12)"),
     year: int = Query(None, ge=2020, description="Year"),
     db=Depends(get_db)
@@ -87,7 +94,9 @@ def get_monthly_interest_by_fd_plan(
     "/monthly_transaction_summary",
     response_model=MonthlyTransactionSummaryResponse
 )
+@require_permission("admin")
 def get_monthly_transaction_summary(
+    request: Request,
     month: int = Query(None, ge=1, le=12, description="Month number (1-12)"),
     year: int = Query(None, ge=2020, description="Year"),
     db=Depends(get_db)
@@ -109,7 +118,9 @@ def get_monthly_transaction_summary(
     "/branch_wise_interest_distribution",
     response_model=BranchWiseInterestDistributionResponse
 )
+@require_permission("manager")
 def get_branch_wise_interest_distribution(
+    request: Request,
     month: int = Query(None, ge=1, le=12, description="Month number (1-12)"),
     year: int = Query(None, ge=2020, description="Year"),
     db=Depends(get_db)
@@ -128,7 +139,9 @@ def get_branch_wise_interest_distribution(
 
 
 @router.get("/customer/details-by-nic/{nic}")
+@require_permission("agent")
 def get_customer_details_by_nic(
+    request: Request,
     nic: str,
     db=Depends(get_db)
 ):
@@ -157,7 +170,9 @@ def get_customer_details_by_nic(
 
 
 @router.get("/customer/complete-details/{customer_id}")
+@require_permission("agent")
 def get_complete_customer_details(
+    request: Request,
     customer_id: str,
     db=Depends(get_db)
 ):
@@ -181,7 +196,9 @@ def get_complete_customer_details(
 
 
 @router.get("/by-branch/{branch_id}")
+@require_permission("admin")
 def get_branch_overview(
+    request: Request,
     branch_id: str,
     db=Depends(get_db)
 ):
@@ -207,6 +224,7 @@ def get_branch_overview(
 
 
 @router.get("/by-users_branch")
+@require_permission("manager")
 def get_branch_overview_by_user(
     request: Request,
     db=Depends(get_db)
@@ -260,7 +278,8 @@ def get_branch_overview_by_user(
 
 
 @router.get("/branch-comparison")
-def get_branch_comparison(db=Depends(get_db)):
+@require_permission("admin")
+def get_branch_comparison(request: Request, db=Depends(get_db)):
     """
     Get comparison data for all branches.
     
