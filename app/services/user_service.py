@@ -20,10 +20,7 @@ class UserService:
         print(created_by_user_id)
         """Register a new user"""
         
-        # Debug print of inputs
-        print("User data received:", user_data)
-        print("Created by user_id:", created_by_user_id)
-        print("Current logged-in user:", current_user)
+        
 
         # Check if username already exists
         existing = self.repo.get_login_by_username(user_data.username)

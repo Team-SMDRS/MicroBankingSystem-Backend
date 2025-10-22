@@ -183,7 +183,7 @@ class PDFReportService:
 
         # Get user transactions and summary
         result = self.user_service.get_today_transactions_by_user_id(user_id)
-        print("DEBUG result:", result)  # Debugging line
+       
         transactions = result.get("transactions", [])
         summary = result.get("summary", {})
 
