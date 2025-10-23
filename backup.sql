@@ -2,7 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict YdGcxqIj2VLELzQCl5jkRB1gEazuR7wcCfytcaQdETjLVTHhFAKeTmEXtOdPDfu
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -3805,6 +3804,4 @@ ALTER TABLE ONLY public.users
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict YdGcxqIj2VLELzQCl5jkRB1gEazuR7wcCfytcaQdETjLVTHhFAKeTmEXtOdPDfu
 
