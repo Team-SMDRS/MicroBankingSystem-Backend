@@ -2,11 +2,12 @@
 -- PostgreSQL database dump
 --
 
+\restrict YdGcxqIj2VLELzQCl5jkRB1gEazuR7wcCfytcaQdETjLVTHhFAKeTmEXtOdPDfu
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
 
--- Started on 2025-10-21 18:43:47 +0530
+-- Started on 2025-10-23 08:24:06 +0530
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -29,7 +30,7 @@ CREATE EXTENSION IF NOT EXISTS pg_cron WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 3801 (class 0 OID 0)
+-- TOC entry 3813 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: EXTENSION pg_cron; Type: COMMENT; Schema: -; Owner: -
 --
@@ -46,7 +47,7 @@ COMMENT ON EXTENSION pg_cron IS 'Job scheduler for PostgreSQL';
 
 
 --
--- TOC entry 3802 (class 0 OID 0)
+-- TOC entry 3814 (class 0 OID 0)
 -- Dependencies: 7
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
@@ -63,7 +64,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- TOC entry 3803 (class 0 OID 0)
+-- TOC entry 3815 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
 --
@@ -72,7 +73,7 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- TOC entry 950 (class 1247 OID 30961)
+-- TOC entry 962 (class 1247 OID 30961)
 -- Name: account_status; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -84,7 +85,7 @@ CREATE TYPE public.account_status AS ENUM (
 
 
 --
--- TOC entry 953 (class 1247 OID 30968)
+-- TOC entry 965 (class 1247 OID 30968)
 -- Name: audit_action; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -96,7 +97,7 @@ CREATE TYPE public.audit_action AS ENUM (
 
 
 --
--- TOC entry 956 (class 1247 OID 30976)
+-- TOC entry 968 (class 1247 OID 30976)
 -- Name: status_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -107,7 +108,7 @@ CREATE TYPE public.status_enum AS ENUM (
 
 
 --
--- TOC entry 959 (class 1247 OID 30982)
+-- TOC entry 971 (class 1247 OID 30982)
 -- Name: transaction_type; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -121,7 +122,7 @@ CREATE TYPE public.transaction_type AS ENUM (
 
 
 --
--- TOC entry 252 (class 1255 OID 30993)
+-- TOC entry 264 (class 1255 OID 30993)
 -- Name: audit_user_login_update(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -162,7 +163,7 @@ $$;
 
 
 --
--- TOC entry 315 (class 1255 OID 30994)
+-- TOC entry 327 (class 1255 OID 30994)
 -- Name: calculate_monthly_interest(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -253,7 +254,7 @@ $$;
 
 
 --
--- TOC entry 307 (class 1255 OID 30995)
+-- TOC entry 319 (class 1255 OID 30995)
 -- Name: calculate_transaction_totals(uuid, character varying, date, date); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -300,7 +301,7 @@ $$;
 
 
 --
--- TOC entry 297 (class 1255 OID 30996)
+-- TOC entry 309 (class 1255 OID 30996)
 -- Name: cleanup_expired_user_refresh_tokens(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -318,7 +319,7 @@ $$;
 
 
 --
--- TOC entry 326 (class 1255 OID 30997)
+-- TOC entry 338 (class 1255 OID 30997)
 -- Name: create_account_for_existing_customer_by_nic(character varying, uuid, uuid, uuid, numeric, public.account_status); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -369,7 +370,7 @@ $$;
 
 
 --
--- TOC entry 283 (class 1255 OID 30998)
+-- TOC entry 295 (class 1255 OID 30998)
 -- Name: create_branch(character varying, character varying, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -408,7 +409,7 @@ $$;
 
 
 --
--- TOC entry 282 (class 1255 OID 30999)
+-- TOC entry 294 (class 1255 OID 30999)
 -- Name: create_customer_with_login(text, text, text, text, date, text, text, uuid, uuid, numeric, uuid, public.account_status); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -458,7 +459,7 @@ $$;
 
 
 --
--- TOC entry 320 (class 1255 OID 31000)
+-- TOC entry 332 (class 1255 OID 31000)
 -- Name: create_fd_plan(integer, numeric, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -482,7 +483,7 @@ $$;
 
 
 --
--- TOC entry 310 (class 1255 OID 31492)
+-- TOC entry 322 (class 1255 OID 31492)
 -- Name: create_fd_plan(integer, numeric, bigint, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -507,7 +508,7 @@ $$;
 
 
 --
--- TOC entry 279 (class 1255 OID 31481)
+-- TOC entry 291 (class 1255 OID 31481)
 -- Name: create_fixed_deposit(uuid, numeric, uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -587,7 +588,7 @@ $$;
 
 
 --
--- TOC entry 319 (class 1255 OID 31002)
+-- TOC entry 331 (class 1255 OID 31002)
 -- Name: create_initial_user(character varying, character varying, character varying, character varying, character varying, date, character varying, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -622,7 +623,7 @@ $$;
 
 
 --
--- TOC entry 311 (class 1255 OID 31477)
+-- TOC entry 323 (class 1255 OID 31477)
 -- Name: create_savings_plan(character varying, numeric, uuid, numeric); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -639,7 +640,7 @@ $$;
 
 
 --
--- TOC entry 294 (class 1255 OID 31004)
+-- TOC entry 306 (class 1255 OID 31004)
 -- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -695,7 +696,7 @@ $$;
 
 
 --
--- TOC entry 299 (class 1255 OID 31005)
+-- TOC entry 311 (class 1255 OID 31005)
 -- Name: create_user(character varying, character varying, character varying, character varying, character varying, date, character varying, character varying, uuid, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -751,7 +752,7 @@ $$;
 
 
 --
--- TOC entry 325 (class 1255 OID 31490)
+-- TOC entry 337 (class 1255 OID 31490)
 -- Name: daily_fd_interest_check(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -767,7 +768,7 @@ $$;
 
 
 --
--- TOC entry 275 (class 1255 OID 31006)
+-- TOC entry 287 (class 1255 OID 31006)
 -- Name: get_account_transactions_by_uuid(uuid, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -809,7 +810,7 @@ $$;
 
 
 --
--- TOC entry 251 (class 1255 OID 31007)
+-- TOC entry 263 (class 1255 OID 31007)
 -- Name: get_all_transactions_with_account_details(integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -840,7 +841,7 @@ $$;
 
 
 --
--- TOC entry 284 (class 1255 OID 31463)
+-- TOC entry 296 (class 1255 OID 31463)
 -- Name: get_branch_transaction_report(uuid, date, date, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -869,7 +870,7 @@ $$;
 
 
 --
--- TOC entry 249 (class 1255 OID 31009)
+-- TOC entry 261 (class 1255 OID 31009)
 -- Name: get_fd_by_id(uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -902,7 +903,7 @@ $$;
 
 
 --
--- TOC entry 286 (class 1255 OID 31010)
+-- TOC entry 298 (class 1255 OID 31010)
 -- Name: get_fixed_deposit_by_fd_id(uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -935,7 +936,7 @@ $$;
 
 
 --
--- TOC entry 317 (class 1255 OID 31011)
+-- TOC entry 329 (class 1255 OID 31011)
 -- Name: get_fixed_deposit_with_details(uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -968,7 +969,7 @@ $$;
 
 
 --
--- TOC entry 321 (class 1255 OID 31012)
+-- TOC entry 333 (class 1255 OID 31012)
 -- Name: get_fixed_deposits_by_customer_id(uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1003,7 +1004,7 @@ $$;
 
 
 --
--- TOC entry 329 (class 1255 OID 31013)
+-- TOC entry 341 (class 1255 OID 31013)
 -- Name: get_fixed_deposits_by_savings_account(bigint); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1037,7 +1038,7 @@ $$;
 
 
 --
--- TOC entry 265 (class 1255 OID 31014)
+-- TOC entry 277 (class 1255 OID 31014)
 -- Name: get_transaction_history_by_account(uuid, integer, integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1064,7 +1065,7 @@ $$;
 
 
 --
--- TOC entry 285 (class 1255 OID 31478)
+-- TOC entry 297 (class 1255 OID 31478)
 -- Name: get_transaction_history_by_date_range(date, date, uuid, character varying); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1103,7 +1104,7 @@ $$;
 
 
 --
--- TOC entry 295 (class 1255 OID 31016)
+-- TOC entry 307 (class 1255 OID 31016)
 -- Name: process_deposit_transaction(uuid, numeric, text, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1147,7 +1148,7 @@ $$;
 
 
 --
--- TOC entry 261 (class 1255 OID 31489)
+-- TOC entry 273 (class 1255 OID 31489)
 -- Name: process_fd_interest_payment(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1239,7 +1240,7 @@ $$;
 
 
 --
--- TOC entry 303 (class 1255 OID 31017)
+-- TOC entry 315 (class 1255 OID 31017)
 -- Name: process_transfer_transaction(uuid, uuid, numeric, text, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1353,7 +1354,7 @@ $$;
 
 
 --
--- TOC entry 255 (class 1255 OID 31018)
+-- TOC entry 267 (class 1255 OID 31018)
 -- Name: process_withdrawal_transaction(uuid, numeric, text, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1461,7 +1462,7 @@ $$;
 
 
 --
--- TOC entry 293 (class 1255 OID 31019)
+-- TOC entry 305 (class 1255 OID 31019)
 -- Name: update_branch(uuid, text, text, uuid); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1508,7 +1509,7 @@ $$;
 
 
 --
--- TOC entry 262 (class 1255 OID 31020)
+-- TOC entry 274 (class 1255 OID 31020)
 -- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -1528,7 +1529,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 226 (class 1259 OID 31021)
+-- TOC entry 238 (class 1259 OID 31021)
 -- Name: account; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1548,7 +1549,7 @@ CREATE TABLE public.account (
 
 
 --
--- TOC entry 227 (class 1259 OID 31030)
+-- TOC entry 239 (class 1259 OID 31030)
 -- Name: accounts_owner; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1559,7 +1560,7 @@ CREATE TABLE public.accounts_owner (
 
 
 --
--- TOC entry 228 (class 1259 OID 31033)
+-- TOC entry 240 (class 1259 OID 31033)
 -- Name: audit_log; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1576,7 +1577,7 @@ CREATE TABLE public.audit_log (
 
 
 --
--- TOC entry 229 (class 1259 OID 31040)
+-- TOC entry 241 (class 1259 OID 31040)
 -- Name: branch; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1592,7 +1593,7 @@ CREATE TABLE public.branch (
 
 
 --
--- TOC entry 230 (class 1259 OID 31046)
+-- TOC entry 242 (class 1259 OID 31046)
 -- Name: customer; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1611,7 +1612,7 @@ CREATE TABLE public.customer (
 
 
 --
--- TOC entry 231 (class 1259 OID 31052)
+-- TOC entry 243 (class 1259 OID 31052)
 -- Name: customer_login; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1629,7 +1630,7 @@ CREATE TABLE public.customer_login (
 
 
 --
--- TOC entry 232 (class 1259 OID 31061)
+-- TOC entry 244 (class 1259 OID 31061)
 -- Name: fd_plan; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1647,7 +1648,7 @@ CREATE TABLE public.fd_plan (
 
 
 --
--- TOC entry 233 (class 1259 OID 31068)
+-- TOC entry 245 (class 1259 OID 31068)
 -- Name: fixed_deposit; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1669,7 +1670,7 @@ CREATE TABLE public.fixed_deposit (
 
 
 --
--- TOC entry 234 (class 1259 OID 31077)
+-- TOC entry 259 (class 1259 OID 31506)
 -- Name: fixed_deposit_details; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1683,12 +1684,12 @@ CREATE VIEW public.fixed_deposit_details AS
     fd.fd_plan_id,
     fd.created_at AS fd_created_at,
     fd.updated_at AS fd_updated_at,
+    fd.status,
+    fd.next_interest_day,
     a.account_no,
     b.name AS branch_name,
     fp.duration AS plan_duration,
-    fp.interest_rate AS plan_interest_rate,
-    fd.status,
-    fd.next_interest_day
+    fp.interest_rate AS plan_interest_rate
    FROM (((public.fixed_deposit fd
      LEFT JOIN public.account a ON ((fd.acc_id = a.acc_id)))
      LEFT JOIN public.branch b ON ((a.branch_id = b.branch_id)))
@@ -1696,7 +1697,7 @@ CREATE VIEW public.fixed_deposit_details AS
 
 
 --
--- TOC entry 235 (class 1259 OID 31082)
+-- TOC entry 246 (class 1259 OID 31082)
 -- Name: login; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1710,7 +1711,7 @@ CREATE TABLE public.login (
 
 
 --
--- TOC entry 236 (class 1259 OID 31089)
+-- TOC entry 247 (class 1259 OID 31089)
 -- Name: role; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1721,7 +1722,7 @@ CREATE TABLE public.role (
 
 
 --
--- TOC entry 237 (class 1259 OID 31093)
+-- TOC entry 248 (class 1259 OID 31093)
 -- Name: savings_plan; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1738,7 +1739,7 @@ CREATE TABLE public.savings_plan (
 
 
 --
--- TOC entry 238 (class 1259 OID 31099)
+-- TOC entry 249 (class 1259 OID 31099)
 -- Name: transactions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1755,7 +1756,7 @@ CREATE TABLE public.transactions (
 
 
 --
--- TOC entry 239 (class 1259 OID 31107)
+-- TOC entry 250 (class 1259 OID 31107)
 -- Name: user_login; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1774,7 +1775,7 @@ CREATE TABLE public.user_login (
 
 
 --
--- TOC entry 240 (class 1259 OID 31117)
+-- TOC entry 251 (class 1259 OID 31117)
 -- Name: user_refresh_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1794,7 +1795,7 @@ CREATE TABLE public.user_refresh_tokens (
 
 
 --
--- TOC entry 241 (class 1259 OID 31126)
+-- TOC entry 252 (class 1259 OID 31126)
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1815,7 +1816,7 @@ CREATE TABLE public.users (
 
 
 --
--- TOC entry 242 (class 1259 OID 31132)
+-- TOC entry 253 (class 1259 OID 31132)
 -- Name: users_branch; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1826,7 +1827,7 @@ CREATE TABLE public.users_branch (
 
 
 --
--- TOC entry 243 (class 1259 OID 31135)
+-- TOC entry 254 (class 1259 OID 31135)
 -- Name: users_role; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1837,8 +1838,8 @@ CREATE TABLE public.users_role (
 
 
 --
--- TOC entry 3444 (class 0 OID 31410)
--- Dependencies: 245
+-- TOC entry 3456 (class 0 OID 31410)
+-- Dependencies: 256
 -- Data for Name: job; Type: TABLE DATA; Schema: cron; Owner: -
 --
 
@@ -1849,38 +1850,71 @@ INSERT INTO cron.job VALUES (6, '0 0 * * *', 'SELECT daily_fd_interest_check()',
 
 
 --
--- TOC entry 3446 (class 0 OID 31429)
--- Dependencies: 247
+-- TOC entry 3458 (class 0 OID 31429)
+-- Dependencies: 258
 -- Data for Name: job_run_details; Type: TABLE DATA; Schema: cron; Owner: -
 --
 
 
 
 --
--- TOC entry 3779 (class 0 OID 31021)
--- Dependencies: 226
+-- TOC entry 3791 (class 0 OID 31021)
+-- Dependencies: 238
 -- Data for Name: account; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.account VALUES ('b0134b68-04e3-4e00-a0ac-dabe67c9612f', 2770729143, '3dd6870c-e6f2-414d-9973-309ba00ce115', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 114185.083580409082, '2025-10-14 15:32:34.730917', '2025-10-14 15:32:34.730917', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
-INSERT INTO public.account VALUES ('58f8da96-a4c1-4071-8a8c-a195b70bb040', 2815823974, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 419890.637258498507, '2025-09-24 17:50:34.479023', '2025-09-24 17:50:34.479023', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
-INSERT INTO public.account VALUES ('820e7b5a-8b66-4242-b7e0-a49e9880b17e', 5641582760, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 6808.410382365626, '2025-10-03 17:30:50.915495', '2025-10-03 17:30:50.915495', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
-INSERT INTO public.account VALUES ('c1e74ae4-f466-4769-9649-f8064a7e6a89', 6052845866, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 5315.101869623545, '2025-09-24 14:56:44.494199', '2025-09-24 14:56:44.494199', '2025-10-21 10:30:24.968406', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('1b337986-ae2d-4e9e-9f87-5bd92e29253f', 1234567890, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 1015.676389191086, '2025-09-18 13:56:05.448161', '2025-09-18 13:56:05.448161', '2025-10-20 16:08:57.374798', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('31d95fe1-7d2f-4d9e-81c1-b608131b7335', 1623490919, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 23.265418877838, '2025-10-15 10:39:31.756196', '2025-10-15 10:39:31.756196', '2025-10-20 16:08:57.374798', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('3337ad45-7e90-4c8f-9057-e38f3c43f196', 1111111111, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 39108.199539172789, '2025-09-18 14:43:34.844831', '2025-09-18 14:43:34.844831', '2025-10-21 17:40:31.017145', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
-INSERT INTO public.account VALUES ('e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 8120354779, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 2076.812921498341, '2025-09-24 19:39:23.999379', '2025-09-24 19:39:23.999379', '2025-10-20 16:08:57.374798', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('fb762c41-c883-4bba-9bcf-f59dfc07f042', 1529729150, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 1016.505911052731, '2025-10-15 00:55:47.52668', '2025-10-15 00:55:47.52668', '2025-10-20 16:08:57.374798', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('8f453f53-bf51-437c-b8a9-702b08caf92d', 2252112086, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 0.000000000000, '2025-10-15 11:01:38.812598', '2025-10-15 11:01:38.812598', '2025-10-20 16:09:31.425969', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('0415f29e-fb5b-4756-baa6-bce59cab2be5', 9740325119, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 1008.219178082192, '2025-10-15 10:42:47.042038', '2025-10-15 10:42:47.042038', '2025-10-20 16:09:31.427788', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 123456789, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 2058.401096928214, '2025-09-18 14:07:15.807623', '2025-09-18 14:07:15.807623', '2025-10-20 16:09:31.43024', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
-INSERT INTO public.account VALUES ('fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 5233589009, '3dd6870c-e6f2-414d-9973-309ba00ce115', 'fd8afec3-3da2-48ab-a63d-abbff3a3e773', 8954.329013773691, '2025-10-15 09:22:06.611902', '2025-10-15 09:22:06.611902', '2025-10-20 16:08:57.374798', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
-INSERT INTO public.account VALUES ('fde6ebe4-72be-4574-a470-999a365b1529', 8283584064, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 1219.453424657534, '2025-10-15 01:47:09.659802', '2025-10-15 01:47:09.659802', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('0415f29e-fb5b-4756-baa6-bce59cab2be5', 9740325119, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 510370.320358381863, '2025-10-15 10:42:47.042038', '2025-10-15 10:42:47.042038', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('1b337986-ae2d-4e9e-9f87-5bd92e29253f', 1234567890, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 1075.865633664166, '2025-09-18 13:56:05.448161', '2025-09-18 13:56:05.448161', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('31d95fe1-7d2f-4d9e-81c1-b608131b7335', 1623490919, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 230.994183217609, '2025-10-15 10:39:31.756196', '2025-10-15 10:39:31.756196', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('3337ad45-7e90-4c8f-9057-e38f3c43f196', 1111111111, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 48906.102052930770, '2025-09-18 14:43:34.844831', '2025-09-18 14:43:34.844831', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('58f8da96-a4c1-4071-8a8c-a195b70bb040', 2815823974, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 444773.464590969350, '2025-09-24 17:50:34.479023', '2025-09-24 17:50:34.479023', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('820e7b5a-8b66-4242-b7e0-a49e9880b17e', 5641582760, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 7211.878535547403, '2025-10-03 17:30:50.915495', '2025-10-03 17:30:50.915495', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('8f453f53-bf51-437c-b8a9-702b08caf92d', 2252112086, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 7142.963210834131, '2025-10-15 11:01:38.812598', '2025-10-15 11:01:38.812598', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('4dcf9c4f-2bec-49f9-a336-5e45cce1601b', 8020135334, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 500.000000000000, '2025-08-07 13:35:40.596114', '2025-08-07 13:35:40.596114', '2025-10-20 12:00:04.300559', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'closed');
+INSERT INTO public.account VALUES ('17c9a664-3b42-456e-95e4-4bd73353f0e0', 3626616376, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 24835.022913966965, '2025-08-27 08:30:03.951331', '2025-08-27 08:30:03.951331', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('1dfe7946-7b05-4de1-8254-1528660baf18', 2144095367, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 25803.486566612726, '2025-08-07 13:31:48.382933', '2025-08-07 13:31:48.382933', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 5398529687, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 91433.549897863102, '2025-08-04 10:38:17.380613', '2025-08-04 10:38:17.380613', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 7567760433, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 25805.442676863247, '2025-08-17 08:38:49.506264', '2025-08-17 08:38:49.506264', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('3b4fe46d-d998-4231-bf48-9552830244fe', 5332947752, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 21429.331583386754, '2025-08-17 08:35:17.556107', '2025-08-17 08:35:17.556107', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 6695094450, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 567270.337216587349, '2025-08-17 08:40:50.934841', '2025-08-17 08:40:50.934841', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('6793b998-92c2-45bb-a4d4-1b84fefbc652', 8799688614, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 33896.328243558498, '2025-08-31 08:31:39.843262', '2025-08-31 08:31:39.843262', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('1853d4ea-a229-4757-9a4c-f6f858351196', 3217307079, '57438d7f-184f-42fe-b0d6-91a2ef609beb', 'fd8afec3-3da2-48ab-a63d-abbff3a3e773', 38501.186226298298, '2025-09-10 15:04:03.795948', '2025-09-10 15:04:03.795948', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('2955457b-8207-4228-a3da-c9d5940c2095', 4027545623, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 22800.874608774259, '2025-09-05 10:33:30.449363', '2025-09-05 10:33:30.449363', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('30159eb0-328d-4cf2-84a3-d7f51040ed22', 6401639306, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 473864.827693438394, '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('4ae3fefd-a3d4-4133-b516-bddebdf3d49f', 9626175859, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 670124.096148974986, '2025-09-10 15:07:10.783714', '2025-09-10 15:07:10.783714', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('697a0943-3418-427b-9786-45b5c5066b71', 3474646697, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 28786.983791688804, '2025-09-01 08:36:17.000525', '2025-09-01 08:36:17.000525', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 3579884893, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 755594.306373553076, '2025-09-30 11:00:05.550255', '2025-09-30 11:00:05.550255', '2025-10-23 08:00:30.980036', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('2effb977-c5cb-43cb-9c5e-7db80de361e4', 3166815096, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 2793561.359344779767, '2025-09-15 11:03:20.019027', '2025-09-15 11:03:20.019027', '2025-10-23 08:00:42.47741', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('20a94040-fbf0-4e7a-ae5f-c6e766a134ca', 1546227556, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 30851.506849315068, '2025-10-20 12:00:38.78147', '2025-10-20 12:00:38.78147', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('7fe7a775-2411-423a-84fa-e3ed126ec6c3', 5561587952, '57438d7f-184f-42fe-b0d6-91a2ef609beb', 'a620a5c0-9456-4bc6-a37c-1c02d8f0da9c', 27165.313478428433, '2025-09-10 15:02:09.020212', '2025-09-10 15:02:09.020212', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('84f57e11-cd1b-40cf-b70b-e67a538ded88', 3660390474, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 84027.165232945203, '2025-09-05 10:34:14.39367', '2025-09-05 10:34:14.39367', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('89e221cd-2b08-47c5-a88f-3ceffa79fb9a', 8786850818, '3736a1a3-5fdc-455e-96be-1269df99e9a5', 'a620a5c0-9456-4bc6-a37c-1c02d8f0da9c', 105390.584814878451, '2025-09-05 10:36:18.181905', '2025-09-05 10:36:18.181905', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('99280df3-2bad-4c61-b069-bf6144235552', 9278010342, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 24818.467835830487, '2025-08-29 08:33:54.158792', '2025-08-29 08:33:54.158792', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('9f195429-65fc-48c0-8a22-3216088f897e', 6341929450, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 47061.730089961141, '2025-08-07 13:31:34.591448', '2025-08-07 13:31:34.591448', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('a6b1bdd7-e70e-4dd8-8621-397d69fb3300', 4981569672, '57438d7f-184f-42fe-b0d6-91a2ef609beb', 'fd8afec3-3da2-48ab-a63d-abbff3a3e773', 572156.773483051391, '2025-10-01 12:00:47.112878', '2025-10-01 12:00:47.112878', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('a949c77a-bb3b-484f-9b3e-8d68a36deb87', 9888415978, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 13025.361668164492, '2025-08-27 08:37:36.62256', '2025-08-27 08:37:36.62256', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('b0134b68-04e3-4e00-a0ac-dabe67c9612f', 2770729143, '3dd6870c-e6f2-414d-9973-309ba00ce115', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 132444.131033052138, '2025-10-14 15:32:34.730917', '2025-10-14 15:32:34.730917', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('b646dd25-7775-417f-a216-30a84aa9c451', 5981675752, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 2051501.512733033064, '2025-08-04 10:41:28.424569', '2025-08-04 10:41:28.424569', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('b79aefad-de0e-4387-84cb-7a1234ce4ce7', 9924372791, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 45747.611712577728, '2025-08-27 08:33:21.854083', '2025-08-27 08:33:21.854083', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('c1e74ae4-f466-4769-9649-f8064a7e6a89', 6052845866, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 11137.493804250838, '2025-09-24 14:56:44.494199', '2025-09-24 14:56:44.494199', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('c6b21347-9458-4f2b-8b03-4c479c60315e', 1399861390, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 3218971.667567381318, '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('d00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 6602045229, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 330828.135473408442, '2025-08-04 10:37:07.826495', '2025-08-04 10:37:07.826495', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('d38f3e7a-9414-40e4-b62f-47019c16be6b', 3638811642, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 48606.837444613837, '2025-08-29 08:30:12.254856', '2025-08-29 08:30:12.254856', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('ded1f289-7f01-4135-b638-dd735d691229', 8991316384, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 48105.874820974709, '2025-09-10 12:31:11.092921', '2025-09-10 12:31:11.092921', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('dffecccc-565a-4b66-804c-1befa178b8f7', 9811462445, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 104117.431377058837, '2025-08-04 11:00:17.49844', '2025-08-04 11:00:17.49844', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 8120354779, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 10531.174230622985, '2025-09-24 19:39:23.999379', '2025-09-24 19:39:23.999379', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('e085d6e0-4e81-4dd5-b124-fae6a038a453', 9900817372, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 522399.992743478379, '2025-08-04 10:48:22.7342', '2025-08-04 10:48:22.7342', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.account VALUES ('e260aeef-4836-4a35-bb19-3d109adba141', 9547207573, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '75cb0dfb-be48-4b4c-ab13-9e01772f0332', 10714.665791693377, '2025-08-17 08:33:58.744699', '2025-08-17 08:33:58.744699', '2025-10-23 08:00:05.989541', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'active');
+INSERT INTO public.account VALUES ('f4a8e8d5-92af-421d-a437-dce94fd12638', 4687329928, '3736a1a3-5fdc-455e-96be-1269df99e9a5', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 85150.639604037421, '2025-08-04 10:45:04.650629', '2025-08-04 10:45:04.650629', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('fb762c41-c883-4bba-9bcf-f59dfc07f042', 1529729150, '3dd6870c-e6f2-414d-9973-309ba00ce115', '3578bd55-8c57-4757-aa7b-0f37b859edd6', 1689.613855787768, '2025-10-15 00:55:47.52668', '2025-10-15 00:55:47.52668', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 123456789, '57438d7f-184f-42fe-b0d6-91a2ef609beb', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 2143.154349558860, '2025-09-18 14:07:15.807623', '2025-09-18 14:07:15.807623', '2025-10-23 08:00:05.989541', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'active');
+INSERT INTO public.account VALUES ('fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 5233589009, '3dd6870c-e6f2-414d-9973-309ba00ce115', 'fd8afec3-3da2-48ab-a63d-abbff3a3e773', 52082.877454857475, '2025-10-15 09:22:06.611902', '2025-10-15 09:22:06.611902', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.account VALUES ('fde6ebe4-72be-4574-a470-999a365b1529', 8283584064, '3dd6870c-e6f2-414d-9973-309ba00ce115', '7d8f328d-650d-4e19-b2ef-4c7292f6264a', 1269.663582593002, '2025-10-15 01:47:09.659802', '2025-10-15 01:47:09.659802', '2025-10-23 08:00:05.989541', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
 
 
 --
--- TOC entry 3780 (class 0 OID 31030)
--- Dependencies: 227
+-- TOC entry 3792 (class 0 OID 31030)
+-- Dependencies: 239
 -- Data for Name: accounts_owner; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1902,11 +1936,49 @@ INSERT INTO public.accounts_owner VALUES ('31d95fe1-7d2f-4d9e-81c1-b608131b7335'
 INSERT INTO public.accounts_owner VALUES ('0415f29e-fb5b-4756-baa6-bce59cab2be5', '277ccc80-9a20-438e-93a9-459f041b145d');
 INSERT INTO public.accounts_owner VALUES ('8f453f53-bf51-437c-b8a9-702b08caf92d', '97da5431-f39a-43e5-b0cd-9d185327b6e6');
 INSERT INTO public.accounts_owner VALUES ('8f453f53-bf51-437c-b8a9-702b08caf92d', '96a6ea17-b2d3-40d0-9c5b-903da6280f50');
+INSERT INTO public.accounts_owner VALUES ('d00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'ba15de27-893c-4915-bc20-6e56ab35b60b');
+INSERT INTO public.accounts_owner VALUES ('2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'e1dd007e-8c4a-4607-b462-7239452c4d10');
+INSERT INTO public.accounts_owner VALUES ('b646dd25-7775-417f-a216-30a84aa9c451', '9609c225-a1dd-4eb6-b8c1-2908bd73cd3f');
+INSERT INTO public.accounts_owner VALUES ('c6b21347-9458-4f2b-8b03-4c479c60315e', 'f848f8ae-9948-4406-a017-21c2ba879c8c');
+INSERT INTO public.accounts_owner VALUES ('c6b21347-9458-4f2b-8b03-4c479c60315e', '56850cc8-ac6d-46bf-89b7-34b3b38a20f2');
+INSERT INTO public.accounts_owner VALUES ('f4a8e8d5-92af-421d-a437-dce94fd12638', '5175ad1e-2b6e-4669-b46a-d0695abe67f5');
+INSERT INTO public.accounts_owner VALUES ('e085d6e0-4e81-4dd5-b124-fae6a038a453', '5175ad1e-2b6e-4669-b46a-d0695abe67f5');
+INSERT INTO public.accounts_owner VALUES ('e085d6e0-4e81-4dd5-b124-fae6a038a453', 'd2da339f-07f6-4914-aa0e-23a9d3a58c21');
+INSERT INTO public.accounts_owner VALUES ('dffecccc-565a-4b66-804c-1befa178b8f7', '56850cc8-ac6d-46bf-89b7-34b3b38a20f2');
+INSERT INTO public.accounts_owner VALUES ('dffecccc-565a-4b66-804c-1befa178b8f7', 'f0bf0ef8-0015-4c79-bae4-bab26d897409');
+INSERT INTO public.accounts_owner VALUES ('9f195429-65fc-48c0-8a22-3216088f897e', '183dc79e-1b46-4531-948a-9072182795c8');
+INSERT INTO public.accounts_owner VALUES ('1dfe7946-7b05-4de1-8254-1528660baf18', '8a99b924-6b64-487d-974e-c44b5a0ca190');
+INSERT INTO public.accounts_owner VALUES ('4dcf9c4f-2bec-49f9-a336-5e45cce1601b', 'c5690609-4d4f-4f3e-a852-53acd69ac3d3');
+INSERT INTO public.accounts_owner VALUES ('e260aeef-4836-4a35-bb19-3d109adba141', '5371829a-831a-4c94-8f62-f50c6a3b9191');
+INSERT INTO public.accounts_owner VALUES ('3b4fe46d-d998-4231-bf48-9552830244fe', '8515c62b-c3f0-4d94-955b-b63e6a8390d8');
+INSERT INTO public.accounts_owner VALUES ('3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 'b76a9d5c-3891-4491-9163-b03bc53f0141');
+INSERT INTO public.accounts_owner VALUES ('4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'f610dff2-6f8b-44e3-9af8-be31cacb3560');
+INSERT INTO public.accounts_owner VALUES ('17c9a664-3b42-456e-95e4-4bd73353f0e0', 'ba15de27-893c-4915-bc20-6e56ab35b60b');
+INSERT INTO public.accounts_owner VALUES ('b79aefad-de0e-4387-84cb-7a1234ce4ce7', 'e1dd007e-8c4a-4607-b462-7239452c4d10');
+INSERT INTO public.accounts_owner VALUES ('a949c77a-bb3b-484f-9b3e-8d68a36deb87', '9609c225-a1dd-4eb6-b8c1-2908bd73cd3f');
+INSERT INTO public.accounts_owner VALUES ('d38f3e7a-9414-40e4-b62f-47019c16be6b', '183dc79e-1b46-4531-948a-9072182795c8');
+INSERT INTO public.accounts_owner VALUES ('99280df3-2bad-4c61-b069-bf6144235552', '12d17661-847d-4385-9fd2-ea582da813b2');
+INSERT INTO public.accounts_owner VALUES ('6793b998-92c2-45bb-a4d4-1b84fefbc652', '12d17661-847d-4385-9fd2-ea582da813b2');
+INSERT INTO public.accounts_owner VALUES ('30159eb0-328d-4cf2-84a3-d7f51040ed22', '8547efd6-d5d5-4368-b560-fe08f9834a25');
+INSERT INTO public.accounts_owner VALUES ('30159eb0-328d-4cf2-84a3-d7f51040ed22', '5994c156-fcc4-4df3-bf6e-10905603941e');
+INSERT INTO public.accounts_owner VALUES ('697a0943-3418-427b-9786-45b5c5066b71', '183dc79e-1b46-4531-948a-9072182795c8');
+INSERT INTO public.accounts_owner VALUES ('2955457b-8207-4228-a3da-c9d5940c2095', 'c77b68a3-2bdc-4c73-ae4c-1f0331757154');
+INSERT INTO public.accounts_owner VALUES ('84f57e11-cd1b-40cf-b70b-e67a538ded88', '8a99b924-6b64-487d-974e-c44b5a0ca190');
+INSERT INTO public.accounts_owner VALUES ('89e221cd-2b08-47c5-a88f-3ceffa79fb9a', 'c5690609-4d4f-4f3e-a852-53acd69ac3d3');
+INSERT INTO public.accounts_owner VALUES ('ded1f289-7f01-4135-b638-dd735d691229', 'f610dff2-6f8b-44e3-9af8-be31cacb3560');
+INSERT INTO public.accounts_owner VALUES ('7fe7a775-2411-423a-84fa-e3ed126ec6c3', '07709cbf-2053-430c-a478-ae7cef5327a2');
+INSERT INTO public.accounts_owner VALUES ('1853d4ea-a229-4757-9a4c-f6f858351196', '08c15d5a-82f4-4b69-93de-37a76f2f7533');
+INSERT INTO public.accounts_owner VALUES ('4ae3fefd-a3d4-4133-b516-bddebdf3d49f', '183dc79e-1b46-4531-948a-9072182795c8');
+INSERT INTO public.accounts_owner VALUES ('2effb977-c5cb-43cb-9c5e-7db80de361e4', 'c1f52f03-9b0e-4b5d-8ec7-7df36d52f2e8');
+INSERT INTO public.accounts_owner VALUES ('2effb977-c5cb-43cb-9c5e-7db80de361e4', '6e7cb74e-b103-49e2-b3a7-ef9fabe4754b');
+INSERT INTO public.accounts_owner VALUES ('6c66d02c-2753-4163-ae2a-9f2ffcd0574b', '8c72faa2-beb5-458d-80ac-dfff02cb4ce9');
+INSERT INTO public.accounts_owner VALUES ('a6b1bdd7-e70e-4dd8-8621-397d69fb3300', 'a32bd7d9-c3ca-4d17-8679-1aabd6634d37');
+INSERT INTO public.accounts_owner VALUES ('20a94040-fbf0-4e7a-ae5f-c6e766a134ca', '32f76078-4238-4898-95bd-e76a16ca8e3f');
 
 
 --
--- TOC entry 3781 (class 0 OID 31033)
--- Dependencies: 228
+-- TOC entry 3793 (class 0 OID 31033)
+-- Dependencies: 240
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1926,25 +1998,29 @@ INSERT INTO public.audit_log VALUES ('a555f7da-f79a-4dea-87c8-544f36adecf0', 'us
 INSERT INTO public.audit_log VALUES ('48ab0a8f-12ad-4f72-9950-9db0990255ab', 'user_login', '8e940780-67c7-42e8-a307-4a92664ab72f', 'UPDATE', '{"status": "inactive", "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "login_id": "8e940780-67c7-42e8-a307-4a92664ab72f", "password": "$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K", "username": "user2", "created_at": "2025-09-18T07:19:23.418837", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-10-20T17:18:04.126019", "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "password_last_update": "2025-09-18T07:19:23.418837"}', '{status,updated_at}', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-20 17:18:23.919709');
 INSERT INTO public.audit_log VALUES ('e29b4789-cc42-43bc-a8ed-106e019d2f3e', 'user_login', '8e940780-67c7-42e8-a307-4a92664ab72f', 'UPDATE', '{"status": "active", "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "login_id": "8e940780-67c7-42e8-a307-4a92664ab72f", "password": "$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K", "username": "user2", "created_at": "2025-09-18T07:19:23.418837", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-10-20T17:18:23.919709", "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "password_last_update": "2025-09-18T07:19:23.418837"}', '{status,updated_at}', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-20 17:18:24.623746');
 INSERT INTO public.audit_log VALUES ('6ecd7dcd-1dc9-4ba9-bb11-21157afb0995', 'user_login', '8e940780-67c7-42e8-a307-4a92664ab72f', 'UPDATE', '{"status": "inactive", "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "login_id": "8e940780-67c7-42e8-a307-4a92664ab72f", "password": "$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K", "username": "user2", "created_at": "2025-09-18T07:19:23.418837", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-10-20T17:18:24.623746", "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "password_last_update": "2025-09-18T07:19:23.418837"}', '{status,updated_at}', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-20 17:18:34.077441');
+INSERT INTO public.audit_log VALUES ('f32a5305-9e93-40a4-9bb0-a66d95c9c858', 'user_login', 'e67ce6c6-bb0d-46cf-a222-860e548822a0', 'UPDATE', '{"status": "active", "user_id": "780ba9d3-3c4d-40d6-b1a1-c0132f89df09", "login_id": "e67ce6c6-bb0d-46cf-a222-860e548822a0", "password": "$2b$12$w8czX6DDYjBiJvdIjOpxVOatGl32Ca4nX40N9A2fWvsPjPTltraB6", "username": "user3", "created_at": "2025-09-18T14:04:14.712609", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-09-18T14:04:14.712609", "updated_by": "de9dc531-11bf-4481-882a-dc3291580f60", "password_last_update": "2025-09-18T14:04:14.712609"}', '{username,updated_at}', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-08-04 10:45:38.225101');
+INSERT INTO public.audit_log VALUES ('b146bc01-6608-4601-9c8f-f763a15f8dfa', 'user_login', '86295c07-2139-4499-9410-d729b012cfb7', 'UPDATE', '{"status": "active", "user_id": "75cf1bda-3240-41c5-8235-5a0f06d51fa7", "login_id": "86295c07-2139-4499-9410-d729b012cfb7", "password": "$2b$12$K4ZpGK2cPR0kivNqhtVRzO6vkOSkFKOkx/zNiAKuREJEqVu.BQ.y2", "username": "user4", "created_at": "2025-09-18T14:18:45.238594", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-09-18T14:18:45.238594", "updated_by": "de9dc531-11bf-4481-882a-dc3291580f60", "password_last_update": "2025-09-18T14:18:45.238594"}', '{username,updated_at}', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-08-04 10:45:38.230918');
+INSERT INTO public.audit_log VALUES ('6311d37c-dce5-4cdc-a5ea-46614d23a34d', 'user_login', 'e9ae406d-cb5b-4e8a-ad05-8f955f2b01cd', 'UPDATE', '{"status": "active", "user_id": "de9dc531-11bf-4481-882a-dc3291580f60", "login_id": "e9ae406d-cb5b-4e8a-ad05-8f955f2b01cd", "password": "$2b$12$14vPB5UI74Cs/6gIah46wecLcncl4.0qcBQ9XqtXLkFvYj9e5qYIC", "username": "user1", "created_at": "2025-09-18T07:09:21.535303", "created_by": "839c9a79-9f0a-4ba7-9d4c-91358f9b93b1", "updated_at": "2025-10-17T21:28:05.066993", "updated_by": "839c9a79-9f0a-4ba7-9d4c-91358f9b93b1", "password_last_update": "2025-09-18T07:09:21.535303"}', '{username,updated_at}', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '2025-08-04 10:45:38.23354');
+INSERT INTO public.audit_log VALUES ('69364c1b-e7cd-44d1-8f85-0c323b9ceba2', 'user_login', '8e940780-67c7-42e8-a307-4a92664ab72f', 'UPDATE', '{"status": "active", "user_id": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "login_id": "8e940780-67c7-42e8-a307-4a92664ab72f", "password": "$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K", "username": "user2", "created_at": "2025-09-18T07:19:23.418837", "created_by": "de9dc531-11bf-4481-882a-dc3291580f60", "updated_at": "2025-10-20T17:18:34.077441", "updated_by": "6b997217-9ce5-4dda-a9ae-87bf589b92a5", "password_last_update": "2025-09-18T07:19:23.418837"}', '{username,updated_at}', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:45:38.235628');
 
 
 --
--- TOC entry 3782 (class 0 OID 31040)
--- Dependencies: 229
+-- TOC entry 3794 (class 0 OID 31040)
+-- Dependencies: 241
 -- Data for Name: branch; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.branch VALUES ('57438d7f-184f-42fe-b0d6-91a2ef609beb', 'Jafna', 'Jafna', '2025-09-18 07:07:02.375386', '2025-09-18 07:07:02.375386', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1');
-INSERT INTO public.branch VALUES ('3639c0dc-bda3-472e-8a06-5f8a4e36c42a', 'fef', 'wee', '2025-10-14 13:14:51.355254', '2025-10-14 13:14:51.355254', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
-INSERT INTO public.branch VALUES ('3736a1a3-5fdc-455e-96be-1269df99e9a5', 'fvdf', 'dvv', '2025-10-15 02:10:06.066924', '2025-10-15 02:10:06.066924', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60');
-INSERT INTO public.branch VALUES ('50cf15c8-b810-4a5c-8400-79cfe791aba4', 'Moratuwa', 'Katubadda, Moratuwa', '2025-10-04 01:23:35.796972', '2025-10-15 02:10:49.306436', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'de9dc531-11bf-4481-882a-dc3291580f60');
-INSERT INTO public.branch VALUES ('3dd6870c-e6f2-414d-9973-309ba00ce115', 'Colombo', 'colombore', '2025-09-18 07:05:43.839001', '2025-10-15 02:18:47.643502', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'de9dc531-11bf-4481-882a-dc3291580f60');
-INSERT INTO public.branch VALUES ('12af5190-d280-4842-addf-6c66312b4ffc', 'UOM branch', 'katubedda', '2025-10-15 02:19:49.448874', '2025-10-17 19:41:38.426306', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
+INSERT INTO public.branch VALUES ('57438d7f-184f-42fe-b0d6-91a2ef609beb', 'Jaffna', 'Jaffna', '2025-07-18 07:07:02.375', '2025-08-04 10:54:53.176064', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1');
+INSERT INTO public.branch VALUES ('50cf15c8-b810-4a5c-8400-79cfe791aba4', 'Moratuwa', 'Katubadda, Moratuwa', '2025-07-04 01:23:35.796', '2025-08-04 10:54:53.181862', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'de9dc531-11bf-4481-882a-dc3291580f60');
+INSERT INTO public.branch VALUES ('3dd6870c-e6f2-414d-9973-309ba00ce115', 'Colombo', 'colombore', '2025-07-18 07:05:43.839', '2025-08-04 10:54:53.183828', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'de9dc531-11bf-4481-882a-dc3291580f60');
+INSERT INTO public.branch VALUES ('3639c0dc-bda3-472e-8a06-5f8a4e36c42a', 'Galle', 'Galle', '2025-07-14 13:14:51.355', '2025-08-04 11:08:52.309649', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
+INSERT INTO public.branch VALUES ('3736a1a3-5fdc-455e-96be-1269df99e9a5', 'Kurunegala', 'Kurunegala', '2025-07-15 02:10:06.066', '2025-08-04 11:08:52.311843', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60');
+INSERT INTO public.branch VALUES ('12af5190-d280-4842-addf-6c66312b4ffc', 'Kandy', 'Kandy', '2025-07-15 02:19:49.448', '2025-08-04 11:08:52.313812', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
 
 
 --
--- TOC entry 3783 (class 0 OID 31046)
--- Dependencies: 230
+-- TOC entry 3795 (class 0 OID 31046)
+-- Dependencies: 242
 -- Data for Name: customer; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1955,11 +2031,35 @@ INSERT INTO public.customer VALUES ('96a6ea17-b2d3-40d0-9c5b-903da6280f50', 'cus
 INSERT INTO public.customer VALUES ('8f99e4a7-47ed-44ea-947f-89dae567a52c', 'customer7', 'string', 'string', '200254545879', '2025-09-24 17:50:34.479023', '2025-10-15 03:37:09.790343', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2001-11-11');
 INSERT INTO public.customer VALUES ('277ccc80-9a20-438e-93a9-459f041b145d', '1212', 'eqdwda', '0778877546', '321656332323', '2025-10-15 10:42:47.042038', '2025-10-15 10:42:47.042038', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-09');
 INSERT INTO public.customer VALUES ('f0bf0ef8-0015-4c79-bae4-bab26d897409', 'new name 2', 'new addres', '07553122', '20058795645', '2025-09-18 14:29:55.137535', '2025-10-15 12:37:03.439601', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2001-02-06');
+INSERT INTO public.customer VALUES ('ba15de27-893c-4915-bc20-6e56ab35b60b', 'Meena Kumari', 'Wawuniya ', '0374523174', '200098234567', '2025-08-04 10:37:07.826495', '2025-08-04 10:37:07.826495', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-11-23');
+INSERT INTO public.customer VALUES ('e1dd007e-8c4a-4607-b462-7239452c4d10', 'Saman Kumara', 'Kilinochchi', '0231122384', '200198234567', '2025-08-04 10:38:17.380613', '2025-08-04 10:38:17.380613', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2001-02-03');
+INSERT INTO public.customer VALUES ('9609c225-a1dd-4eb6-b8c1-2908bd73cd3f', 'Sangeeth Banda', 'Nagadeepa', '0934523875', '200298234567', '2025-08-04 10:41:28.424569', '2025-08-04 10:41:28.424569', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2002-04-05');
+INSERT INTO public.customer VALUES ('f848f8ae-9948-4406-a017-21c2ba879c8c', 'Nimesha Sandeepani', 'Dhabakola Patuna', '0231144586', '200011253493', '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-06-11');
+INSERT INTO public.customer VALUES ('56850cc8-ac6d-46bf-89b7-34b3b38a20f2', 'Himaya Bandara', 'Dhabakola Patuna', '0823342765', '200011253494', '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-05-12');
+INSERT INTO public.customer VALUES ('5175ad1e-2b6e-4669-b46a-d0695abe67f5', 'Malsha Dissanayaka', 'Polgahawela', '0789654123', '200352400889', '2025-08-04 10:45:04.650629', '2025-08-04 10:45:04.650629', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2003-01-20');
+INSERT INTO public.customer VALUES ('d2da339f-07f6-4914-aa0e-23a9d3a58c21', 'Kavindu Silva', 'Kuliyapitiya', '0745263145', '200152400325', '2025-08-04 10:48:22.7342', '2025-08-04 10:48:22.7342', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2004-06-06');
+INSERT INTO public.customer VALUES ('183dc79e-1b46-4531-948a-9072182795c8', 'Shehani Kahandawela', 'nagadeepa', '0378822345', '200421984523', '2025-08-07 13:31:34.591448', '2025-08-07 13:31:34.591448', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '0004-02-01');
+INSERT INTO public.customer VALUES ('8a99b924-6b64-487d-974e-c44b5a0ca190', 'Malith Perera', 'Horana,Kaluthara', '07541236523', '200154623106', '2025-08-07 13:31:48.382933', '2025-08-07 13:31:48.382933', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2001-03-23');
+INSERT INTO public.customer VALUES ('c5690609-4d4f-4f3e-a852-53acd69ac3d3', 'Sandali Kavya', 'Makandura', '0775423632', '200054122365', '2025-08-07 13:35:40.596114', '2025-08-07 13:35:40.596114', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2020-10-12');
+INSERT INTO public.customer VALUES ('5371829a-831a-4c94-8f62-f50c6a3b9191', 'Yohan Fernando', 'Mulathiv', '0772212345', '200231982365', '2025-08-17 08:33:58.744699', '2025-08-17 08:33:58.744699', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2016-12-12');
+INSERT INTO public.customer VALUES ('8515c62b-c3f0-4d94-955b-b63e6a8390d8', 'Didula Jayaweera', 'Mulathiv', '0231144345', '200612349923', '2025-08-17 08:35:17.556107', '2025-08-17 08:35:17.556107', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2015-12-11');
+INSERT INTO public.customer VALUES ('b76a9d5c-3891-4491-9163-b03bc53f0141', 'Kamal Gune', 'Kilinochchi', '0342277834', '200012345678', '2025-08-17 08:38:49.506264', '2025-08-17 08:38:49.506264', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-12-03');
+INSERT INTO public.customer VALUES ('f610dff2-6f8b-44e3-9af8-be31cacb3560', 'Kamal Silva', 'Negambo', '07145263254', '196154200332', '2025-08-17 08:40:50.934841', '2025-08-17 08:40:50.934841', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '1961-06-23');
+INSERT INTO public.customer VALUES ('8547efd6-d5d5-4368-b560-fe08f9834a25', 'Sirimath ', 'Makandura, Kuliyapitiya', '0741256325', '1997524100365', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '21997-02-10');
+INSERT INTO public.customer VALUES ('5994c156-fcc4-4df3-bf6e-10905603941e', 'Nayana', 'Makandura, Kuliyapitiya', '075214463', '1999754200632', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '1999-04-05');
+INSERT INTO public.customer VALUES ('c77b68a3-2bdc-4c73-ae4c-1f0331757154', 'Saman Kumara', 'Nugegoda, Colombo ', '0754126356', '198541024148', '2025-09-05 10:33:30.449363', '2025-09-05 10:33:30.449363', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2019-10-10');
+INSERT INTO public.customer VALUES ('07709cbf-2053-430c-a478-ae7cef5327a2', 'Roshan Fernando', 'Jaffna', '0883344283', '201034568822', '2025-09-10 15:02:09.020212', '2025-09-10 15:02:09.020212', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2010-12-12');
+INSERT INTO public.customer VALUES ('08c15d5a-82f4-4b69-93de-37a76f2f7533', 'Nimal Appuhami', 'Jaffna', '0882233456', '199022334455', '2025-09-10 15:04:03.795948', '2025-09-10 15:04:03.795948', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '1960-11-11');
+INSERT INTO public.customer VALUES ('c1f52f03-9b0e-4b5d-8ec7-7df36d52f2e8', 'Nimalawatheee', 'Jaffna', '0873324245', '196233445598', '2025-09-15 11:03:20.019027', '2025-09-15 11:03:20.019027', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '1962-02-05');
+INSERT INTO public.customer VALUES ('6e7cb74e-b103-49e2-b3a7-ef9fabe4754b', 'Mahinda Deshapriya', 'Mulathiv', '0423344567', '196233445599', '2025-09-15 11:03:20.019027', '2025-09-15 11:03:20.019027', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '1962-02-08');
+INSERT INTO public.customer VALUES ('8c72faa2-beb5-458d-80ac-dfff02cb4ce9', 'Mahinda Rajapakse', 'Kilinochchi', '0882345723', '200011334498', '2025-09-30 11:00:05.550255', '2025-09-30 11:00:05.550255', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-11-12');
+INSERT INTO public.customer VALUES ('a32bd7d9-c3ca-4d17-8679-1aabd6634d37', 'Kamalhami', 'Mulathiv', '0882233456', '194522334456', '2025-10-01 12:00:47.112878', '2025-10-01 12:00:47.112878', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '1945-04-05');
+INSERT INTO public.customer VALUES ('32f76078-4238-4898-95bd-e76a16ca8e3f', 'Kamal Gune', 'jaffna', '0372234845', '200011234567', '2025-10-20 12:00:38.78147', '2025-10-20 12:00:38.78147', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2000-02-01');
 
 
 --
--- TOC entry 3784 (class 0 OID 31052)
--- Dependencies: 231
+-- TOC entry 3796 (class 0 OID 31052)
+-- Dependencies: 243
 -- Data for Name: customer_login; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -1967,43 +2067,76 @@ INSERT INTO public.customer_login VALUES ('657f315a-9b6a-4c54-a3d1-b72fa645c7f5'
 INSERT INTO public.customer_login VALUES ('bf23810f-9d8e-411a-b7f8-661766306774', '8f99e4a7-47ed-44ea-947f-89dae567a52c', 'customer70757', 'Bs3ewE5Q', '2025-09-24 17:50:34.479023', '2025-09-24 17:50:34.479023', '2025-09-24 17:50:34.479023', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
 INSERT INTO public.customer_login VALUES ('8c72a1ba-8252-4e9f-a0df-9d1491d8bcce', '4ab20e7b-e5c7-4331-b75d-2135c62c4ac7', 'customer86624', 'C6YMxxWN', '2025-10-03 17:30:50.915495', '2025-10-03 17:30:50.915495', '2025-10-03 17:30:50.915495', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
 INSERT INTO public.customer_login VALUES ('764f801e-4662-4c9f-928e-078ad141d743', '277ccc80-9a20-438e-93a9-459f041b145d', '12120703', '$2b$12$ut9A5rTddWH9A9Vna3XbeO4F0B6wTAClKaNaj0tsTRr60jnavCl26', '2025-10-15 10:42:47.042038', '2025-10-15 10:42:47.042038', '2025-10-15 10:42:47.042038', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5');
+INSERT INTO public.customer_login VALUES ('e22ba4a2-29d7-4edd-ab7d-d65b0eed2e76', '9609c225-a1dd-4eb6-b8c1-2908bd73cd3f', 'sangeethbanda9645', '$2b$12$r0xOa6G3zxQIJk8jYhCsNumvaxsRqZesSOXP8TW62elA3XpGZbYie', '2025-08-04 10:41:28.424569', '2025-08-04 10:41:28.424569', '2025-08-04 10:41:28.424569', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('45cf0d29-2725-49b2-aa21-892e6bc553c7', 'f848f8ae-9948-4406-a017-21c2ba879c8c', 'nimeshasandeepani0875', '$2b$12$z6amoCB7y.dckSUCLgb2weCwH60Fd.odmf864MRaG/hm5JWKCaVWy', '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('653457da-da53-44c2-bb81-8558a687fd1c', '5175ad1e-2b6e-4669-b46a-d0695abe67f5', 'malshadissanayaka3555', '$2b$12$Pv2vPTNgYdPbyR.MTcJ1IeqM4Jnndgoqb3BAlEOA6c/rrMzxp6FuG', '2025-08-04 10:45:04.650629', '2025-08-04 10:45:04.650629', '2025-08-04 10:45:04.650629', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('80479067-78f5-41f1-8c36-1ba734cde5d0', 'd2da339f-07f6-4914-aa0e-23a9d3a58c21', 'kavindusilva8408', '$2b$12$QXcTYa9vOH2iqi7xC2EW5.io3EcrkxMenEjq12GflTDwudCjxmS8i', '2025-08-04 10:48:22.7342', '2025-08-04 10:48:22.7342', '2025-08-04 10:48:22.7342', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('dcddf904-9417-4d36-afd2-76260320d61a', '183dc79e-1b46-4531-948a-9072182795c8', 'shehanikahandawela9517', '$2b$12$cbMc9EDCyr/WChAip/7oruP0bAn2o.mhK0GQsa4ugYfJqzHW79X7a', '2025-08-07 13:31:34.591448', '2025-08-07 13:31:34.591448', '2025-08-07 13:31:34.591448', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('098b70f2-71f7-40b7-9fbf-b14f92322c22', '8a99b924-6b64-487d-974e-c44b5a0ca190', 'malithperera7869', '$2b$12$ACVP4/OLQ8yeGvVPtWBxy..Twh16Nf4hv/tTJXbVSyBtkBc4KedmW', '2025-08-07 13:31:48.382933', '2025-08-07 13:31:48.382933', '2025-08-07 13:31:48.382933', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('f08ee97c-7e3d-4d67-8697-7317c179bcc3', 'c5690609-4d4f-4f3e-a852-53acd69ac3d3', 'sandalikavya3107', '$2b$12$069IAoc2UD9Xl6LGV0vKAuFCKQRWfQufg2zZxIKBjSt5xKKuiuJjW', '2025-08-07 13:35:40.596114', '2025-08-07 13:35:40.596114', '2025-08-07 13:35:40.596114', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('8b8d3b21-eba5-444c-8b83-feeb9d38ef3e', '5371829a-831a-4c94-8f62-f50c6a3b9191', 'yohanfernando6251', '$2b$12$cdfXHOSVphadgJmEcmk9tOucS.1mSRtpkryNiGaXT0YN8O7mBmstq', '2025-08-17 08:33:58.744699', '2025-08-17 08:33:58.744699', '2025-08-17 08:33:58.744699', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('477b2a4a-73fe-4c96-9e74-4b36ce2809ba', '8515c62b-c3f0-4d94-955b-b63e6a8390d8', 'didulajayaweera5788', '$2b$12$UiJ3bsxs85Pq4YL97YENAOouYO94mNOM/uMfqvyD0C/khiCWURGIC', '2025-08-17 08:35:17.556107', '2025-08-17 08:35:17.556107', '2025-08-17 08:35:17.556107', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('c966381b-0d87-4b5c-854a-8becde8112be', 'b76a9d5c-3891-4491-9163-b03bc53f0141', 'kamalgune2118', '$2b$12$bIHUV50iDsFVspDTwkJDpuQ21O85U.QhPuGIIv2pA3CKsK3WFd4pG', '2025-08-17 08:38:49.506264', '2025-08-17 08:38:49.506264', '2025-08-17 08:38:49.506264', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('8dc1444a-e622-4d07-b336-93b72b38deb9', 'f610dff2-6f8b-44e3-9af8-be31cacb3560', 'kamalsilva7730', '$2b$12$PYcNgqALKQBr5OWPkGgbW.F8tKzzQFey/944UnThdEGwKq747CbGK', '2025-08-17 08:40:50.934841', '2025-08-17 08:40:50.934841', '2025-08-17 08:40:50.934841', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('87a86e18-6229-43d2-8796-f9f554667847', '8547efd6-d5d5-4368-b560-fe08f9834a25', 'sirimath1568', '$2b$12$RSkZS4vUvjmc96.ePuduWeLWdNIqoDi6kqFzGQz4tvJniwyROj5Si', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('0eaefb8b-0ad2-4a11-9076-3f70d35b9364', '5994c156-fcc4-4df3-bf6e-10905603941e', 'nayana8753', '$2b$12$R1zzQw1AO8GMXkiSrK43POf6gt3PxuufpTms44B4gscXk6.CJft8q', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '2025-09-01 08:31:11.635135', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('f1979452-d8a9-499d-94a5-dfabdbbd2eed', 'c77b68a3-2bdc-4c73-ae4c-1f0331757154', 'samankumara9746', '$2b$12$yUfCfV8aaetmLS.EVhcP4.Vi2J0TUHTYAFNNWjH1qlJoR//vTTZn6', '2025-09-05 10:33:30.449363', '2025-09-05 10:33:30.449363', '2025-09-05 10:33:30.449363', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09');
+INSERT INTO public.customer_login VALUES ('027c7a3e-46ce-4429-a1bd-6cbaa6a75975', '07709cbf-2053-430c-a478-ae7cef5327a2', 'roshanfernando1323', '$2b$12$QWku/p0v7BMefJy8wpHUvO1JYXXb0wy.74pFpzdgqCADZELJTyqZi', '2025-09-10 15:02:09.020212', '2025-09-10 15:02:09.020212', '2025-09-10 15:02:09.020212', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('413393dc-67fa-4945-92ff-362f57158c90', 'a32bd7d9-c3ca-4d17-8679-1aabd6634d37', 'kamalhami3183', '$2b$12$o9IASRwK8furCPf/LHiW3Oqk/QPZRRsz575wfiLW291qY3LmW0Vga', '2025-10-01 12:00:47.112878', '2025-10-01 12:00:47.112878', '2025-10-01 12:00:47.112878', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('ff1dee91-4892-47f3-99fb-e800f4e185f2', '32f76078-4238-4898-95bd-e76a16ca8e3f', 'kamalgune6618', '$2b$12$kWDAUEvcUW6mzMQADFHeAeqaNJ44MXI9wOgOHtt6TTT2mNHXsRDg6', '2025-10-20 12:00:38.78147', '2025-10-20 12:00:38.78147', '2025-10-20 12:00:38.78147', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('37352e4f-bb1c-4452-b603-8a6e1c80e87f', 'ba15de27-893c-4915-bc20-6e56ab35b60b', 'meenakumari6688', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-08-04 10:37:07.826495', '2025-08-04 10:37:07.826495', '2025-10-23 08:19:18.083497', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('4776491a-e627-40f9-8c68-060532756e99', 'e1dd007e-8c4a-4607-b462-7239452c4d10', 'samankumara2464', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-08-04 10:38:17.380613', '2025-08-04 10:38:17.380613', '2025-10-23 08:19:18.08895', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('9fd4b57e-b66f-4db1-a416-fb8b3ce004db', '56850cc8-ac6d-46bf-89b7-34b3b38a20f2', 'himayabandara7317', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-08-04 10:43:46.657443', '2025-08-04 10:43:46.657443', '2025-10-23 08:19:18.090495', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('a882cbc5-a6d7-413d-8bf2-4807df35ab48', '08c15d5a-82f4-4b69-93de-37a76f2f7533', 'nimalappuhami7737', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-09-10 15:04:03.795948', '2025-09-10 15:04:03.795948', '2025-10-23 08:19:18.0918', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('8321c3ad-1579-4c51-a30c-bb9be1303571', 'c1f52f03-9b0e-4b5d-8ec7-7df36d52f2e8', 'nimalawatheee5444', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-09-15 11:03:20.019027', '2025-09-15 11:03:20.019027', '2025-10-23 08:19:18.093886', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('52596a79-1c05-441d-8faf-31e9c011bdd8', '6e7cb74e-b103-49e2-b3a7-ef9fabe4754b', 'mahindadeshapriya1758', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-09-15 11:03:20.019027', '2025-09-15 11:03:20.019027', '2025-10-23 08:19:18.095392', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
+INSERT INTO public.customer_login VALUES ('a13a331d-2483-4bf5-9ad6-d41bb9d84af4', '8c72faa2-beb5-458d-80ac-dfff02cb4ce9', 'mahindarajapakse7496', '$2y$10$UrnASXwK1nKG0JcXgrIs8eboSOG4ILG3T.ens9xCLIwcoqsda1TpW', '2025-09-30 11:00:05.550255', '2025-09-30 11:00:05.550255', '2025-10-23 08:19:18.096731', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7');
 
 
 --
--- TOC entry 3785 (class 0 OID 31061)
--- Dependencies: 232
+-- TOC entry 3797 (class 0 OID 31061)
+-- Dependencies: 244
 -- Data for Name: fd_plan; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.fd_plan VALUES ('f6248a43-7311-4741-bf69-9e3628df3cee', 12, 14.00, '2025-09-18 13:37:13.906323', '2025-09-18 13:37:13.906323', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('fede8a9f-d3a5-4aee-a763-e43eae84397f', 36, 15.00, '2025-09-18 13:37:13.907726', '2025-09-18 13:37:13.907726', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('b44091ce-db91-4597-bc76-d4964b6470b5', 25, 12.00, '2025-10-03 18:59:19.17747', '2025-10-03 19:02:32.16124', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('3c603a19-3cb0-4b8d-8e78-eecb0dfbbecf', 14, 25.00, '2025-10-14 12:52:42.206518', '2025-10-14 12:52:42.206518', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('2155b849-ea21-4703-8fbf-385cd99be5d7', 44, 14.00, '2025-10-04 06:54:03.74637', '2025-10-20 16:46:23.501296', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('2e3ea02d-2fab-44c9-81f0-f10f0b872bbc', 112, 11.00, '2025-10-14 21:53:50.42115', '2025-10-20 16:46:26.142673', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('aba51ea9-6174-4a6e-8463-6d03dd717185', 6, 13.00, '2025-09-18 13:37:13.902794', '2025-10-20 17:17:06.030708', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'inactive', 50000);
-INSERT INTO public.fd_plan VALUES ('5ad7e9a8-b823-4d2a-a450-2d6de934cf8b', 12, 5.00, '2025-10-20 17:17:28.614594', '2025-10-20 17:17:28.614594', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 50000);
-INSERT INTO public.fd_plan VALUES ('c8500f42-a3c4-4aa3-9396-7395ac4e35fb', 11, 5.00, '2025-10-21 15:59:16.116847', '2025-10-21 15:59:16.116847', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 15000);
+INSERT INTO public.fd_plan VALUES ('f6248a43-7311-4741-bf69-9e3628df3cee', 12, 14.00, '2025-09-18 13:37:13.906323', '2025-08-04 10:30:16.275648', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active', 50000);
+INSERT INTO public.fd_plan VALUES ('fede8a9f-d3a5-4aee-a763-e43eae84397f', 36, 15.00, '2025-09-18 13:37:13.907726', '2025-08-04 10:30:16.277786', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active', 50000);
+INSERT INTO public.fd_plan VALUES ('d693cf65-5f24-4820-aad1-7d5b7b9e86f5', 6, 13.00, '2025-08-04 10:31:32.737473', '2025-08-04 10:31:32.737473', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active', 20000);
 
 
 --
--- TOC entry 3786 (class 0 OID 31068)
--- Dependencies: 233
+-- TOC entry 3798 (class 0 OID 31068)
+-- Dependencies: 245
 -- Data for Name: fixed_deposit; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.fixed_deposit VALUES ('4139dfa5-f386-4ec6-a87b-1647053b4f1d', 122222.000000000000, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', '2025-10-04 06:53:28.176285', '2028-10-04 06:53:28.176285', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-10-04 06:53:28.176285', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 34750437, 'active', '2025-11-19');
-INSERT INTO public.fixed_deposit VALUES ('200e5c3c-035f-41b2-9c71-0efde9f3cfe3', 100000.000000000000, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', '2025-10-14 12:51:37.948395', '2027-11-14 12:51:37.948395', 'b44091ce-db91-4597-bc76-d4964b6470b5', '2025-10-14 12:51:37.948395', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 74226670, 'active', '2025-11-19');
-INSERT INTO public.fixed_deposit VALUES ('cb591d9c-c63d-4228-824f-d0c8a54b3f73', 5000.000000000000, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', '2025-10-03 22:03:31.130479', '2028-10-03 22:03:31.130479', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-10-03 22:03:31.130479', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 83370957, 'active', '2025-11-19');
-INSERT INTO public.fixed_deposit VALUES ('391014f1-8057-41db-9426-d211030f4912', 50000.000000000000, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', '2025-10-20 21:32:10.386211', '2029-06-20 21:32:10.386211', '2155b849-ea21-4703-8fbf-385cd99be5d7', '2025-10-20 21:32:10.386211', '2025-10-20 21:32:10.386211', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 46224124, 'active', '2025-11-19');
-INSERT INTO public.fixed_deposit VALUES ('a00ad7b9-2533-4b17-be68-011f38ceaf73', 10000.000000000000, 'fde6ebe4-72be-4574-a470-999a365b1529', '2025-10-20 02:56:18.352714', '2026-04-20 02:56:18.352714', 'aba51ea9-6174-4a6e-8463-6d03dd717185', '2025-10-20 02:56:18.352714', '2025-10-21 06:39:41.196182', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 50025993, 'active', '2025-11-20');
-INSERT INTO public.fixed_deposit VALUES ('27825487-c485-40c0-8746-0fdd56bd852a', 252150.000000000000, '0415f29e-fb5b-4756-baa6-bce59cab2be5', '2025-10-21 17:32:04.600958', '2027-11-21 17:32:04.600958', 'b44091ce-db91-4597-bc76-d4964b6470b5', '2025-10-21 17:32:04.600958', '2025-10-21 17:32:04.600958', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 42626950, 'active', '2025-11-20');
-INSERT INTO public.fixed_deposit VALUES ('b8307b15-a9f4-4106-bd17-ca67231f7c4c', 90000.000000000000, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', '2025-10-17 12:41:40.232013', '2026-10-17 12:41:40.232013', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-10-17 12:41:40.232013', '2025-10-20 16:54:04.103615', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 92204927, 'active', '2025-11-19');
+INSERT INTO public.fixed_deposit VALUES ('5d97ce3e-2824-414d-97b5-246de599f8d7', 600000.000000000000, '8f453f53-bf51-437c-b8a9-702b08caf92d', '2025-08-17 08:37:04.355603', '2028-08-17 08:37:04.355603', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-08-17 08:37:04.355603', '2025-09-16 11:00:18.296315', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 21395338, 'active', '2025-10-16');
+INSERT INTO public.fixed_deposit VALUES ('edda056b-5511-419e-9d42-751baf3d75bd', 800000.000000000000, '1dfe7946-7b05-4de1-8254-1528660baf18', '2025-08-17 08:31:53.82927', '2026-08-17 08:31:53.82927', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-17 08:31:53.82927', '2025-09-16 11:00:18.296315', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 56537165, 'active', '2025-10-16');
+INSERT INTO public.fixed_deposit VALUES ('1e63ff92-b0f8-432c-a4af-2121eb1dd6cd', 120000.000000000000, '3aef91e8-f7b0-47a8-a03a-4c1770d74d30', '2025-08-17 08:41:43.769728', '2026-08-17 08:41:43.769728', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-17 08:41:43.769728', '2025-09-16 11:00:18.296315', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 15795036, 'active', '2025-10-16');
+INSERT INTO public.fixed_deposit VALUES ('ae3c7789-7290-4b86-9a93-043b62d83262', 0.000000000000, 'b646dd25-7775-417f-a216-30a84aa9c451', '2025-08-04 10:55:30.564301', '2026-08-04 10:55:30.564301', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-04 10:55:30.564301', '2025-08-17 08:46:35.359263', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 68983382, 'inactive', '2025-09-03');
+INSERT INTO public.fixed_deposit VALUES ('816ce0c4-de62-4ac4-9d50-4446c54c4fc2', 200000.000000000000, '17c9a664-3b42-456e-95e4-4bd73353f0e0', '2025-08-27 08:30:21.300452', '2026-02-27 08:30:21.300452', 'd693cf65-5f24-4820-aad1-7d5b7b9e86f5', '2025-08-27 08:30:21.300452', '2025-08-27 08:30:21.300452', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 43639715, 'active', '2025-09-26');
+INSERT INTO public.fixed_deposit VALUES ('b6efdeb4-a637-4f17-bd18-dc2678c75146', 400000.000000000000, 'f4a8e8d5-92af-421d-a437-dce94fd12638', '2025-08-27 08:30:21.836043', '2026-08-27 08:30:21.836043', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-27 08:30:21.836043', '2025-08-27 08:30:21.836043', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 10915296, 'active', '2025-09-26');
+INSERT INTO public.fixed_deposit VALUES ('a08f90c9-1b17-4952-b907-fdeb35649165', 300000.000000000000, 'b79aefad-de0e-4387-84cb-7a1234ce4ce7', '2025-08-27 08:33:38.71221', '2028-08-27 08:33:38.71221', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-08-27 08:33:38.71221', '2025-08-27 08:33:38.71221', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 93664811, 'active', '2025-09-26');
+INSERT INTO public.fixed_deposit VALUES ('fc98f9d8-cdc7-4c21-9a2e-859bdb24629f', 0.000000000000, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', '2025-08-04 10:53:02.758006', '2026-02-04 10:53:02.758006', 'd693cf65-5f24-4820-aad1-7d5b7b9e86f5', '2025-08-04 10:53:02.758006', '2025-08-27 08:34:13.678095', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 57699949, 'inactive', '2025-09-03');
+INSERT INTO public.fixed_deposit VALUES ('ea328918-2ca8-4ffe-8f61-6ed4110aaec5', 100000.000000000000, 'a949c77a-bb3b-484f-9b3e-8d68a36deb87', '2025-08-27 08:37:53.929716', '2026-08-27 08:37:53.929716', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-27 08:37:53.929716', '2025-08-27 08:37:53.929716', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 13412211, 'active', '2025-09-26');
+INSERT INTO public.fixed_deposit VALUES ('f1b2809d-8abf-4e99-8e78-0d0fc8ebf2b3', 399999.000000000000, 'd38f3e7a-9414-40e4-b62f-47019c16be6b', '2025-08-29 08:30:23.777358', '2028-08-29 08:30:23.777358', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-08-29 08:30:23.777358', '2025-08-29 08:30:23.777358', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 80741694, 'active', '2025-09-28');
+INSERT INTO public.fixed_deposit VALUES ('2e609ce4-06ad-4281-b33a-7b71fa4d7a25', 229999.000000000000, '99280df3-2bad-4c61-b069-bf6144235552', '2025-08-31 08:30:04.259167', '2026-08-31 08:30:04.259167', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-31 08:30:04.259167', '2025-08-31 08:30:04.259167', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 56004431, 'active', '2025-09-30');
+INSERT INTO public.fixed_deposit VALUES ('53d16c90-6b7d-460c-ace8-a9bfc4425ac4', 0.000000000000, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', '2025-09-05 10:36:28.875612', '2026-09-05 10:36:28.875612', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-09-05 10:36:28.875612', '2025-09-05 10:37:16.65028', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 97265237, 'inactive', '2025-10-05');
+INSERT INTO public.fixed_deposit VALUES ('4f8d73bf-016f-42b9-80da-8b6603da9b5d', 100000.000000000000, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', '2025-08-04 10:53:38.203207', '2026-08-04 10:53:38.203207', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-04 10:53:38.203207', '2025-09-03 00:00:09.103004', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 71876545, 'active', '2025-10-03');
+INSERT INTO public.fixed_deposit VALUES ('43fff487-57bd-4cb7-8567-426e5f26997b', 200000.000000000000, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', '2025-08-04 10:49:54.170884', '2026-08-04 10:49:54.170884', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-08-04 10:49:54.170884', '2025-09-03 00:00:09.103004', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 63351599, 'active', '2025-10-03');
+INSERT INTO public.fixed_deposit VALUES ('c311104b-48be-44cb-940b-f9f8575da5f7', 199999.000000000000, '9f195429-65fc-48c0-8a22-3216088f897e', '2025-08-17 08:31:41.339773', '2028-08-17 08:31:41.339773', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-08-17 08:31:41.339773', '2025-09-16 11:00:18.296315', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 94769260, 'active', '2025-10-16');
+INSERT INTO public.fixed_deposit VALUES ('909b7eb7-330c-4582-9b5e-728e9ee919a4', 100000.000000000000, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', '2025-08-17 08:41:56.329298', '2026-02-17 08:41:56.329298', 'd693cf65-5f24-4820-aad1-7d5b7b9e86f5', '2025-08-17 08:41:56.329298', '2025-09-16 11:00:18.296315', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 10832252, 'active', '2025-10-16');
+INSERT INTO public.fixed_deposit VALUES ('43da858e-4220-47b5-8ed9-d43a212b1bb6', 299999.000000000000, '697a0943-3418-427b-9786-45b5c5066b71', '2025-09-01 08:36:29.090507', '2026-09-01 08:36:29.090507', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-09-01 08:36:29.090507', '2025-10-01 12:00:43.79928', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 28969810, 'active', '2025-10-31');
+INSERT INTO public.fixed_deposit VALUES ('918fb3ed-4efb-4292-bb9c-d60d10f36a8b', 99998.000000000000, 'a6b1bdd7-e70e-4dd8-8621-397d69fb3300', '2025-10-05 12:00:47.856729', '2028-10-05 12:00:47.856729', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-10-05 12:00:47.856729', '2025-10-05 12:00:47.856729', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 26813609, 'active', '2025-11-04');
+INSERT INTO public.fixed_deposit VALUES ('4280ea68-96f7-4356-bb39-2c6cfe8de223', 399999.000000000000, '1853d4ea-a229-4757-9a4c-f6f858351196', '2025-09-10 15:05:29.263694', '2026-09-10 15:05:29.263694', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-09-10 15:05:29.263694', '2025-10-10 12:00:10.270924', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 64474239, 'active', '2025-11-09');
+INSERT INTO public.fixed_deposit VALUES ('740afff4-03de-4f0c-8f9d-e40aadbbbef5', 49999.000000000000, '30159eb0-328d-4cf2-84a3-d7f51040ed22', '2025-09-10 12:33:35.338774', '2026-03-10 12:33:35.338774', 'd693cf65-5f24-4820-aad1-7d5b7b9e86f5', '2025-09-10 12:33:35.338774', '2025-10-10 12:00:10.270924', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 10630536, 'active', '2025-11-09');
+INSERT INTO public.fixed_deposit VALUES ('311d8492-d08f-473c-bfc5-53e76755ade2', 5000000.000000000000, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', '2025-09-10 15:06:25.913042', '2028-09-10 15:06:25.913042', 'fede8a9f-d3a5-4aee-a763-e43eae84397f', '2025-09-10 15:06:25.913042', '2025-10-10 12:00:10.270924', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 28892515, 'active', '2025-11-09');
+INSERT INTO public.fixed_deposit VALUES ('7b2a67e0-089a-4330-b95c-b6c354299bc5', 1000000.000000000000, '2effb977-c5cb-43cb-9c5e-7db80de361e4', '2025-09-15 11:04:35.869121', '2026-09-15 11:04:35.869121', 'f6248a43-7311-4741-bf69-9e3628df3cee', '2025-09-15 11:04:35.869121', '2025-10-15 12:00:07.904117', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 93458513, 'active', '2025-11-14');
 
 
 --
--- TOC entry 3787 (class 0 OID 31082)
--- Dependencies: 235
+-- TOC entry 3799 (class 0 OID 31082)
+-- Dependencies: 246
 -- Data for Name: login; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -2195,11 +2328,73 @@ INSERT INTO public.login VALUES ('79cdfb0c-3380-48b2-9f9a-ca715c082bc2', '6b9972
 INSERT INTO public.login VALUES ('532c5f81-6ee0-4d6c-a311-19a69b39201e', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-21 11:53:07.100742', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
 INSERT INTO public.login VALUES ('5d835f5f-7483-455f-80c5-15321125258f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-21 14:34:23.947112', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
 INSERT INTO public.login VALUES ('22f4560f-861d-45ad-b8d5-d7bf9022ff41', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-21 18:13:11.480472', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('1ff52862-8247-4b04-8587-05af6758653f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 10:35:58.914107', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('46ca346a-1cb0-4afa-9a1b-736e48308cee', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-10-22 11:48:28.577049', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('86bafbcc-98e2-4660-acd9-bcb8dbe233b8', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 22:50:19.387104', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('7b998303-ee61-43e7-8804-8b59511d3a9a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 23:01:18.717479', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('bb212aa6-a917-4671-adf4-dd81792a04e1', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 23:01:39.223434', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('3003f7e2-00ff-4582-8731-669593be4417', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 23:02:23.72222', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('1892e742-be86-4deb-8655-25167a20568f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:04:43.70874', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('b9249846-6d88-49ff-a62b-966d6607f003', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:04:55.131238', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('a5c228c2-05e5-489b-a733-aa4a1a5777c0', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:08:22.872436', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('577f9b84-959d-460b-804d-e4d6f035c97b', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:08:23.498757', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('f4aa262a-1577-40d8-9a64-fa0043135910', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:08:41.397408', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('f24b166e-1cfa-4a5a-a18f-c347d537ca74', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:09:10.964368', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('5c645fe7-8ef2-45de-8aeb-998e8bf51947', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:10:11.149336', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('a8f5593a-aeab-433e-8de6-6dd9b6a788eb', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:10:55.507096', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('51b63e20-2df5-4579-8bd1-1a71bc7b9d42', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:11:21.550653', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('b386d62d-72dd-4f8c-a0ce-06c258709310', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-03 10:11:37.13249', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('b3bc8879-2e01-4839-a738-2d8556ae0958', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:31:28.166614', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('6ad1c945-f16c-469d-acab-5f53a36737a9', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:32:39.381073', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36');
+INSERT INTO public.login VALUES ('490c69d3-8152-4cb3-9f8c-457caac14f0a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:33:34.207215', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('fc89d276-0466-4863-8495-ac500907cfd9', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:34:37.856897', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('6b9e0817-98ef-45f4-b9cd-4dc9d39efb01', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:35:29.142094', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('9c8b59c4-c3db-4cf5-80f8-6be23f51f3c7', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:35:41.942208', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('efd77ba7-135d-416c-b9f3-27703a62c96f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:36:26.071064', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('45f0fc1b-6f6b-4248-a70a-a9b62aba79c2', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:36:40.003121', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('55404dff-dcbd-4e5d-be8d-5371852c6400', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-08-04 10:36:50.966222', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('78c87664-9c30-44e0-8634-b491a64eb189', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:37:25.875191', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('98664269-6168-42b3-840f-ad41174e29c5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:37:40.650115', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('391bdd5f-74f3-4b85-9839-808e64264858', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:38:19.114161', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('6e4305e4-9fe1-422f-a709-2c99f39c17ca', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:38:34.191191', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('d6bb1208-9b1d-433f-9594-cbe13973207f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:39:48.322458', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('05e3976c-2d08-4653-a46d-7d6aa0f63ee6', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:40:26.35144', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('418eb227-50ef-434d-833d-d66a720e19c5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:42:52.37654', '10.10.13.225', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('60736b59-ce1a-4f94-8781-0f05e6b01026', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:58:15.005409', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('595a15ee-336d-4590-b1f1-8f22fffcbae8', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:58:32.587714', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('375cf07c-391f-4344-ab46-4b20e1a6be20', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-08-04 10:59:08.631684', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('559000df-72d6-4a82-be97-b05bf9a93d47', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2025-08-04 10:59:18.913246', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('c863c8ac-de73-42c7-84fb-67a3c74889e3', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:59:29.77927', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('453397a8-e162-45ea-a5cd-92333740ae6e', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:59:48.641527', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('1d8166c0-10fd-4591-a460-2f08ca5b11ad', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:00:09.651217', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('c9efcea1-f8ec-4775-a6d2-49df799dbdba', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:00:51.270235', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('468d6aaa-fad8-46bf-97ee-a8a5015908ca', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:00:59.49351', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('b4def442-c596-44ba-a6c2-64d38f2204bf', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:01:02.76845', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('0a6a5482-432b-403e-a252-b23c77a5dc83', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:05:33.141613', '10.42.0.151', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('f69cbdcf-72f3-474d-8acf-4b6fe3373511', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:06:46.175532', '10.42.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('33ae5568-a3f1-45a2-9c27-268e1d8ae232', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:07:15.70718', '10.42.0.151', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('9e5cb52d-bdbb-44cb-8800-210d00291b7d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:08:19.722009', '10.42.0.175', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Mobile Safari/537.36');
+INSERT INTO public.login VALUES ('f73f0b68-4142-40e8-b7de-c76be1a4fe73', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:11:01.27753', '10.42.0.159', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('ca7f7431-b492-4b9d-ad2e-8f4744a94435', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 11:11:29.43367', '10.42.0.159', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('1578ce28-ee89-41f2-bc1c-cedcb39c8edd', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:31:02.942778', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('9b92c304-ae88-424d-96b9-8b1f5a2a95c2', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2025-08-04 10:34:08.553963', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('2e4c0937-b7e0-406f-a4ff-7676c11251a2', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:34:41.924573', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('9da662aa-33b5-4367-beb4-306cbdfcec7b', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2025-08-04 10:35:49.328409', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('4355df04-9851-4a6f-a763-7a114ad70ed6', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2025-08-04 10:37:02.377584', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('d7dbc539-0ba1-49ff-b577-9449794ebec1', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2025-08-04 10:37:45.520368', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('fa92255d-7705-4e0f-bb17-ae69c86e31af', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '2025-08-04 10:51:57.454701', '10.10.2.22', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('cfb30eb0-e326-4bd8-93c6-22732cb0a817', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-04 10:52:09.157681', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('21b2775a-78a1-4946-9ee0-f9b3682d12f7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2025-08-04 10:54:39.954362', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36');
+INSERT INTO public.login VALUES ('27d1bfe4-b9bb-4102-8b4f-9e89972dc839', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-08-05 12:31:25.001847', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('8a180c47-085a-46c8-9ec6-aa2b6819dcbf', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-09-05 10:31:32.54737', '10.10.30.86', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('255fceef-8503-40b3-9dc9-b620962c4c1b', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '2025-09-05 10:37:51.342819', '10.10.18.84', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0');
+INSERT INTO public.login VALUES ('274b71e5-c4fa-418a-957a-8af011b275b0', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2025-10-22 23:27:47.449125', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
+INSERT INTO public.login VALUES ('b6b8735c-8e13-4c2a-8d8b-e708a68ab716', 'de9dc531-11bf-4481-882a-dc3291580f60', '2025-10-23 08:17:22.791029', '127.0.0.1', 'Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0');
 
 
 --
--- TOC entry 3788 (class 0 OID 31089)
--- Dependencies: 236
+-- TOC entry 3800 (class 0 OID 31089)
+-- Dependencies: 247
 -- Data for Name: role; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -2207,16 +2402,23 @@ INSERT INTO public.role VALUES ('88e07160-2df2-4d18-ab38-9b4668267956', 'withdra
 INSERT INTO public.role VALUES ('1f65261b-a275-4b10-a71d-a556f3525428', 'deposit');
 INSERT INTO public.role VALUES ('05865b54-4591-4ccb-b1b8-bacf4c8771a2', 'account-open');
 INSERT INTO public.role VALUES ('87b01ec1-46ba-42bb-975b-4d25c16582b6', 'account-close');
-INSERT INTO public.role VALUES ('b7ce085d-d88e-4291-a0ab-efcc14a1ae3e', 'transaction');
 INSERT INTO public.role VALUES ('5d8461b9-9f7d-4c8e-8306-91760ef30a9b', 'fd-create');
 INSERT INTO public.role VALUES ('6b116c56-efe7-45eb-883b-b3e7d5f68145', 'fd-close');
-INSERT INTO public.role VALUES ('a4ea6418-2b71-4c93-804e-befb747f876a', 'customer-create');
 INSERT INTO public.role VALUES ('34dbe9a4-95a3-4abb-9442-5a78ea632af9', 'user-create');
+INSERT INTO public.role VALUES ('b7ce085d-d88e-4291-a0ab-efcc14a1ae3e', 'tranfer');
+INSERT INTO public.role VALUES ('6b238ef4-bce5-4c9a-85d6-795178e85ea3', 'admin');
+INSERT INTO public.role VALUES ('fe6b7dfa-8e54-4539-8bb6-3546e26ccd30', 'agent');
+INSERT INTO public.role VALUES ('ce1a460c-e571-48b7-8b21-1d4aac270849', 'manager');
+INSERT INTO public.role VALUES ('9c3adbb6-6ae6-4800-a65b-f78e78649078', 'fd-view');
+INSERT INTO public.role VALUES ('934d3f0b-e687-4de3-8e70-bdc9cbc775bf', 'account-view');
+INSERT INTO public.role VALUES ('17e15824-573e-4bdd-8079-1daabc0a563b', 'customer-view');
+INSERT INTO public.role VALUES ('3765a6c7-6ac2-4faf-9f71-3088378b3fdd', 'customer-update');
+INSERT INTO public.role VALUES ('49cc2c12-f54e-4088-a129-678e6aec7312', 'report-view');
 
 
 --
--- TOC entry 3789 (class 0 OID 31093)
--- Dependencies: 237
+-- TOC entry 3801 (class 0 OID 31093)
+-- Dependencies: 248
 -- Data for Name: savings_plan; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -2224,142 +2426,257 @@ INSERT INTO public.savings_plan VALUES ('7d8f328d-650d-4e19-b2ef-4c7292f6264a', 
 INSERT INTO public.savings_plan VALUES ('75cb0dfb-be48-4b4c-ab13-9e01772f0332', 'Children', 12.00, '2025-09-18 13:35:04.860764', '2025-10-14 21:05:51.620268', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 0);
 INSERT INTO public.savings_plan VALUES ('fd8afec3-3da2-48ab-a63d-abbff3a3e773', 'Senior', 13.00, '2025-10-14 21:05:51.612605', '2025-10-14 21:06:17.110416', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 1000);
 INSERT INTO public.savings_plan VALUES ('a620a5c0-9456-4bc6-a37c-1c02d8f0da9c', 'Teen', 11.00, '2025-10-14 21:05:51.615497', '2025-10-14 21:06:17.112064', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 500);
-INSERT INTO public.savings_plan VALUES ('3678e0b0-2c29-4df6-9744-c311254361b1', 'stringg', 10.00, '2025-10-15 14:14:07.066356', '2025-10-15 14:14:07.066356', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 100);
 INSERT INTO public.savings_plan VALUES ('3578bd55-8c57-4757-aa7b-0f37b859edd6', 'Adult', 10.00, '2025-09-18 10:25:36.776016', '2025-10-20 17:19:47.349057', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 1000);
+INSERT INTO public.savings_plan VALUES ('e509eb83-b653-4f30-96d2-ee598b43bd0c', 'Vanitha', 12.00, '2025-09-10 15:03:07.559011', '2025-09-10 15:03:07.559011', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 500);
 
 
 --
--- TOC entry 3790 (class 0 OID 31099)
--- Dependencies: 238
+-- TOC entry 3802 (class 0 OID 31099)
+-- Dependencies: 249
 -- Data for Name: transactions; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.transactions VALUES ('f6b92d76-0ac1-4b96-aabc-05cbbb3db8f7', 100.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Deposit', 'damma2', '2025-10-04 11:20:02.009178', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 488281374005011);
-INSERT INTO public.transactions VALUES ('45a5dff5-5d6c-485e-86e8-edbd25e74230', 199.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', 'gaththa1', '2025-10-04 11:22:56.51151', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 522854710418057);
-INSERT INTO public.transactions VALUES ('f6266406-5455-4650-8d08-b77f402a5167', 1.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 11:26:19.597875', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 690241647608795);
-INSERT INTO public.transactions VALUES ('c8ebc6a9-c706-4195-9b81-2413248ca58b', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 11:26:49.332753', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 687042810117575);
-INSERT INTO public.transactions VALUES ('ee483fe6-a4b1-4f0e-8138-f891a4cf8d4f', 100.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Deposit', 'damma4', '2025-10-04 11:31:09.781287', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 802306149223642);
-INSERT INTO public.transactions VALUES ('3a0040a1-dc68-4f49-9183-cc3856faccfc', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:31:44.095968', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 211275806874019);
-INSERT INTO public.transactions VALUES ('9dae883f-55b7-4643-9fee-98285bc587bc', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:31:55.64639', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 311595383848431);
-INSERT INTO public.transactions VALUES ('16f7f5e3-fd6b-4ad4-8342-4fb3003392ad', 100.50, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:32:07.268343', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 986191972686343);
-INSERT INTO public.transactions VALUES ('a29be355-36e6-44aa-90ce-8663d5accb40', 100000.50, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:32:21.669552', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 500650514889355);
-INSERT INTO public.transactions VALUES ('bf3dea4a-0736-4b29-bf70-e8590cde0807', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 11:35:24.987748', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 754060340288079);
-INSERT INTO public.transactions VALUES ('42968485-7c4e-44e9-90eb-2e2524e4049d', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 795322413062976);
-INSERT INTO public.transactions VALUES ('cb2605f7-a0b2-4c1f-88ce-bc8e7a88aaa2', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 11:58:57.000286', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 921110500106017);
-INSERT INTO public.transactions VALUES ('93c6e675-d1fd-4747-bb6d-7e74cc4f8a39', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 27073176646106);
-INSERT INTO public.transactions VALUES ('3f94eb1e-b5a7-42a6-bbee-4d237ea920df', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 12:00:39.343259', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 127707374048069);
-INSERT INTO public.transactions VALUES ('1f4222fc-14b9-4ec0-8584-f083b8a61010', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 12:13:25.511162', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 963021931708024);
-INSERT INTO public.transactions VALUES ('adfc693d-7e8e-4fde-ba07-5cdef65c3606', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 12:13:30.364103', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 913566220312107);
-INSERT INTO public.transactions VALUES ('926db7e9-ba61-4357-a743-2393b4c363b0', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 717924963395123);
-INSERT INTO public.transactions VALUES ('388e791c-1be8-445a-b367-8b514b012ee3', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 12:13:36.283783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 637806377612270);
-INSERT INTO public.transactions VALUES ('9045c9d6-632b-410e-80d1-e2440b702617', 100000.25, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'damma4', '2025-10-04 13:10:41.432708', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 632304819075343);
-INSERT INTO public.transactions VALUES ('e1302a6e-7323-40be-ac41-7dab6b256772', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-04 13:10:47.582915', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 903800137536799);
-INSERT INTO public.transactions VALUES ('2a5bdb9a-48d4-49ea-9fde-8612be1ad263', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-In', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 531032877856749);
-INSERT INTO public.transactions VALUES ('ad80af1f-5cd4-46f0-a37e-b2d038f40365', 10.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-Out', 'string', '2025-10-04 13:10:53.691486', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 881838457476605);
-INSERT INTO public.transactions VALUES ('99f70d4e-8371-41c1-92d0-5eaee03442d2', 21.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'string', '2025-10-04 14:47:38.452432', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 977432922278397);
-INSERT INTO public.transactions VALUES ('3e953f9a-5ba1-4035-8bc0-f7019a955fff', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:14:36.451911', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 921821928857034);
-INSERT INTO public.transactions VALUES ('336478e1-4c44-4a91-82d3-a9bcec406e4f', 1.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-05 18:14:43.727441', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 982010863816673);
-INSERT INTO public.transactions VALUES ('76ddfeb1-d5c6-4dd9-ba7b-dd3aeeda1031', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:22:28.570323', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 543411669332510);
-INSERT INTO public.transactions VALUES ('32ddf007-b92a-4681-a3f9-e771408f89bf', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:22:48.456817', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 815145399228117);
-INSERT INTO public.transactions VALUES ('63665eee-7d7a-4a8e-807a-4228bd781e94', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:24:01.048984', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 7327282619973);
-INSERT INTO public.transactions VALUES ('97866d4b-b50b-4719-a4dd-2a1e16c2ca32', 100.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ATM withdrawal', '2025-10-05 18:29:28.227393', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 811980160137042);
-INSERT INTO public.transactions VALUES ('2767d787-5d1f-4a3f-a4ca-61d41fc9f88e', 1.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-05 18:29:32.860467', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 485765499510587);
-INSERT INTO public.transactions VALUES ('dc821f88-b9b4-4905-99ef-4e03e86d33a0', 1.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'weithdraw money', '2025-10-05 18:30:51.690589', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 759704570835382);
-INSERT INTO public.transactions VALUES ('62dee838-24b3-455a-b719-4cea4a96bacd', 50.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'cvcvc', '2025-10-05 18:54:49.926544', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 150685098622496);
-INSERT INTO public.transactions VALUES ('97743ea2-91a1-42ad-b9ab-bbf7a1f01701', 588.24, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'dddd', '2025-10-05 19:14:59.313184', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 560007534755209);
-INSERT INTO public.transactions VALUES ('f271ee1a-69e8-4af8-921c-5a4580265d01', 785.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'ddd', '2025-10-05 19:18:59.928445', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 671973238294429);
-INSERT INTO public.transactions VALUES ('06431231-77b9-4da3-ae70-a59345101b1b', 5.90, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'd', '2025-10-05 19:30:27.56223', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 770424122292820);
-INSERT INTO public.transactions VALUES ('cd425ae1-135a-446b-9829-58dfe5d18492', 12.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Withdrawal', 's', '2025-10-05 19:47:13.331218', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 292011424087881);
-INSERT INTO public.transactions VALUES ('f1b1e007-4c8a-4f84-bd74-11b0e464418e', 12.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', 'd', '2025-10-06 17:27:42.518599', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 638771120903892);
-INSERT INTO public.transactions VALUES ('44114a81-6ab7-4b9e-96dd-e1ef66ee0ee1', 12.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', 'x', '2025-10-06 17:28:22.231881', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 429724424428671);
-INSERT INTO public.transactions VALUES ('1c797846-9c31-454d-90a3-386aad622315', 22.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', 'd', '2025-10-06 17:33:50.839851', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 411404275920669);
-INSERT INTO public.transactions VALUES ('fc2e39f3-7160-48c3-a2ab-f61ffcf0d7b3', 22.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', '2', '2025-10-06 17:45:11.835223', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 168600846740115);
-INSERT INTO public.transactions VALUES ('567fa701-3a41-451a-b230-6830567946ae', 12.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Withdrawal', '2', '2025-10-06 17:46:26.410894', 'de9dc531-11bf-4481-882a-dc3291580f60', 250066599180093);
-INSERT INTO public.transactions VALUES ('67fb6c3b-3edb-4e7a-84e7-c13ef451d03f', 33.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Withdrawal', 'jidoalklp[ ', '2025-10-09 10:35:50.891783', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 396617152968773);
-INSERT INTO public.transactions VALUES ('b723f2d7-e223-44ac-b85c-5e02b89df155', 12.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'ss', '2025-10-09 10:45:57.465252', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 293822159234248);
-INSERT INTO public.transactions VALUES ('4d7972d3-31fc-4795-b42a-efec9c31303e', 100.00, 'fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 'Deposit', 'damma', '2025-08-18 15:10:00.83', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 141111295237170);
-INSERT INTO public.transactions VALUES ('b036ae26-ea5b-4d74-b273-e6ab8d6a5ad5', 12.00, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Withdrawal', 'd', '2025-10-14 20:57:12.45308', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 47189523895325);
-INSERT INTO public.transactions VALUES ('246b2bd2-2a24-43c7-a03a-b42e78913475', 235.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'BankTransfer-Out', 'ww', '2025-10-14 20:58:01.33688', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 354814716110615);
-INSERT INTO public.transactions VALUES ('a2e96290-d5ff-4734-8561-1c1640564b93', 235.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'BankTransfer-In', 'ww', '2025-10-14 20:58:01.33688', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 73608327561708);
-INSERT INTO public.transactions VALUES ('0d47cfbf-b5fc-491f-8fad-f91f89a4478f', 1.00, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Withdrawal', 'dd', '2025-10-14 21:07:35.134167', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 756791601993193);
-INSERT INTO public.transactions VALUES ('ca1d4e05-41f1-4796-b8d8-18603cbaf5ea', 100.00, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Deposit', 's', '2025-10-14 21:07:55.566951', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 312758596748702);
-INSERT INTO public.transactions VALUES ('07722b14-ff2e-45ec-8ce1-862871a73626', 10.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'string', '2025-10-14 21:45:42.722073', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 760270718843290);
-INSERT INTO public.transactions VALUES ('fd161bf9-7b29-46bb-b5e0-a96dccae967c', 23.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'c', '2025-10-14 21:45:46.974586', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 25450057726371);
-INSERT INTO public.transactions VALUES ('2a304e96-1cdc-414d-b5ca-1aedfa9d2499', 12.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', '2x', '2025-10-14 23:55:44.34774', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 453350156797796);
-INSERT INTO public.transactions VALUES ('466acbdd-4824-42ba-bebc-8c4164ce7f00', 22.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', '  c', '2025-10-15 01:02:54.445273', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 261357622103836);
-INSERT INTO public.transactions VALUES ('25f84d18-0148-4548-9fdc-e19493d30574', 2.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'ded', '2025-10-15 01:17:48.314838', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 248943828434880);
-INSERT INTO public.transactions VALUES ('a7d91ac3-4452-4cf2-819d-a27222d31799', 21.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-Out', '2qw', '2025-10-15 01:31:39.652166', 'de9dc531-11bf-4481-882a-dc3291580f60', 123911487323737);
-INSERT INTO public.transactions VALUES ('2876c250-bf34-4f05-acbc-387de96cb920', 21.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'BankTransfer-In', '2qw', '2025-10-15 01:31:39.652166', 'de9dc531-11bf-4481-882a-dc3291580f60', 985623259359905);
-INSERT INTO public.transactions VALUES ('c49e70dd-f119-4c78-a930-61a3753faba8', 233.00, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Deposit', 'fce', '2025-10-15 01:32:01.322286', 'de9dc531-11bf-4481-882a-dc3291580f60', 257206773037569);
-INSERT INTO public.transactions VALUES ('2c4ad111-c7a6-4f0e-babb-1532dfe38580', 8.22, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 607821625499709);
-INSERT INTO public.transactions VALUES ('db71a96b-72ae-433f-8d87-244733a304f6', 8.21, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 25574572228538);
-INSERT INTO public.transactions VALUES ('fdf597a1-7a28-4e51-a934-bbcd5bfe8f0e', 0.13, '31d95fe1-7d2f-4d9e-81c1-b608131b7335', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 162720951693987);
-INSERT INTO public.transactions VALUES ('d8155f10-2048-4f72-acba-780e10079687', 182.96, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 162778978175810);
-INSERT INTO public.transactions VALUES ('1a2ef263-d299-4f83-a76c-51b2a3cddfb0', 3386.58, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 352891124422005);
-INSERT INTO public.transactions VALUES ('0fef7229-ddea-4cd7-a90f-d465f780fbce', 0.93, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 866326270733400);
-INSERT INTO public.transactions VALUES ('b38cfb19-6cc7-42de-9628-7a179069bd96', 115.07, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 431382561256298);
-INSERT INTO public.transactions VALUES ('9f8e338c-7ad7-4139-812b-bd4051a7ca65', 9.86, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 279329395402897);
-INSERT INTO public.transactions VALUES ('f87b8926-8697-4455-a27c-bc82e8bd2818', 2.55, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 890238746638962);
-INSERT INTO public.transactions VALUES ('ffdb410c-e3f7-4479-915e-5b38b7f59c9e', 4.56, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 797137463181856);
-INSERT INTO public.transactions VALUES ('25db8aa5-7e3b-44da-a356-7474c9bf48e1', 8.22, 'fb762c41-c883-4bba-9bcf-f59dfc07f042', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 473053483193324);
-INSERT INTO public.transactions VALUES ('7223b5ba-7000-4bac-8f19-5c23a9629d33', 11.77, 'fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 378171184307552);
-INSERT INTO public.transactions VALUES ('01b2114d-b45b-43be-b4e5-6f116893a509', 93.66, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 753956504901198);
-INSERT INTO public.transactions VALUES ('34deca3c-668e-4235-8e0b-cc400585b34e', 5.75, 'fde6ebe4-72be-4574-a470-999a365b1529', 'Interest', 'Monthly interest', '2025-10-15 13:10:55.719719', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 898702337964820);
-INSERT INTO public.transactions VALUES ('eb136524-5838-494c-8b57-191f5931447c', 443.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', ' vc', '2025-10-15 13:13:27.363563', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 907132512198152);
-INSERT INTO public.transactions VALUES ('c01f1d42-e6a2-42cc-b716-4a445cbb64b3', 500.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'fef', '2025-10-15 13:14:01.56479', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 678624841694792);
-INSERT INTO public.transactions VALUES ('56d20263-1b5d-43ba-8954-acf012150f5c', 1000.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-Out', 'dwds', '2025-10-15 13:15:45.521915', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 692737444470037);
-INSERT INTO public.transactions VALUES ('5fa761d1-f603-46ef-8b30-a91749855132', 1000.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'BankTransfer-In', 'dwds', '2025-10-15 13:15:45.521915', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 603654720842696);
-INSERT INTO public.transactions VALUES ('6e73c2ab-6b47-40ab-8444-51cad28105c6', 500.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-Out', 'hgjh', '2025-10-15 13:16:39.488122', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 803856911053262);
-INSERT INTO public.transactions VALUES ('6db1462a-5b47-411b-ba8b-1a0990611994', 500.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'BankTransfer-In', 'hgjh', '2025-10-15 13:16:39.488122', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 123925846936849);
-INSERT INTO public.transactions VALUES ('72f01a0f-340d-4ccb-90c5-1e54271b9fab', 12.23, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'sdn', '2025-10-16 01:59:28.855252', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 441058717579701);
-INSERT INTO public.transactions VALUES ('634a1ba2-2c19-4302-83e8-327dd82b63f9', 233.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'c', '2025-10-17 01:39:06.952208', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 554992337992224);
-INSERT INTO public.transactions VALUES ('0e38793d-faa7-4263-946c-eefa4c252810', 187.00, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Withdrawal', 'et', '2025-10-17 01:40:16.993421', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 803790176446920);
-INSERT INTO public.transactions VALUES ('2ffc9d6d-b782-44b5-b289-712e22bb3f4b', 121.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', '1', '2025-10-17 02:20:16.115744', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 308161723419069);
-INSERT INTO public.transactions VALUES ('ef2a6418-8af4-4c98-bc17-ebd9240fac22', 20115.07, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Withdrawal', 'Closed the account.', '2025-10-17 09:44:56.234817', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 784646024325597);
-INSERT INTO public.transactions VALUES ('a9b7f8d3-d79c-4d60-aaab-05849bb03db5', 250.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', '1', '2025-10-17 23:31:08.549325', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 299669158590103);
-INSERT INTO public.transactions VALUES ('b9f78b9e-8b23-47c5-a2db-c72bcd07b9cc', 234.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'sirim', '2025-10-18 01:57:53.140759', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 666526852050219);
-INSERT INTO public.transactions VALUES ('6e5bac91-5370-4134-be18-d10f5d60ddb4', 10000.00, 'fde6ebe4-72be-4574-a470-999a365b1529', 'Deposit', 'Created fixed deposit', '2025-10-20 02:56:18.352714', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 142596293120325);
-INSERT INTO public.transactions VALUES ('781f2805-f0b4-4e13-b5e0-7aa1d03a69db', 10009.00, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Withdrawal', 'Fixed deposit closure for FD 92204927', '2025-10-20 03:44:11.172145', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 16083861587802);
-INSERT INTO public.transactions VALUES ('3084f7c2-7c0b-4a48-96dd-a25c84ba13a0', 8.28, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 714533049918540);
-INSERT INTO public.transactions VALUES ('1e3752ce-d1ff-41f7-a0d0-dbeb61753aee', 0.13, '31d95fe1-7d2f-4d9e-81c1-b608131b7335', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 114552730038528);
-INSERT INTO public.transactions VALUES ('7464fe35-0454-4404-babc-6f086e3607c0', 3410.96, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 670881030809278);
-INSERT INTO public.transactions VALUES ('63f7320f-d5be-4af0-a755-9eb8c440f54e', 1094.98, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 841418125601056);
-INSERT INTO public.transactions VALUES ('be47d71e-508d-4778-9eb8-3413b6dcef11', 2.57, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 422135301474055);
-INSERT INTO public.transactions VALUES ('5120791f-a26e-4c88-b00d-02ce3927b614', 16.93, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 783265882231012);
-INSERT INTO public.transactions VALUES ('4d7f4a57-1f96-48d0-95a6-47a376584dea', 8.29, 'fb762c41-c883-4bba-9bcf-f59dfc07f042', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 457284730725935);
-INSERT INTO public.transactions VALUES ('1cdc803a-b62d-43ff-b453-ad0bd1634490', 94.66, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Interest', 'Monthly interest', '2025-10-20 16:08:57.374798', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 267290039307860);
-INSERT INTO public.transactions VALUES ('d5759b80-99a7-44ea-a129-5c4a046e26e5', 1035.62, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Deposit', 'FD Interest - FD Account No: 92204927', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 533654220750590);
-INSERT INTO public.transactions VALUES ('0b958354-6319-4729-a542-4f81a638c20d', 493.15, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Deposit', 'FD Interest - FD Account No: 38665920', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 259537353210469);
-INSERT INTO public.transactions VALUES ('6c166ecc-d640-4d4f-ba1f-640f556fe326', 961.64, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'FD Interest - FD Account No: 96382071', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 814257160451762);
-INSERT INTO public.transactions VALUES ('f2403d3a-28c8-4be2-be14-5c2248ac352f', 575.34, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'FD Interest - FD Account No: 27754503', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 685641750266037);
-INSERT INTO public.transactions VALUES ('fbf7d1c1-7f47-470e-ac51-15a42d425024', 1506.85, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Deposit', 'FD Interest - FD Account No: 34750437', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 991228053537734);
-INSERT INTO public.transactions VALUES ('57617e33-0276-46f6-b187-427f452e438d', 986.30, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Deposit', 'FD Interest - FD Account No: 74226670', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 927541085479423);
-INSERT INTO public.transactions VALUES ('f4a52ec1-0e1e-45e5-859b-23ba2fee4eb3', 61.64, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Deposit', 'FD Interest - FD Account No: 83370957', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 283022941876090);
-INSERT INTO public.transactions VALUES ('59114317-53a7-4f0c-a906-517f8d7d22d2', 106.85, 'fde6ebe4-72be-4574-a470-999a365b1529', 'Deposit', 'FD Interest - FD Account No: 50025993', '2025-10-20 16:54:04.103615', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 934736526989167);
-INSERT INTO public.transactions VALUES ('d5e54d8b-d9d5-4dad-b2e0-7e23fab4af45', 50000.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Deposit', 'Created fixed deposit', '2025-10-20 21:32:10.386211', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 364699458416091);
-INSERT INTO public.transactions VALUES ('5d4be706-7e4d-433f-9f6f-9f8422878136', 5000.00, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Deposit', 'නිල් අහස් තලේ අගේ', '2025-10-21 10:30:24.968406', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 681862190370626);
-INSERT INTO public.transactions VALUES ('ec880b88-26f7-415b-8ba0-63780e6ce34d', 15555.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'sfd', '2025-08-21 12:15:04.907', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 796479197476448);
-INSERT INTO public.transactions VALUES ('607e19b7-02fc-4dba-95f2-7df9641c3307', 25.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', '2e3', '2025-09-21 12:17:49.288', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 644407038325979);
-INSERT INTO public.transactions VALUES ('d0c61a43-d31a-44b4-97b8-f3ca2fda3c9d', 252150.00, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'Deposit', 'Created fixed deposit', '2025-10-21 17:32:04.600958', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 710224107614828);
-INSERT INTO public.transactions VALUES ('7a61dc35-014e-4c7a-a591-a83112aa5874', 121.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'ghjkn', '2025-10-21 17:40:31.017145', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 889047495325744);
+INSERT INTO public.transactions VALUES ('14579a24-138d-4a50-a987-06d42b2fefee', 10000.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'Sallary', '2025-08-04 10:44:47.493376', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 233766225784486);
+INSERT INTO public.transactions VALUES ('522db6ce-a91a-41f2-85bf-d026fc9f782f', 98000.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'Check ', '2025-08-04 10:45:18.606736', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 100093345681520);
+INSERT INTO public.transactions VALUES ('c70baf92-3a9e-4c22-8457-c8fdc99d0357', 43000.00, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Deposit', 'Personal', '2025-08-04 10:46:41.642958', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 846955169766839);
+INSERT INTO public.transactions VALUES ('d5c355db-d9b5-488d-967e-cb67f142a1d4', 33000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Deposit', 'Personal', '2025-08-04 10:47:59.87012', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 308166398258909);
+INSERT INTO public.transactions VALUES ('84ab6ce6-ec4a-4f19-b66c-f5b65d66d5c7', 32000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Deposit', '6700', '2025-08-04 10:48:30.336696', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 959459688278479);
+INSERT INTO public.transactions VALUES ('7dde4a7a-fc06-41a8-ad02-fe4730445fec', 200000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'Created fixed deposit', '2025-08-04 10:49:54.170884', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 891258611149345);
+INSERT INTO public.transactions VALUES ('e0db2998-ec93-4edc-b729-ad6601811ccc', 2300.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Withdrawal', 'Bill payment', '2025-08-04 10:50:43.613913', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 630818209392564);
+INSERT INTO public.transactions VALUES ('676f8996-5117-4466-b205-9f32f54d04a1', 2400.00, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Withdrawal', 'Bill payment', '2025-08-04 10:51:24.2614', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 159043790305421);
+INSERT INTO public.transactions VALUES ('ed117189-360d-402b-bcf5-11f88a37cdd6', 10000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Withdrawal', 'Personal', '2025-08-04 10:51:54.899721', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 427883733807627);
+INSERT INTO public.transactions VALUES ('be7cd947-e30c-418a-8307-d54318a7f3de', 2344.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Withdrawal', 'Water Bill', '2025-08-04 10:52:22.570051', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 187418094060708);
+INSERT INTO public.transactions VALUES ('b7fd3e67-1c49-4248-b185-48d10c31d6d4', 99998.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'Created fixed deposit', '2025-08-04 10:53:02.758006', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 878733600697052);
+INSERT INTO public.transactions VALUES ('2af50c8d-4c47-461a-a4ca-0e87783c7ee9', 100000.00, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Deposit', 'Created fixed deposit', '2025-08-04 10:53:38.203207', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 474571970664831);
+INSERT INTO public.transactions VALUES ('b23c1fda-c07d-409c-9a5e-1715911059da', 2000000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Deposit', 'Created fixed deposit', '2025-08-04 10:55:30.564301', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 608567391196330);
+INSERT INTO public.transactions VALUES ('9bf8d548-cde2-4796-ac5e-0df75f63db89', 2000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'BankTransfer-Out', 'Bill paymemnt', '2025-08-04 10:57:50.874534', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 925251627819895);
+INSERT INTO public.transactions VALUES ('699918a3-4bbe-4534-9f45-e250078f7dea', 2000.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'BankTransfer-In', 'Bill paymemnt', '2025-08-04 10:57:50.874534', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 234217695287104);
+INSERT INTO public.transactions VALUES ('0b3588c3-b3aa-4a85-937f-b1961e8dd322', 3000.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'BankTransfer-Out', 'Done', '2025-08-04 10:58:21.665601', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 683231767129892);
+INSERT INTO public.transactions VALUES ('e733c8a8-d7e0-4e8c-ac65-faa608622490', 3000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'BankTransfer-In', 'Done', '2025-08-04 10:58:21.665601', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 192350581972277);
+INSERT INTO public.transactions VALUES ('469f5582-f6e4-4bf4-ac62-1ebe5ab9295f', 8000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Withdrawal', 'Personal', '2025-08-04 10:59:20.511609', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 980985409463095);
+INSERT INTO public.transactions VALUES ('f82d792f-2af2-4c83-ad59-5cb79144cb92', 500.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'Saving
+', '2025-08-04 11:00:54.137342', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 244498200230885);
+INSERT INTO public.transactions VALUES ('d356b9fc-0534-4ecf-9908-1fa05cc6aa5a', 3200.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'Personal
+', '2025-08-05 12:30:59.246401', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 192951179938602);
+INSERT INTO public.transactions VALUES ('7f1f7069-988e-4d7a-9903-4c7fd3120ace', 5200.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Withdrawal', 'Payment', '2025-08-05 12:31:28.863041', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 600174574521869);
+INSERT INTO public.transactions VALUES ('3cad6719-1930-49d8-a85e-032b15f87519', 25000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Deposit', 'Personal', '2025-08-05 12:31:34.123095', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 958580063370022);
+INSERT INTO public.transactions VALUES ('9fc86c17-ba77-45da-b196-91640da576ca', 2000.00, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Deposit', 'personal', '2025-08-05 12:31:49.902137', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 445893446635889);
+INSERT INTO public.transactions VALUES ('c7ce210c-4aa8-4fcc-945c-c6b144b20c60', 2400.00, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Withdrawal', 'Bill', '2025-08-05 12:32:08.168988', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 850610103039573);
+INSERT INTO public.transactions VALUES ('299fd719-1739-414b-b137-1790c2646f06', 5199.98, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-Out', 'Payment', '2025-08-05 12:32:23.431327', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 165346769189871);
+INSERT INTO public.transactions VALUES ('816a5981-5cdb-45b7-af4f-ae0d6b70586a', 5199.98, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'BankTransfer-In', 'Payment', '2025-08-05 12:32:23.431327', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 33909934646286);
+INSERT INTO public.transactions VALUES ('40f24b29-b2ee-43f0-ad1f-53835f34e004', 2000.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Withdrawal', 'Personal', '2025-08-07 13:30:41.048447', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 808768432148864);
+INSERT INTO public.transactions VALUES ('f71a3f2f-1f17-4e18-a0c9-c5f0f2eb021d', 23000.00, '9f195429-65fc-48c0-8a22-3216088f897e', 'Deposit', 'Personal', '2025-08-07 13:32:23.543813', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 568031854237967);
+INSERT INTO public.transactions VALUES ('95ef3b17-93af-4f7e-ae41-1b1ac5b045a1', 999.98, '9f195429-65fc-48c0-8a22-3216088f897e', 'Withdrawal', 'Personal', '2025-08-07 13:35:29.031872', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 330000908805931);
+INSERT INTO public.transactions VALUES ('736d1cdb-d187-449b-9910-d620775cfdf5', 3000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'BankTransfer-Out', 'Take this', '2025-08-07 13:36:21.069255', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 541907843301375);
+INSERT INTO public.transactions VALUES ('442bceeb-a33b-49f6-b261-c3d4dbd7db4e', 3000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'BankTransfer-In', 'Take this', '2025-08-07 13:36:21.069255', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 12671232075090);
+INSERT INTO public.transactions VALUES ('5c772b7c-2669-4e11-a63d-45ea1d19044a', 3000.00, '9f195429-65fc-48c0-8a22-3216088f897e', 'BankTransfer-Out', 'Take this', '2025-08-17 08:30:42.594954', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 763540025470967);
+INSERT INTO public.transactions VALUES ('30b16876-d32d-475a-85d7-92f5412169ea', 3000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'BankTransfer-In', 'Take this', '2025-08-17 08:30:42.594954', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 334958114797412);
+INSERT INTO public.transactions VALUES ('447e6b15-1bf0-43cd-b3cf-972be8e23211', 199999.00, '9f195429-65fc-48c0-8a22-3216088f897e', 'Deposit', 'Created fixed deposit', '2025-08-17 08:31:41.339773', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 595593109431959);
+INSERT INTO public.transactions VALUES ('f023c5fa-1e70-4c36-a643-7bc9637c66ba', 800000.00, '1dfe7946-7b05-4de1-8254-1528660baf18', 'Deposit', 'Created fixed deposit', '2025-08-17 08:31:53.82927', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 924511524052996);
+INSERT INTO public.transactions VALUES ('f77c19e0-7280-42e1-ba04-1c0bb3cfa287', 5000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'payment', '2025-08-17 08:34:59.356683', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 448140930234823);
+INSERT INTO public.transactions VALUES ('b974c18a-6c0b-4bdd-aaf1-ac00580c3a31', 5000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Withdrawal', 'tax ', '2025-08-17 08:35:50.884989', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 275197950574655);
+INSERT INTO public.transactions VALUES ('7fc38df2-000e-4ce0-ba81-86129b79242b', 600000.00, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Deposit', 'Created fixed deposit', '2025-08-17 08:37:04.355603', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 793936987527385);
+INSERT INTO public.transactions VALUES ('92cfea1a-144e-41eb-b920-12f5dde52f5c', 120000.00, '3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 'Deposit', 'Created fixed deposit', '2025-08-17 08:41:43.769728', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 921785847593361);
+INSERT INTO public.transactions VALUES ('7a1e8735-261f-47e5-9af7-2386a67cc527', 100000.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Deposit', 'Created fixed deposit', '2025-08-17 08:41:56.329298', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 758436337959993);
+INSERT INTO public.transactions VALUES ('41c9ee83-761f-462d-8055-92fe5a76bdf8', 2500.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'BankTransfer-Out', 'Internet fee', '2025-08-17 08:43:20.76822', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 695629444431312);
+INSERT INTO public.transactions VALUES ('f0de181d-a334-4138-8b61-3ecd55db38cb', 2500.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-In', 'Internet fee', '2025-08-17 08:43:20.76822', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 553985014577781);
+INSERT INTO public.transactions VALUES ('b670bea3-fd66-49a1-b9bd-75c056d4b630', 1000.00, '4dcf9c4f-2bec-49f9-a336-5e45cce1601b', 'Withdrawal', 'Closed the account.', '2025-08-17 08:46:06.297365', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 803546652739197);
+INSERT INTO public.transactions VALUES ('f0fdc187-dd54-4eae-93a2-072354e61053', 2000000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Withdrawal', 'Fixed deposit cloesd', '2025-08-17 08:46:35.359263', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 617961073555801);
+INSERT INTO public.transactions VALUES ('04925b39-acf3-402a-b4d3-90b84a91e10d', 200000.00, '17c9a664-3b42-456e-95e4-4bd73353f0e0', 'Deposit', 'Created fixed deposit', '2025-08-27 08:30:21.300452', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 677645591134287);
+INSERT INTO public.transactions VALUES ('261e5db5-8b4b-4317-9ef1-4096c6133e96', 400000.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Deposit', 'Created fixed deposit', '2025-08-27 08:30:21.836043', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 75613340186077);
+INSERT INTO public.transactions VALUES ('673fcaf4-cc52-423e-ba56-8a9105aec53f', 300000.00, 'b79aefad-de0e-4387-84cb-7a1234ce4ce7', 'Deposit', 'Created fixed deposit', '2025-08-27 08:33:38.71221', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 801002457470757);
+INSERT INTO public.transactions VALUES ('3517fe0d-f03d-4c36-af2d-a63f37ffc453', 99998.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Withdrawal', 'Fixed deposit cloesd', '2025-08-27 08:34:13.678095', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 240676670364052);
+INSERT INTO public.transactions VALUES ('784845e8-5453-4e56-b54a-d668fc190633', 100000.00, 'a949c77a-bb3b-484f-9b3e-8d68a36deb87', 'Deposit', 'Created fixed deposit', '2025-08-27 08:37:53.929716', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 631741186332230);
+INSERT INTO public.transactions VALUES ('d1928112-d1ee-4bac-a4da-b3036d3b4910', 399999.00, 'd38f3e7a-9414-40e4-b62f-47019c16be6b', 'Deposit', 'Created fixed deposit', '2025-08-29 08:30:23.777358', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 282035983504143);
+INSERT INTO public.transactions VALUES ('cee0fcfd-2bf9-4011-8022-adc4ca9f2e36', 229999.00, '99280df3-2bad-4c61-b069-bf6144235552', 'Deposit', 'Created fixed deposit', '2025-08-31 08:30:04.259167', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 48086120460434);
+INSERT INTO public.transactions VALUES ('a5ded5dc-b117-44ab-a0d8-0ab0ae89e573', 8.56, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 786119345674491);
+INSERT INTO public.transactions VALUES ('3b3ec2d7-9834-44bb-bf34-67d970a80b85', 192.76, '17c9a664-3b42-456e-95e4-4bd73353f0e0', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 3469287399098);
+INSERT INTO public.transactions VALUES ('c8f79a9b-8bb4-4772-b9a4-ea801d2587c1', 8.63, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 468415263696005);
+INSERT INTO public.transactions VALUES ('a8ba776a-446d-46b8-b2a9-ae974962acb5', 164.38, '1dfe7946-7b05-4de1-8254-1528660baf18', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 731391316673196);
+INSERT INTO public.transactions VALUES ('90eaf77d-4969-474e-9465-e10368e9e210', 702.58, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 909083557338330);
+INSERT INTO public.transactions VALUES ('5d1b0f30-a28d-401c-8bb5-8c3d710a5bff', 0.14, '31d95fe1-7d2f-4d9e-81c1-b608131b7335', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 571208647605809);
+INSERT INTO public.transactions VALUES ('25a6d126-f3ee-452b-bd56-51919c29893c', 304.24, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 109176933892360);
+INSERT INTO public.transactions VALUES ('6deaa37b-0d72-414b-88b2-ebe6e87bb3c2', 189.04, '3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 749982791848859);
+INSERT INTO public.transactions VALUES ('a658ffff-7e26-46ac-9fad-350d3402757e', 203.84, '3b4fe46d-d998-4231-bf48-9552830244fe', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 871693885463749);
+INSERT INTO public.transactions VALUES ('ef83258c-8c97-49ab-84d6-d2e0e405240e', 424.93, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 203218698705735);
+INSERT INTO public.transactions VALUES ('196579a7-e94f-413a-b18d-637e8feacd47', 3566.19, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 121946978238852);
+INSERT INTO public.transactions VALUES ('125cae41-20f6-4c1c-af7f-af74ae24db26', 271.78, '6793b998-92c2-45bb-a4d4-1b84fefbc652', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 240539138885115);
+INSERT INTO public.transactions VALUES ('4259e8c8-bcad-45b4-b609-3486264b9f57', 57.82, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 166849691989130);
+INSERT INTO public.transactions VALUES ('9b248fd4-b596-4cee-b378-c792a88f1101', 198.99, '99280df3-2bad-4c61-b069-bf6144235552', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 638579945850740);
+INSERT INTO public.transactions VALUES ('85414586-9239-4a94-b565-10877f793ed4', 342.58, '9f195429-65fc-48c0-8a22-3216088f897e', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 933489700043858);
+INSERT INTO public.transactions VALUES ('8f90f253-2ded-43e0-94d7-fbf5f6c604f4', 101.10, 'a949c77a-bb3b-484f-9b3e-8d68a36deb87', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 701807215338034);
+INSERT INTO public.transactions VALUES ('91a1fb35-29e5-4e80-906e-896bafdc4daf', 1163.75, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 360777693330867);
+INSERT INTO public.transactions VALUES ('7a3ffda4-551d-476a-95eb-5ced39d8ebda', 17381.29, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 403008755686430);
+INSERT INTO public.transactions VALUES ('2a56c372-b6a3-4ed5-940b-b258b60be02d', 355.07, 'b79aefad-de0e-4387-84cb-7a1234ce4ce7', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 629507587379318);
+INSERT INTO public.transactions VALUES ('d19fa719-23d8-4c8a-945d-5cc6e52a53db', 88.63, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 315611121043923);
+INSERT INTO public.transactions VALUES ('38bad065-a77f-458d-a7df-8c8a4cf1a528', 945.61, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 260679383631026);
+INSERT INTO public.transactions VALUES ('8c09a256-bc07-4671-98ed-5f0ba86dae3b', 2032.67, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 854507687289358);
+INSERT INTO public.transactions VALUES ('5ef10d10-0fc5-4805-95aa-1b0142866a6f', 377.26, 'd38f3e7a-9414-40e4-b62f-47019c16be6b', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 857162306285792);
+INSERT INTO public.transactions VALUES ('4c3f1f9e-5dac-4bac-b98e-a2bcee70986c', 594.52, 'dffecccc-565a-4b66-804c-1befa178b8f7', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 755092205846023);
+INSERT INTO public.transactions VALUES ('e7f96959-bcc1-4030-842e-fe1ba32a43f2', 17.64, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 399775602375655);
+INSERT INTO public.transactions VALUES ('70c81655-82e1-4c84-8716-3d6085989fda', 2877.31, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 587798131553037);
+INSERT INTO public.transactions VALUES ('ef28cc09-cc96-4324-8cec-80116a85e49c', 101.92, 'e260aeef-4836-4a35-bb19-3d109adba141', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 909730322734713);
+INSERT INTO public.transactions VALUES ('2f98b1f5-9a40-4f63-89d7-22b23f730193', 673.67, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 714703566868243);
+INSERT INTO public.transactions VALUES ('ef7a49ef-9eff-4d32-8d0d-1c96c7ef9c11', 8.63, 'fb762c41-c883-4bba-9bcf-f59dfc07f042', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 802897004290918);
+INSERT INTO public.transactions VALUES ('32e33443-f80c-418a-ac2e-3a555d9157d2', 12.24, 'fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 849171630950879);
+INSERT INTO public.transactions VALUES ('d6dac7a1-6a4b-425d-92a9-3b794a7f79ed', 98.87, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 941870631450769);
+INSERT INTO public.transactions VALUES ('2b306f53-64f4-4d4f-b011-be4769cdf266', 7.25, 'fde6ebe4-72be-4574-a470-999a365b1529', 'Interest', 'Monthly interest', '2025-09-01 08:30:44.216391', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 349276778269250);
+INSERT INTO public.transactions VALUES ('c4b79ee6-e9bf-4ae7-8dbf-c745dd3b7bc8', 2100.00, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'Withdrawal', 'For food', '2025-09-01 08:32:54.183191', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 501296354163839);
+INSERT INTO public.transactions VALUES ('b2371d72-2025-4798-9410-dbca0c759309', 200.00, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'BankTransfer-Out', 'Lunch money', '2025-09-01 08:33:32.560933', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 221402269692969);
+INSERT INTO public.transactions VALUES ('b4237768-bcf5-4c6b-a44c-5f48a99f2ae5', 200.00, '1dfe7946-7b05-4de1-8254-1528660baf18', 'BankTransfer-In', 'Lunch money', '2025-09-01 08:33:32.560933', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 447445185711737);
+INSERT INTO public.transactions VALUES ('a738a258-feed-4bc9-aa99-757390f22274', 299999.00, '697a0943-3418-427b-9786-45b5c5066b71', 'Deposit', 'Created fixed deposit', '2025-09-01 08:36:29.090507', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 668761158951008);
+INSERT INTO public.transactions VALUES ('4306549a-4219-43c2-bc50-e2c41ffd2d00', 5000.00, '1dfe7946-7b05-4de1-8254-1528660baf18', 'Withdrawal', 'personal', '2025-09-01 08:38:57.134029', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 579519848696426);
+INSERT INTO public.transactions VALUES ('ec805c75-0560-49b0-af81-a7417a53d71f', 4000.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Withdrawal', 'personal', '2025-09-05 10:30:41.081559', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 930562001092932);
+INSERT INTO public.transactions VALUES ('cc4c3c97-9dbd-4098-939a-fe76e786379a', 500.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Withdrawal', 'Pocket money', '2025-09-05 10:31:18.661311', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 850405277746172);
+INSERT INTO public.transactions VALUES ('1d7c9420-b73e-41ee-82fd-9d236d0a2d5f', 5000.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Deposit', 'saving', '2025-09-05 10:31:43.425096', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 563365075014141);
+INSERT INTO public.transactions VALUES ('cf893ba0-5920-41f3-9731-7872dd227f54', 1000.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'BankTransfer-Out', 'Monthly allowance', '2025-09-05 10:32:15.272903', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 541354781451673);
+INSERT INTO public.transactions VALUES ('93e2b22b-4354-436b-8dc1-7ee79ebef935', 1000.00, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'BankTransfer-In', 'Monthly allowance', '2025-09-05 10:32:15.272903', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 309533188198091);
+INSERT INTO public.transactions VALUES ('500ac7bc-bb10-46d8-a351-8c50cd7e54fc', 100000.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Deposit', 'Created fixed deposit', '2025-09-05 10:34:04.982865', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 619900040025369);
+INSERT INTO public.transactions VALUES ('33786014-df26-40c8-a8eb-4c7a4a164122', 50000.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Deposit', 'Created fixed deposit', '2025-09-05 10:36:28.875612', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 474514638277256);
+INSERT INTO public.transactions VALUES ('c0b96c11-43bd-4a15-80f4-49731a447137', 50000.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Withdrawal', 'Fixed deposit cloesd', '2025-09-05 10:37:16.65028', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 64427099649737);
+INSERT INTO public.transactions VALUES ('203c199e-6d60-4832-8152-5895274b3c34', 10000.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'BankTransfer-Out', 'My account', '2025-09-10 12:32:24.698127', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 583113156206609);
+INSERT INTO public.transactions VALUES ('da2a89ea-6207-4ce2-a8ff-8c4eb1ddbc93', 10000.00, 'ded1f289-7f01-4135-b638-dd735d691229', 'BankTransfer-In', 'My account', '2025-09-10 12:32:24.698127', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 435020000188239);
+INSERT INTO public.transactions VALUES ('0aa25dbb-2ce1-4e51-921a-9a4b69d328a0', 7000.00, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'Deposit', 'Saving', '2025-09-10 12:32:52.788853', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 686476245232802);
+INSERT INTO public.transactions VALUES ('1764553d-a998-44cf-89b7-f6b719046cc3', 49999.00, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'Deposit', 'Created fixed deposit', '2025-09-10 12:33:35.338774', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 894870267207771);
+INSERT INTO public.transactions VALUES ('1eb9d5be-6fdf-46ed-b54c-413b14572e19', 200.00, '31d95fe1-7d2f-4d9e-81c1-b608131b7335', 'Deposit', 'Saving', '2025-09-03 00:00:44.035869', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 396131224199532);
+INSERT INTO public.transactions VALUES ('ebcd99e9-eed0-4af5-aac1-bd836b3fd828', 2400.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Withdrawal', 'Private reason', '2025-09-04 00:00:42.60215', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 461293163472035);
+INSERT INTO public.transactions VALUES ('7eb2cae4-8771-48b3-a8b2-ceba6e1a9286', 10000.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'BankTransfer-Out', 'Salary payment', '2025-09-04 00:01:15.496851', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 861419901987331);
+INSERT INTO public.transactions VALUES ('c641ad2b-a957-4e7d-8f69-13402da12fe0', 10000.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'BankTransfer-In', 'Salary payment', '2025-09-04 00:01:15.496851', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 737018446034534);
+INSERT INTO public.transactions VALUES ('a5d2c12e-f638-40ff-ae16-5615ac9afc2f', 1150.68, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Deposit', 'FD Interest - FD Account No: 71876545', '2025-09-03 00:00:09.103004', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 245571352257359);
+INSERT INTO public.transactions VALUES ('cc4e6c78-5653-4c5e-aa71-bdc044a55f5b', 2301.37, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'FD Interest - FD Account No: 63351599', '2025-09-03 00:00:09.103004', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 998788217324572);
+INSERT INTO public.transactions VALUES ('6cf4acd2-07b9-4559-bb75-43720b68cdf7', 32000.00, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Deposit', 'Personal', '2025-09-10 15:02:36.709334', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 328772665636933);
+INSERT INTO public.transactions VALUES ('afddd3f7-70ac-41e1-bba8-dd2a1bca040d', 54000.00, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Withdrawal', 'Bill', '2025-09-10 15:02:53.681667', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 562255120348248);
+INSERT INTO public.transactions VALUES ('82e44516-58fc-4c29-90ff-f226c9348c12', 8700.00, '1853d4ea-a229-4757-9a4c-f6f858351196', 'Deposit', 'Personal', '2025-09-10 15:04:21.801777', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 701757036242397);
+INSERT INTO public.transactions VALUES ('648c3a6f-5b83-4fb5-a11b-d56f05a3d754', 430.00, '1853d4ea-a229-4757-9a4c-f6f858351196', 'Withdrawal', 'Bill', '2025-09-10 15:05:19.438702', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 345198756307786);
+INSERT INTO public.transactions VALUES ('1afcd787-ca28-4b3e-aac3-3b2a87d9c527', 399999.00, '1853d4ea-a229-4757-9a4c-f6f858351196', 'Deposit', 'Created fixed deposit', '2025-09-10 15:05:29.263694', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 502013425194808);
+INSERT INTO public.transactions VALUES ('09bbd243-f397-435f-8eb0-a13cb31cfcbf', 5000000.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'Created fixed deposit', '2025-09-10 15:06:25.913042', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 817015098533773);
+INSERT INTO public.transactions VALUES ('acb9267b-e8b6-4e64-89f0-8b6289c3dc85', 500.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-Out', 'Saving', '2025-09-10 15:07:03.63283', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 937943578085138);
+INSERT INTO public.transactions VALUES ('30099ab9-190d-48cf-b800-361740283b57', 500.00, '2955457b-8207-4228-a3da-c9d5940c2095', 'BankTransfer-In', 'Saving', '2025-09-10 15:07:03.63283', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 78808023563933);
+INSERT INTO public.transactions VALUES ('e94aef48-1ce4-4cf9-aabc-41946549c6c1', 7000.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Deposit', 'salary', '2025-09-10 15:07:35.287624', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 429533734334319);
+INSERT INTO public.transactions VALUES ('c71aafad-481c-432b-9c15-6fc1ae302ba2', 11999.99, '4ae3fefd-a3d4-4133-b516-bddebdf3d49f', 'BankTransfer-Out', 'For rent', '2025-09-10 15:07:43.480479', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 837076895636833);
+INSERT INTO public.transactions VALUES ('2028e0f1-c7c8-4b9d-bca6-3ec37adf3d28', 11999.99, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'BankTransfer-In', 'For rent', '2025-09-10 15:07:43.480479', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 906200046294482);
+INSERT INTO public.transactions VALUES ('588b8ae2-8aa8-49cf-850b-9d65f84ee1d9', 1000.00, '2955457b-8207-4228-a3da-c9d5940c2095', 'Deposit', 'Gift', '2025-09-10 15:08:06.527219', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 307878725342264);
+INSERT INTO public.transactions VALUES ('a4b06409-ee74-4f16-9f34-8892922dc944', 7000.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Withdrawal', 'personal', '2025-09-15 11:02:13.758872', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 307414968499016);
+INSERT INTO public.transactions VALUES ('08a2fa70-3e44-4090-9b1a-2d3d308d14b0', 250.00, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Withdrawal', 'Personal', '2025-09-15 11:02:33.810443', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 241531339701049);
+INSERT INTO public.transactions VALUES ('bfb33379-edd1-4d12-9cfb-544287bd3c47', 584.00, 'fb762c41-c883-4bba-9bcf-f59dfc07f042', 'Deposit', 'Water bill', '2025-09-15 11:02:59.786989', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 254427215619831);
+INSERT INTO public.transactions VALUES ('5c566111-a61e-4193-9454-acc293b3bb5e', 100000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Deposit', 'Pension', '2025-09-15 11:03:42.268459', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 226099169754925);
+INSERT INTO public.transactions VALUES ('23f5b2a0-b423-4e79-978e-62a8af4b5a70', 10000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Withdrawal', 'For TV', '2025-09-15 11:04:06.179024', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 732722992586431);
+INSERT INTO public.transactions VALUES ('ab340ac0-c756-4e5b-a621-cc8656519fd0', 4000.00, 'ded1f289-7f01-4135-b638-dd735d691229', 'BankTransfer-Out', 'Saving', '2025-09-15 11:04:27.782048', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 705214579947519);
+INSERT INTO public.transactions VALUES ('f362666a-3fb3-4450-80f3-090c3487b7bd', 4000.00, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'BankTransfer-In', 'Saving', '2025-09-15 11:04:27.782048', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 547849218285121);
+INSERT INTO public.transactions VALUES ('c5da2f86-62a3-4568-9a8a-4d830f1aa6aa', 1000000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Deposit', 'Created fixed deposit', '2025-09-15 11:04:35.869121', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 585875275223093);
+INSERT INTO public.transactions VALUES ('6413d073-38ab-4330-ad32-cf07efa155e3', 7397.26, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Deposit', 'FD Interest - FD Account No: 21395338', '2025-09-16 11:00:18.296315', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 947319253706467);
+INSERT INTO public.transactions VALUES ('b48c554d-5672-4013-8900-2f3598f83c8c', 9205.48, '1dfe7946-7b05-4de1-8254-1528660baf18', 'Deposit', 'FD Interest - FD Account No: 56537165', '2025-09-16 11:00:18.296315', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 228351724268026);
+INSERT INTO public.transactions VALUES ('513b66b5-3fdb-4018-905c-988716182f68', 1380.82, '3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 'Deposit', 'FD Interest - FD Account No: 15795036', '2025-09-16 11:00:18.296315', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 769408096433223);
+INSERT INTO public.transactions VALUES ('36a3bfeb-2d6d-4063-b4de-919e49df6342', 2465.74, '9f195429-65fc-48c0-8a22-3216088f897e', 'Deposit', 'FD Interest - FD Account No: 94769260', '2025-09-16 11:00:18.296315', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 244319960842086);
+INSERT INTO public.transactions VALUES ('d89ab62d-5f30-49e8-98c7-d24e56f274c3', 1068.49, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Deposit', 'FD Interest - FD Account No: 10832252', '2025-09-16 11:00:18.296315', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 164787646638323);
+INSERT INTO public.transactions VALUES ('7ab04e66-a77b-4983-98d8-12ddd7608331', 3400.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Withdrawal', 'gatta', '2025-09-18 11:00:57.88997', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 452376709342030);
+INSERT INTO public.transactions VALUES ('78b1fd6f-480b-41e9-bc43-f7b349e0d171', 5200.00, 'ded1f289-7f01-4135-b638-dd735d691229', 'Withdrawal', 'Personal', '2025-09-18 11:01:01.276122', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 576192793762546);
+INSERT INTO public.transactions VALUES ('aff6b515-5087-4b0a-bb10-64b698663a21', 5200.00, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Withdrawal', 'Bill', '2025-09-18 11:01:14.55768', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 273514566228009);
+INSERT INTO public.transactions VALUES ('a17a2ebd-c02e-45fc-8905-d4dc2cb4f390', 129.98, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'BankTransfer-Out', 'For rent', '2025-09-18 11:01:21.130191', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 185779490134378);
+INSERT INTO public.transactions VALUES ('ee189c2a-229f-4734-bfb3-869f5adff721', 129.98, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'BankTransfer-In', 'For rent', '2025-09-18 11:01:21.130191', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 237787943826026);
+INSERT INTO public.transactions VALUES ('ce31cf93-8306-45c2-8e63-4d82dcd1b4c4', 1000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'Saving', '2025-09-20 11:00:02.077364', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 610476440447935);
+INSERT INTO public.transactions VALUES ('8c503150-430d-4ebf-bdef-7ea74cd3d236', 3000000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Deposit', 'Sallary', '2025-09-20 11:00:18.789421', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 743534993868353);
+INSERT INTO public.transactions VALUES ('4deae24f-baef-4ec1-9a06-334219d3e042', 250.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'light bill', '2025-09-20 11:00:25.739069', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 105477415229773);
+INSERT INTO public.transactions VALUES ('d643e286-63cf-4136-9143-b0842cbbf97e', 20000.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Deposit', 'Pension money', '2025-09-25 11:00:00.771534', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 950948631676882);
+INSERT INTO public.transactions VALUES ('2650ba0e-cf26-43a2-b68e-f9d61787f8f4', 120.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Withdrawal', 'Personal', '2025-09-25 11:00:09.29103', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 1475659723177);
+INSERT INTO public.transactions VALUES ('93bce0b7-d6d4-4bb3-bf0a-3e4be372453c', 2000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'class fee', '2025-09-25 11:00:30.925157', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 541155552695839);
+INSERT INTO public.transactions VALUES ('a2fb42ec-64f6-4ae0-a24d-52084e9ea892', 150.00, '89e221cd-2b08-47c5-a88f-3ceffa79fb9a', 'Withdrawal', 'bill', '2025-09-25 11:00:33.208201', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 753977953864428);
+INSERT INTO public.transactions VALUES ('8e20f990-2047-4932-b28f-02c85f982531', 5000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'CS-2023', '2025-09-30 11:00:19.130175', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 112061715861664);
+INSERT INTO public.transactions VALUES ('5479ef57-25b9-45de-bc6f-72874509c616', 30000.00, '6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 'BankTransfer-Out', 'ew', '2025-09-30 11:00:29.271934', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 848103955486187);
+INSERT INTO public.transactions VALUES ('5eab9f81-a96a-4149-8f20-9e717570f1ee', 30000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'BankTransfer-In', 'ew', '2025-09-30 11:00:29.271934', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 166102234884462);
+INSERT INTO public.transactions VALUES ('f32a4a51-ba0a-4657-b3fc-c72519737991', 150.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Deposit', 'bill', '2025-09-30 11:00:38.977817', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 350847010817628);
+INSERT INTO public.transactions VALUES ('19b6529a-50d6-4ab2-a582-ff8ccd43b580', 4000.00, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Deposit', 'CS4023', '2025-09-30 11:00:50.255104', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 12670564410218);
+INSERT INTO public.transactions VALUES ('655778d7-5dde-41ff-9a68-8a910976f7a9', 3000000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Deposit', 'Lottery
+', '2025-09-30 11:00:54.619648', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 617774751035050);
+INSERT INTO public.transactions VALUES ('49c3fba8-e5fa-4062-94c4-a6afa9ff0174', 50000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Withdrawal', 'Personal', '2025-10-01 12:00:36.553954', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 512183828564429);
+INSERT INTO public.transactions VALUES ('4128980f-92ab-4717-8f08-ad50a4086e23', 3452.04, '697a0943-3418-427b-9786-45b5c5066b71', 'Deposit', 'FD Interest - FD Account No: 28969810', '2025-10-01 12:00:43.79928', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 447173629890937);
+INSERT INTO public.transactions VALUES ('793d4c2f-a4a3-4f8b-a705-c159058d55c1', 16.42, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 303055205144085);
+INSERT INTO public.transactions VALUES ('f91aab83-ccc6-47fb-8b0c-20913dfa714f', 194.34, '17c9a664-3b42-456e-95e4-4bd73353f0e0', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 850463580367816);
+INSERT INTO public.transactions VALUES ('a3f9411d-8d17-4c22-8431-f4c490b75865', 327.32, '1853d4ea-a229-4757-9a4c-f6f858351196', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 776054281425248);
+INSERT INTO public.transactions VALUES ('7aab37c9-604d-450f-8e55-81d7fc5bb087', 8.42, '1b337986-ae2d-4e9e-9f87-5bd92e29253f', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 317240988857549);
+INSERT INTO public.transactions VALUES ('1c497c6e-7ed7-4aee-8d4b-72e480273b38', 201.42, '1dfe7946-7b05-4de1-8254-1528660baf18', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 863211849358325);
+INSERT INTO public.transactions VALUES ('c3e0c714-678b-4ebb-811e-666533013300', 211.85, '2955457b-8207-4228-a3da-c9d5940c2095', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 736961287310226);
+INSERT INTO public.transactions VALUES ('df0ee792-c3e4-4b3f-b185-f6a72c735edd', 715.19, '2dc6afc8-e2ce-4ab8-b6db-6d10bceff3da', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 472423773598434);
+INSERT INTO public.transactions VALUES ('e5a3fea6-03c7-4e52-b890-cfe62413f0ab', 18134.61, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 300439545258593);
+INSERT INTO public.transactions VALUES ('a3c6018e-b12f-4b33-aeb4-b5b11de115ee', 2626.30, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 939466635413761);
+INSERT INTO public.transactions VALUES ('8c1fb536-eb22-4063-be4c-87d1135082a1', 1.25, '31d95fe1-7d2f-4d9e-81c1-b608131b7335', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 508162821027666);
+INSERT INTO public.transactions VALUES ('2e8b12c1-49b6-45ea-bb5a-deecd94b4dc7', 381.51, '3337ad45-7e90-4c8f-9057-e38f3c43f196', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 653906849040788);
+INSERT INTO public.transactions VALUES ('350a49c1-b665-4931-a1cb-afb119947d07', 201.74, '3aef91e8-f7b0-47a8-a03a-4c1770d74d30', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 180588237220902);
+INSERT INTO public.transactions VALUES ('8b5b111a-7d77-41be-a34a-68196cde08a9', 199.27, '3b4fe46d-d998-4231-bf48-9552830244fe', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 352233747165098);
+INSERT INTO public.transactions VALUES ('3d118132-ffc6-4e6a-9646-657ab140deb2', 5245.05, '4ae3fefd-a3d4-4133-b516-bddebdf3d49f', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 100824464975102);
+INSERT INTO public.transactions VALUES ('7518344e-94e7-482d-9ef4-6919da72adf8', 461.08, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 941615040910335);
+INSERT INTO public.transactions VALUES ('a4e8b4ec-a7d1-489c-b31a-7d19d04fe4c3', 3480.47, '58f8da96-a4c1-4071-8a8c-a195b70bb040', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 698712782341874);
+INSERT INTO public.transactions VALUES ('d8a26909-ba8f-4aba-8c3e-272efd7ad0a8', 265.25, '6793b998-92c2-45bb-a4d4-1b84fefbc652', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 364385215933308);
+INSERT INTO public.transactions VALUES ('83170ea9-668c-4f56-ac09-34a1baf0c429', 218.11, '697a0943-3418-427b-9786-45b5c5066b71', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 409400426293106);
+INSERT INTO public.transactions VALUES ('50effdb3-2191-4e2b-b470-c825d3194dea', 2547.95, '6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 262024504799631);
+INSERT INTO public.transactions VALUES ('13c79ba3-1b8f-4d9c-8f59-e3a8da8bb64a', 15.31, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 506108059371422);
+INSERT INTO public.transactions VALUES ('493b9d36-93bb-41ff-ab14-b07567fc55a0', 56.43, '820e7b5a-8b66-4242-b7e0-a49e9880b17e', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 501966755585100);
+INSERT INTO public.transactions VALUES ('18cab0c2-cd75-451b-a6e3-d66693faffe3', 657.53, '84f57e11-cd1b-40cf-b70b-e67a538ded88', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 875689577212028);
+INSERT INTO public.transactions VALUES ('e8710e5f-be7e-49a1-9e96-aefeea37daac', 902.78, '89e221cd-2b08-47c5-a88f-3ceffa79fb9a', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 328312304574593);
+INSERT INTO public.transactions VALUES ('03332b72-1f3f-4e03-b9c8-48954c9299b9', 41.79, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 44231671517482);
+INSERT INTO public.transactions VALUES ('899bb209-b32f-4e2e-95a3-4226989080cf', 194.21, '99280df3-2bad-4c61-b069-bf6144235552', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 896377235427678);
+INSERT INTO public.transactions VALUES ('0b735356-e6dd-4c3b-ac68-31e1b6c28ebc', 367.92, '9f195429-65fc-48c0-8a22-3216088f897e', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 567045709175344);
+INSERT INTO public.transactions VALUES ('eb7d70a7-b997-4374-9a77-08c0422f951d', 101.93, 'a949c77a-bb3b-484f-9b3e-8d68a36deb87', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 134596110234990);
+INSERT INTO public.transactions VALUES ('bc0a95a2-396c-4f43-b3ce-96ad84ee4f4e', 1137.69, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 703645514067453);
+INSERT INTO public.transactions VALUES ('cfa8e7e6-a714-4dbd-81f5-2f32aad442bf', 16507.08, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 826078577813028);
+INSERT INTO public.transactions VALUES ('bb1c28d4-8a05-40b9-83b7-acea913aac71', 357.99, 'b79aefad-de0e-4387-84cb-7a1234ce4ce7', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 654920081572042);
+INSERT INTO public.transactions VALUES ('81cf8f79-c70f-467b-b00d-509e0c0d2600', 87.15, 'c1e74ae4-f466-4769-9649-f8064a7e6a89', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 172657257757125);
+INSERT INTO public.transactions VALUES ('b20990c1-3fb5-4f92-a383-895152527657', 17875.25, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 630487440943743);
+INSERT INTO public.transactions VALUES ('165cb66f-db53-4675-9d77-7f55423236cf', 2024.54, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 386451591454718);
+INSERT INTO public.transactions VALUES ('24c4092b-156d-46e5-89d7-b78cdd733b2d', 380.36, 'd38f3e7a-9414-40e4-b62f-47019c16be6b', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 921507035566734);
+INSERT INTO public.transactions VALUES ('55f9953a-b7b8-475e-ae84-8f0379ce006c', 376.49, 'ded1f289-7f01-4135-b638-dd735d691229', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 754002259588908);
+INSERT INTO public.transactions VALUES ('ac0477b7-b8d3-47bd-aa2e-bb7a950078c4', 578.76, 'dffecccc-565a-4b66-804c-1befa178b8f7', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 321236519467828);
+INSERT INTO public.transactions VALUES ('4fd9ebf9-a511-4a36-9f2f-8e2fb1582c95', 49.48, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 711331509337458);
+INSERT INTO public.transactions VALUES ('b5d390d2-4e7e-4699-876d-09981f333e78', 2903.14, 'e085d6e0-4e81-4dd5-b124-fae6a038a453', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 150115974656185);
+INSERT INTO public.transactions VALUES ('203695b1-43b1-46c6-b8f3-6af9121023d7', 99.64, 'e260aeef-4836-4a35-bb19-3d109adba141', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 674937285693267);
+INSERT INTO public.transactions VALUES ('861550e9-8b19-423b-aad7-681f98ddcb38', 665.67, 'f4a8e8d5-92af-421d-a437-dce94fd12638', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 16445299956168);
+INSERT INTO public.transactions VALUES ('ebdbd285-517b-42b6-ae14-6b915c6151f8', 13.14, 'fb762c41-c883-4bba-9bcf-f59dfc07f042', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 278701965007133);
+INSERT INTO public.transactions VALUES ('c6ee17bf-81a7-413c-b44c-a8d37424e0ee', 11.91, 'fb7b432f-634b-4b7c-9ee5-f4ba4a38f531', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 731383191664147);
+INSERT INTO public.transactions VALUES ('d998184c-1ceb-4846-9bb5-f30dd662388c', 506.60, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 984675138286840);
+INSERT INTO public.transactions VALUES ('07b80c3d-ac63-4ad1-bbe1-010412139d87', 7.06, 'fde6ebe4-72be-4574-a470-999a365b1529', 'Interest', 'Monthly interest', '2025-10-01 12:00:43.830411', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 352175636066524);
+INSERT INTO public.transactions VALUES ('1db35cc0-ea74-44de-8b9e-c3cd39d8ff65', 120000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Deposit', 'Deposit', '2025-10-05 12:00:03.743927', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 709664154399674);
+INSERT INTO public.transactions VALUES ('8b05cce4-df1c-4316-9895-d7a401b9a01a', 43000.00, 'a6b1bdd7-e70e-4dd8-8621-397d69fb3300', 'Deposit', 'Depo', '2025-10-05 12:00:34.993277', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 540562305268937);
+INSERT INTO public.transactions VALUES ('453af190-5088-4bc5-a0d2-a24132c55549', 99998.00, 'a6b1bdd7-e70e-4dd8-8621-397d69fb3300', 'Deposit', 'Created fixed deposit', '2025-10-05 12:00:47.856729', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 886871771666949);
+INSERT INTO public.transactions VALUES ('0e15ba7d-456d-43a7-9110-90a17f10c22f', 250.00, 'fd9ab8f2-ab5b-463f-93e7-0d2e1a7cd58a', 'Deposit', 'bill', '2025-10-05 12:00:53.547095', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 239144726486050);
+INSERT INTO public.transactions VALUES ('834ff41d-32c8-4ed5-bb03-36e4f7908cf1', 4602.73, '1853d4ea-a229-4757-9a4c-f6f858351196', 'Deposit', 'FD Interest - FD Account No: 64474239', '2025-10-10 12:00:10.270924', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 155684913455212);
+INSERT INTO public.transactions VALUES ('39762a7f-b940-46ee-801e-92c528902603', 534.24, '30159eb0-328d-4cf2-84a3-d7f51040ed22', 'Deposit', 'FD Interest - FD Account No: 10630536', '2025-10-10 12:00:10.270924', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 661781006970861);
+INSERT INTO public.transactions VALUES ('f983a4a7-c9d7-4952-acfb-34abd2f7ac11', 61643.84, 'd00aab8b-e75c-4cec-82b4-00bd1f0c8fbc', 'Deposit', 'FD Interest - FD Account No: 28892515', '2025-10-10 12:00:10.270924', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 924847258520052);
+INSERT INTO public.transactions VALUES ('f644658c-3324-4704-9743-6b4c4000a1f5', 32.00, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Withdrawal', 'Rent ', '2025-10-10 12:00:14.312109', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 207370422381468);
+INSERT INTO public.transactions VALUES ('7ae3a0a8-0a9f-4ea9-8b21-2c6b99a08f28', 50000.00, 'c6b21347-9458-4f2b-8b03-4c479c60315e', 'Withdrawal', 'bill payment', '2025-10-10 12:00:25.602868', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 937782650705623);
+INSERT INTO public.transactions VALUES ('c07a6d86-69ed-42e7-a2a7-b23a9b706c65', 50000.00, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Deposit', 'Sallary', '2025-10-10 12:00:34.081973', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 227395809802058);
+INSERT INTO public.transactions VALUES ('b1222d0e-e0e2-4224-85bb-e9b3bb79d064', 25000.00, '7fe7a775-2411-423a-84fa-e3ed126ec6c3', 'Withdrawal', 'bill', '2025-10-10 12:00:56.321007', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 194474255203807);
+INSERT INTO public.transactions VALUES ('16304989-0d51-4ba7-82ad-0ae067681a6a', 500.00, '8f453f53-bf51-437c-b8a9-702b08caf92d', 'Withdrawal', 'Private', '2025-10-10 12:01:00.652885', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 502323487501285);
+INSERT INTO public.transactions VALUES ('53aa6fa2-fcf5-444d-a03e-b259fe8d4535', 11506.85, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Deposit', 'FD Interest - FD Account No: 93458513', '2025-10-15 12:00:07.904117', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 867011303219614);
+INSERT INTO public.transactions VALUES ('6ca11b78-6896-43e0-a4f4-2863406619f0', 500000.00, '4ef7006d-a92a-4f64-ac22-74a06d48b1c2', 'Deposit', 'For FD', '2025-10-15 12:00:38.668156', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 2693560615524);
+INSERT INTO public.transactions VALUES ('1a6278ab-b288-434a-bbf5-e03fe6028edf', 20000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Deposit', 'Personal', '2025-10-15 12:00:38.75903', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 842014315567517);
+INSERT INTO public.transactions VALUES ('7b3601b9-bf23-4845-ae74-60e8acf6edab', 200000.00, 'b646dd25-7775-417f-a216-30a84aa9c451', 'Withdrawal', 'Buy a house', '2025-10-15 12:00:56.668066', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 251598811095782);
+INSERT INTO public.transactions VALUES ('33162b85-399c-473b-9f43-06aca4860387', 500000.00, '0415f29e-fb5b-4756-baa6-bce59cab2be5', 'Deposit', 'Lottery', '2025-10-15 12:01:02.352722', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 648676761874506);
+INSERT INTO public.transactions VALUES ('b2c9623b-fdf2-4de9-9258-bf226bb5ec81', 500.00, '4dcf9c4f-2bec-49f9-a336-5e45cce1601b', 'Deposit', 'Personal', '2025-10-20 12:00:04.300559', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 923315215043769);
+INSERT INTO public.transactions VALUES ('b5bd2598-d8e5-4081-b13b-161454b4bc2d', 3400.00, '20a94040-fbf0-4e7a-ae5f-c6e766a134ca', 'Withdrawal', 'Salo', '2025-10-20 12:01:09.029804', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 889560118756351);
+INSERT INTO public.transactions VALUES ('fff4ff32-3ef6-48d5-a7e7-c5f26ea2098a', 10000.00, 'b0134b68-04e3-4e00-a0ac-dabe67c9612f', 'Deposit', 'Saving', '2025-10-20 12:01:09.480322', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 490023690755244);
+INSERT INTO public.transactions VALUES ('6e18bd6d-619f-47e7-baa7-09dcf9157d76', 50000.00, '6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 'Withdrawal', 'betting lost', '2025-10-20 12:01:23.311164', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 230336094591671);
+INSERT INTO public.transactions VALUES ('b222dda2-4566-4d56-b766-423cf445a3a8', 4100.00, 'e03ca11a-ea04-4acd-9a81-66dd51d95cfa', 'Deposit', 'Saving', '2025-10-20 12:01:56.393085', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 777410457994352);
+INSERT INTO public.transactions VALUES ('66a0918f-167c-4e33-82e6-581ada93bc17', 500400.00, '6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 'Deposit', 'Stolen money', '2025-10-23 08:00:10.624144', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 266200862973728);
+INSERT INTO public.transactions VALUES ('7260e192-9ee3-41c9-a174-18ae262ea7e7', 20000.00, '6c66d02c-2753-4163-ae2a-9f2ffcd0574b', 'Withdrawal', 'For the rocket', '2025-10-23 08:00:30.980036', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 768580533198630);
+INSERT INTO public.transactions VALUES ('7939d4fb-1adf-4fb5-aae7-ff1aca706696', 500000.00, '2effb977-c5cb-43cb-9c5e-7db80de361e4', 'Withdrawal', 'Bill', '2025-10-23 08:00:42.47741', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 988680041319605);
 
 
 --
--- TOC entry 3791 (class 0 OID 31107)
--- Dependencies: 239
+-- TOC entry 3803 (class 0 OID 31107)
+-- Dependencies: 250
 -- Data for Name: user_login; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 INSERT INTO public.user_login VALUES ('9fdc2462-7532-40da-82d0-2b8a6aad1128', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'system1', '$2y$10$2tcVhTKEJ4NRts4lmw5NqOxqhCvQQ94sXMraIyK1YqWZw2Zga9vJW', '2025-09-18 06:59:15.461996', '2025-09-18 06:59:15.461996', '2025-09-18 06:59:15.461996', NULL, NULL, 'active');
-INSERT INTO public.user_login VALUES ('e67ce6c6-bb0d-46cf-a222-860e548822a0', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'user3', '$2b$12$w8czX6DDYjBiJvdIjOpxVOatGl32Ca4nX40N9A2fWvsPjPTltraB6', '2025-09-18 14:04:14.712609', '2025-09-18 14:04:14.712609', '2025-09-18 14:04:14.712609', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
-INSERT INTO public.user_login VALUES ('86295c07-2139-4499-9410-d729b012cfb7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'user4', '$2b$12$K4ZpGK2cPR0kivNqhtVRzO6vkOSkFKOkx/zNiAKuREJEqVu.BQ.y2', '2025-09-18 14:18:45.238594', '2025-09-18 14:18:45.238594', '2025-09-18 14:18:45.238594', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
-INSERT INTO public.user_login VALUES ('e9ae406d-cb5b-4e8a-ad05-8f955f2b01cd', 'de9dc531-11bf-4481-882a-dc3291580f60', 'user1', '$2b$12$14vPB5UI74Cs/6gIah46wecLcncl4.0qcBQ9XqtXLkFvYj9e5qYIC', '2025-09-18 07:09:21.535303', '2025-09-18 07:09:21.535303', '2025-10-17 21:28:05.066993', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
-INSERT INTO public.user_login VALUES ('8e940780-67c7-42e8-a307-4a92664ab72f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'user2', '$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K', '2025-09-18 07:19:23.418837', '2025-09-18 07:19:23.418837', '2025-10-20 17:18:34.077441', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
+INSERT INTO public.user_login VALUES ('e67ce6c6-bb0d-46cf-a222-860e548822a0', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', 'agent3', '$2b$12$w8czX6DDYjBiJvdIjOpxVOatGl32Ca4nX40N9A2fWvsPjPTltraB6', '2025-09-18 14:04:14.712609', '2025-09-18 14:04:14.712609', '2025-08-04 10:45:38.225101', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
+INSERT INTO public.user_login VALUES ('86295c07-2139-4499-9410-d729b012cfb7', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'agent4', '$2b$12$K4ZpGK2cPR0kivNqhtVRzO6vkOSkFKOkx/zNiAKuREJEqVu.BQ.y2', '2025-09-18 14:18:45.238594', '2025-09-18 14:18:45.238594', '2025-08-04 10:45:38.230918', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'active');
+INSERT INTO public.user_login VALUES ('e9ae406d-cb5b-4e8a-ad05-8f955f2b01cd', 'de9dc531-11bf-4481-882a-dc3291580f60', 'agent1', '$2b$12$14vPB5UI74Cs/6gIah46wecLcncl4.0qcBQ9XqtXLkFvYj9e5qYIC', '2025-09-18 07:09:21.535303', '2025-09-18 07:09:21.535303', '2025-08-04 10:45:38.23354', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'active');
+INSERT INTO public.user_login VALUES ('8e940780-67c7-42e8-a307-4a92664ab72f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'agent2', '$2b$12$3AyYkBrss9CGMdyBRQyT0eTKkQDu.f0C0nJeg.DLmDO09ORx77o6K', '2025-09-18 07:19:23.418837', '2025-09-18 07:19:23.418837', '2025-08-04 10:45:38.235628', 'de9dc531-11bf-4481-882a-dc3291580f60', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'active');
 
 
 --
--- TOC entry 3792 (class 0 OID 31117)
--- Dependencies: 240
+-- TOC entry 3804 (class 0 OID 31117)
+-- Dependencies: 251
 -- Data for Name: user_refresh_tokens; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -2551,48 +2868,115 @@ INSERT INTO public.user_refresh_tokens VALUES ('93379c25-70d5-4e0b-a3a1-fa543fe4
 INSERT INTO public.user_refresh_tokens VALUES ('f1a1b473-edf2-481d-b60a-8f2acc4648d4', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '803017d38fc2bc183f87631afbfa8b8d9569824510f7b8908e3efe3a849a293f', '2025-10-28 06:23:07.098739', false, NULL, NULL, '2025-10-21 11:53:06.846103', '2025-10-21 11:53:06.846103', NULL, NULL);
 INSERT INTO public.user_refresh_tokens VALUES ('9343a2c9-d024-44e1-857f-68e819ae1759', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'c06d5fb802e1d05cd881b7fc7f084708b2aace8838da56153f9e45124c190a15', '2025-10-28 09:04:23.941846', false, NULL, NULL, '2025-10-21 14:34:23.689212', '2025-10-21 14:34:23.689212', NULL, NULL);
 INSERT INTO public.user_refresh_tokens VALUES ('0d2f3443-fe79-4225-8cde-dc10654003f5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '54748662cca592052f872a3eba57c228f415c7f596debc12a820694fa71f57c3', '2025-10-28 12:43:11.475017', false, NULL, NULL, '2025-10-21 18:13:11.21916', '2025-10-21 18:13:11.21916', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('5bbbce15-56cc-40ba-9360-21619349500c', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2e7a38ff8a4da834d78b817791df56a9912fe15bf1fef1739de2615fc2d8d949', '2025-10-29 05:05:58.908064', false, NULL, NULL, '2025-10-22 10:35:58.605039', '2025-10-22 10:35:58.605039', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('84043a77-3485-4987-b3b6-a23c1d2ae13c', 'de9dc531-11bf-4481-882a-dc3291580f60', '159505c19737de845aeb9e280a26d8ed959ad0ef74d99aca6df53f17969298de', '2025-10-29 06:18:28.575071', false, NULL, NULL, '2025-10-22 11:48:28.31118', '2025-10-22 11:48:28.31118', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('c0a7d73d-d99f-4b04-b888-cfb63e510fba', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'a72133ffa0939fb81ef7f383234ef847fad65fe064a8a71f5cc08e02a7fde6da', '2025-10-29 17:20:19.381478', false, NULL, NULL, '2025-10-22 22:50:19.10262', '2025-10-22 22:50:19.10262', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('481c329c-b33f-4818-8cb4-8b5008914e02', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'cd19b7c39873ef66f8cc91dd85b7cf6566007f50b4c8a104cfdf4a293f9a2cd8', '2025-10-29 17:31:18.715543', false, NULL, NULL, '2025-10-22 23:01:18.462606', '2025-10-22 23:01:18.462606', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('7b67e723-2088-457c-973c-e36e941783a5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '4e5e0ad4a92762df3e1d7aff508cbd8ceaae76941082981cabcd1cee27b2603f', '2025-10-29 17:31:39.220678', false, NULL, NULL, '2025-10-22 23:01:38.970384', '2025-10-22 23:01:38.970384', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('f9bf6402-3ada-4a6e-ad41-dae8d049b71a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '4eb631ef33d4ae7bb33884e5eebc792a11dfea6de73ccaba1aee9b0f6a5a456e', '2025-10-29 17:32:23.720033', false, NULL, NULL, '2025-10-22 23:02:23.466453', '2025-10-22 23:02:23.466453', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('4a36a18b-3673-4deb-bea2-dd6d0518bb24', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6f15efa1b5235ff27cd5cd0fc0764487b5991be78690c0e4cd419e19cefad52f', '2025-10-10 04:34:43.706148', false, NULL, NULL, '2025-10-03 10:04:43.475429', '2025-10-03 10:04:43.475429', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('b558b7e1-ae7e-4064-90bc-4b9f2d06045d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'c946b964ae42f5eeefba0fdc56b74d5fcbb556d2d28de4a14aa16ea00783aa8c', '2025-10-10 04:34:55.129447', false, NULL, NULL, '2025-10-03 10:04:54.898649', '2025-10-03 10:04:54.898649', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('9b6edbd1-5e51-4234-8eb1-9103b33b558c', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'b6f75955be7b0a77aa87b65a243129dbc702916ba4c259ab683f01aa71f761b3', '2025-10-10 04:38:22.870659', false, NULL, NULL, '2025-10-03 10:08:22.620706', '2025-10-03 10:08:22.620706', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('490762a3-a17a-463a-a895-14fed7ce4bc7', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '1d3cab6b3c14201788df21911669f243f3a16321c7865afd840b9569a6dba04e', '2025-10-10 04:38:23.496787', false, NULL, NULL, '2025-10-03 10:08:23.266839', '2025-10-03 10:08:23.266839', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('55483c86-a0f8-445f-8fe1-a58dffe13f06', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'e25ebf4795697ad936c510ae24f5f100fdb84b98aaae220684c78e104101c72f', '2025-10-10 04:38:41.395095', false, NULL, NULL, '2025-10-03 10:08:41.141849', '2025-10-03 10:08:41.141849', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('8623a8e0-a916-4da7-91b0-674168fb09b9', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '49abe4773b3b3b0ea8f5e715b37781f38428df35824416975dbb71c9a5ac5e0e', '2025-10-10 04:39:10.962592', false, NULL, NULL, '2025-10-03 10:09:10.690177', '2025-10-03 10:09:10.690177', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('76605ce2-1fa7-4557-9f64-a3c365d003b0', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'f94099c6333cd79ee142b561cbfda1431f211aaf6c877fa1365b2f3ce037b188', '2025-10-10 04:40:11.146656', false, NULL, NULL, '2025-10-03 10:10:10.896385', '2025-10-03 10:10:10.896385', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('77b62f6b-5874-4b66-a8fd-73ab3b6cb2f1', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '22e5545eaa210cdb8f8325a356b35da8fbb77a10a6a7d3f8b98cfc66701a5723', '2025-10-10 04:40:55.505138', false, NULL, NULL, '2025-10-03 10:10:55.258937', '2025-10-03 10:10:55.258937', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('c15608e7-c0af-4b25-987f-c2be533e6ffa', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2f4aa6b796b327c3608ba69d329be78b1cf4b292d11cc6aa831431145bd1d649', '2025-10-10 04:41:21.548474', false, NULL, NULL, '2025-10-03 10:11:21.303025', '2025-10-03 10:11:21.303025', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('ae88f4cb-13da-4998-8005-19b24c9954ad', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'b684259f5642ded5e4ed5f36649a071cccd85ac32692ab68ded48ab0224db618', '2025-10-10 04:41:37.130593', false, NULL, NULL, '2025-10-03 10:11:36.890656', '2025-10-03 10:11:36.890656', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e45af60a-79d5-4b8d-bf7f-6782dfc457b7', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '5dafb2fe31340e1cbd295e3781dabd15b2f5a81323d41d0582be809541bae29b', '2025-08-11 05:01:28.164227', false, NULL, NULL, '2025-08-04 10:31:27.928611', '2025-08-04 10:31:27.928611', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('0231366f-5856-4958-b8a8-3f44115b605d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6c80890317331c410cbb1d0b02cf3c1b8955b50cbb3144e940343ecc486886e0', '2025-08-11 05:02:39.378973', false, NULL, NULL, '2025-08-04 10:32:39.147603', '2025-08-04 10:32:39.147603', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e5015fa8-5184-434f-ab13-b8dd26df8ff1', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '92693f457adc6762ae8c755546f6feddbbb231332f34736aba5bcf98e2a583c7', '2025-08-11 05:03:34.204989', false, NULL, NULL, '2025-08-04 10:33:33.959705', '2025-08-04 10:33:33.959705', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('5b5a218e-738c-4ae8-ae3d-0de9457263c2', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '420417c99e5ac9aaae8a512bbc0f9b448999e588f349a820a24568056ae61d98', '2025-08-11 05:04:37.855027', false, NULL, NULL, '2025-08-04 10:34:37.618426', '2025-08-04 10:34:37.618426', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('c50cb721-b584-47e0-9629-41f8cc06be6d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'f28d1c424bfd19ff62fdc9ba1a104295611f229f6b6eeba363eb5e2fada5ac49', '2025-08-11 05:05:29.139894', false, NULL, NULL, '2025-08-04 10:35:28.909602', '2025-08-04 10:35:28.909602', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('23c8b466-819a-499b-981b-92081345e00a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '5f2144d65fbe3da642b4d4c9a2f2069d22ddc3318f4953babb648fc675a3f51f', '2025-08-11 05:05:41.939884', false, NULL, NULL, '2025-08-04 10:35:41.710177', '2025-08-04 10:35:41.710177', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('9f34e52a-2372-4d43-9aed-5aba24752ff5', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '0a8cc511daf4ef49e3c12c1c88c5bdd0be8d8dad6dab119f28c902d0b7ce14af', '2025-08-11 05:06:26.068765', false, NULL, NULL, '2025-08-04 10:36:25.802419', '2025-08-04 10:36:25.802419', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('8f63e5a5-7f56-46ac-be72-7c3d6896916f', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '321f85259f80a82b686ac17c7147f2d64b6ed314ddc4f55fc2b2808edbf029be', '2025-08-11 05:06:40.000966', false, NULL, NULL, '2025-08-04 10:36:39.771612', '2025-08-04 10:36:39.771612', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('73c58ad7-bdf3-4abc-ab4f-5a97adfc4087', 'de9dc531-11bf-4481-882a-dc3291580f60', 'b41d9dba50eef6b2b88ace77aa405c74640e4d79ca81b02529e45ee97906dd6d', '2025-08-11 05:06:50.963842', false, NULL, NULL, '2025-08-04 10:36:50.713791', '2025-08-04 10:36:50.713791', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('2cfc976c-9201-4446-b45c-936044f6835a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2285ab58514b0c14354d9c17cd5b157a191a4228b3926c0d11019f2ecf23a593', '2025-08-11 05:07:25.872488', false, NULL, NULL, '2025-08-04 10:37:25.621172', '2025-08-04 10:37:25.621172', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('aea78b5e-51d6-4315-a157-918ea96d7a93', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '655c6f10b74eeee69f4c88ebf683243fc9d01f77ef3f911cf79f1dd8c2642797', '2025-08-11 05:07:40.647654', false, NULL, NULL, '2025-08-04 10:37:40.396056', '2025-08-04 10:37:40.396056', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('ab04c8fb-8ac2-483c-b9bc-51a66f28ff86', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '26f77541d0719738af2fc68a0e4bf42f92f0ef416f5f42636830982ba6b55506', '2025-08-11 05:08:19.11164', false, NULL, NULL, '2025-08-04 10:38:18.882222', '2025-08-04 10:38:18.882222', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('f144c757-ee26-463a-ab6c-5eef8d358dd9', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '87afed135780f0a3b6c0b99e6d8cee8f191a62fa18559208b1e3394df1cbfb53', '2025-08-11 05:08:34.189306', false, NULL, NULL, '2025-08-04 10:38:33.959442', '2025-08-04 10:38:33.959442', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('ca274675-bb8d-489d-b4a4-cdc5fe49a3ab', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '50f6fce060ec9bd7e09a6eda0b236eaa562d6c69f544fdb6318b654391ec4be0', '2025-08-11 05:09:48.320323', false, NULL, NULL, '2025-08-04 10:39:48.091195', '2025-08-04 10:39:48.091195', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('842777ca-6ceb-46ac-b66f-5d1305657dc1', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'a4d493ef8f61db2c23439b4009bc008809d5e8f8249427e3c1d6ac6607ecbea8', '2025-08-11 05:10:26.349405', false, NULL, NULL, '2025-08-04 10:40:26.087095', '2025-08-04 10:40:26.087095', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('15f94af6-de09-42b9-8bc9-cdc3670b3f88', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '87447d4fc2833a23565d9af225e28696c40d230e9596616427dde62ead4370bb', '2025-08-11 05:12:52.374393', false, NULL, NULL, '2025-08-04 10:42:52.145148', '2025-08-04 10:42:52.145148', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('01dcec67-e0d0-4266-80d1-2501754f0b6b', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '1630bfca39c943588160465c497023493240acb1ee266c5556ca0b55de3048e7', '2025-08-11 05:28:15.002455', false, NULL, NULL, '2025-08-04 10:58:14.539245', '2025-08-04 10:58:14.539245', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('9bbdd2ae-e924-4e52-9474-b9b6cb613b1d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '8cbfad8ef86141d70a0e27e60289942be2f3df95c863b960d229fa2a89c8e5f4', '2025-08-11 05:28:32.585111', false, NULL, NULL, '2025-08-04 10:58:32.168858', '2025-08-04 10:58:32.168858', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('785209b6-f8d6-4b10-927f-8e283758e5c3', 'de9dc531-11bf-4481-882a-dc3291580f60', 'ecf5c5abc91dd6deddf7e32a68e322130c13b2e0ddcdbdaa647a4eae03e9e88d', '2025-08-11 05:29:08.629072', false, NULL, NULL, '2025-08-04 10:59:08.083485', '2025-08-04 10:59:08.083485', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('d8244201-4b14-409f-b52a-db3b5e9b0008', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '5aa1711dfaa886f5de9e9906a270fcca7059c85fd1533b0520284e0ba26105ce', '2025-08-11 05:29:18.910448', false, NULL, NULL, '2025-08-04 10:59:18.483243', '2025-08-04 10:59:18.483243', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('a12a7fb1-d8e9-487c-b0cd-10945c68377c', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'e3db13eb8bc7ef7fec3655c447f6ea017b1b726a24939ea495b74042adb0f5d5', '2025-08-11 05:29:29.776727', false, NULL, NULL, '2025-08-04 10:59:29.269149', '2025-08-04 10:59:29.269149', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('5f97e246-4864-4705-9af5-4e778a420e74', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '29688502c983197bed3b06ddb2a0b1f0d198586200eb8f69af8e9213bb276f37', '2025-08-11 05:29:48.638592', false, NULL, NULL, '2025-08-04 10:59:48.192766', '2025-08-04 10:59:48.192766', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('5585a09f-ca26-4210-832e-16c1b840df59', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'fbfb70bfe76818edd15d86d54ea4c562a0007a2851cde46013b694161f98abe3', '2025-08-11 05:30:09.648684', false, NULL, NULL, '2025-08-04 11:00:09.246072', '2025-08-04 11:00:09.246072', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('d97d6f89-7fd0-4794-a8fd-baf3866c7b34', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '2244de19498efacc9f0beb88493ee1dfda04673f97a59d68854ce0272ad048aa', '2025-08-11 05:30:51.267636', false, NULL, NULL, '2025-08-04 11:00:50.699165', '2025-08-04 11:00:50.699165', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('6597d1ad-4e2f-46b2-95a6-e9b059cac1e9', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '92e39ad126863588a85e0daafe58b724463a47b912995949cae4212943e69444', '2025-08-11 05:30:59.479411', false, NULL, NULL, '2025-08-04 11:00:59.069079', '2025-08-04 11:00:59.069079', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('ae3ac1f2-915b-4214-a86c-0ff0790becca', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'fa711711d244edd410381a53d4ec4f25717fc30a5db87ea492d432e8b324c563', '2025-08-11 05:31:02.757074', false, NULL, NULL, '2025-08-04 11:01:02.249501', '2025-08-04 11:01:02.249501', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('a4a23447-5a1a-42bf-8644-25ed2c0d4855', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '5615b8235f4f157396825ec337600395c01b4a30799486d1fadde46ec4156066', '2025-08-11 05:35:33.138907', false, NULL, NULL, '2025-08-04 11:05:32.691808', '2025-08-04 11:05:32.691808', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('35af017b-db73-4286-bc62-b51bee4d8267', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'e6961ac21f9c8e6df703581598c684d73cd82ec2062781ac909727768697252e', '2025-08-11 05:36:46.172384', false, NULL, NULL, '2025-08-04 11:06:45.656656', '2025-08-04 11:06:45.656656', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('62713796-5dbd-4ddf-a6dd-5c50a21a3844', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '9c0789f819a7f93d56cdc4cbef27a49c849d791b29789ee92a5bd27b5a69dd80', '2025-08-11 05:37:15.704462', false, NULL, NULL, '2025-08-04 11:07:15.296839', '2025-08-04 11:07:15.296839', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('47216c7f-fa02-453e-ab8f-7a7116a69ea0', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '934282bbc261dcfae3591562356ed071df2912d877066d303eda1957660f319f', '2025-08-11 05:38:19.71945', false, NULL, NULL, '2025-08-04 11:08:19.296181', '2025-08-04 11:08:19.296181', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('c96149a7-2824-4aaa-aa96-688e346b919d', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '8273979e535cd190f2d2969bd89ebd824b5f266cfe93a15522b456fedd72f26a', '2025-08-11 05:41:01.274753', false, NULL, NULL, '2025-08-04 11:11:00.818734', '2025-08-04 11:11:00.818734', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e4bbe7c6-cc63-4324-a717-0aa7b7c5030a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '94cffee812b91ecf86645c56627ad3e2abcd91ef4dc4a416e98e60378299e472', '2025-08-11 05:41:29.430222', false, NULL, NULL, '2025-08-04 11:11:28.993325', '2025-08-04 11:11:28.993325', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('568c7d48-3e00-40f4-b703-389c80c035f7', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '8afa94fb6a5f7e4ac22b438e610e6530672a2d4d51fa9cbff19a852e3f88a26b', '2025-08-11 05:01:02.940034', false, NULL, NULL, '2025-08-04 10:31:02.446611', '2025-08-04 10:31:02.446611', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('fff928db-1e03-41d3-bacd-3b1f2abd7588', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', '98f0bbbd0fba23b6c678e28842a92ea9f5452d896ad90b056f324b9abd9d4606', '2025-08-11 05:04:08.551518', false, NULL, NULL, '2025-08-04 10:34:08.070198', '2025-08-04 10:34:08.070198', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('6037ee45-dc7c-4aff-8919-cc6190a02001', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'e7effd7a8d973f2887b80ced64a664e2109efc500200710e0733670beefedc72', '2025-08-11 05:04:41.921986', false, NULL, NULL, '2025-08-04 10:34:41.469505', '2025-08-04 10:34:41.469505', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('57510647-4bbe-45ed-af73-9549c6c5babe', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'cbb144f60e4545b1a4dd40768ab1bfea818d5d946646c06d4aab6e17ee2b3f5e', '2025-08-11 05:05:49.325815', false, NULL, NULL, '2025-08-04 10:35:48.764112', '2025-08-04 10:35:48.764112', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e411cc10-792e-4e6c-ae1b-daad49474c22', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '113243553552b82a6a8da59df7cdb0d595ab539d595374ae6d2f1b08595f526c', '2025-08-11 05:07:02.375023', false, NULL, NULL, '2025-08-04 10:37:01.832778', '2025-08-04 10:37:01.832778', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e8658197-bdfa-479c-8eae-90a0dc666f6f', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '4816fb2c7b726557f7d9be9840fd2a30b21c49e0b4df42551543c1bf206c20aa', '2025-08-11 05:07:45.517609', false, NULL, NULL, '2025-08-04 10:37:45.044399', '2025-08-04 10:37:45.044399', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e688cfa9-3a6d-49d5-8067-6cf4045b4bca', '780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '85b3937b78d3d09dfdc4529a8ae25d82a8183130a8baaf0419055b76e6fddb63', '2025-08-11 05:21:57.451925', false, NULL, NULL, '2025-08-04 10:51:56.843643', '2025-08-04 10:51:56.843643', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('091d0f52-5f6b-457b-b9c8-78a1edb95618', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6e215bba37fc0f49fac211ed189bdd8930607ded9bc43d98cae1998a25a41a8f', '2025-08-11 05:22:09.155292', false, NULL, NULL, '2025-08-04 10:52:08.687178', '2025-08-04 10:52:08.687178', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e2e2ec27-3471-4a99-904e-a08779a90d16', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'fbde17e83fc8f181424b9c0b34c7b19be25e04d333b5ea417139b70c033443bf', '2025-08-11 05:24:39.951949', false, NULL, NULL, '2025-08-04 10:54:39.532651', '2025-08-04 10:54:39.532651', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('0f810894-db6a-4400-aa51-0c42f2089473', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '8c454b0b0f39ff2a72e1b9a2d56dc52ecd38416e000f6a78d8f865dd45eee6fa', '2025-08-12 07:01:24.999432', false, NULL, NULL, '2025-08-05 12:31:24.510541', '2025-08-05 12:31:24.510541', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('5896b2d5-0adb-484c-8571-c542992f590a', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', 'dcd44092b8695f23d0f2224591e9b71972e1d353267d852d07e629aef46f13bb', '2025-09-12 05:01:32.545401', false, NULL, NULL, '2025-09-05 10:31:32.273107', '2025-09-05 10:31:32.273107', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('e4268688-fa86-4aa4-8d8b-7ce7289fc0c1', '75cf1bda-3240-41c5-8235-5a0f06d51fa7', 'c15ea501918dc9fb3db8556b9a65f0b8d6f2c1fe22ba14fe06f158223eb02e28', '2025-09-12 05:07:51.341106', false, NULL, NULL, '2025-09-05 10:37:51.088434', '2025-09-05 10:37:51.088434', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('fc55216b-0bc8-4b87-bf03-64eba24cb8fe', '6b997217-9ce5-4dda-a9ae-87bf589b92a5', '84b47f944dd106e4c6df022f819172cd2f2338fee54fcda3b5214039f899bca6', '2025-10-29 17:57:47.444752', false, NULL, NULL, '2025-10-22 23:27:47.114433', '2025-10-22 23:27:47.114433', NULL, NULL);
+INSERT INTO public.user_refresh_tokens VALUES ('42fe9e5a-db2a-4ee6-85c8-3471f09a9b88', 'de9dc531-11bf-4481-882a-dc3291580f60', 'e245dc2302492762cabcb3d86f8a63ed2422ec210f05b6ce666c28320d80082e', '2025-10-30 02:47:22.786508', false, NULL, NULL, '2025-10-23 08:17:22.295352', '2025-10-23 08:17:22.295352', NULL, NULL);
 
 
 --
--- TOC entry 3793 (class 0 OID 31126)
--- Dependencies: 241
+-- TOC entry 3805 (class 0 OID 31126)
+-- Dependencies: 252
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.users VALUES ('839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', NULL, 'System ', 'main', NULL, NULL, NULL, '2025-09-18 06:57:17.48252', '2025-10-15 14:36:18.463189', NULL, NULL, 'salmal@gmail.com');
-INSERT INTO public.users VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '200325314526', 'user1', 'user1', 'user 1  address', '0765898755', '2003-01-01', '2025-09-18 07:09:21.535303', '2025-10-15 14:36:18.464718', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'ns@gmail.com');
-INSERT INTO public.users VALUES ('780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '200135645879', 'user3', 'user3', 'jafna', '045789866', '2004-10-10', '2025-09-18 14:04:14.712609', '2025-10-15 14:36:18.466528', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'sapumal@gmail.com');
-INSERT INTO public.users VALUES ('75cf1bda-3240-41c5-8235-5a0f06d51fa7', '200135645870', 'user4', 'user4', 'jafna', '045789866', '2004-10-10', '2025-09-18 14:18:45.238594', '2025-10-15 14:36:18.46739', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'Sunimal@gmail.com');
-INSERT INTO public.users VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '200325314527', 'Maneesha ', 'Herath', 'user 2  address', '0765898745', '2003-01-01', '2025-09-18 07:19:23.418837', '2025-10-20 17:18:01.413139', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'cse23@gmail.co');
+INSERT INTO public.users VALUES ('839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', NULL, 'System ', 'main', NULL, NULL, NULL, '2025-07-18 06:57:17.482', '2025-08-04 11:10:05.594788', NULL, NULL, '');
+INSERT INTO public.users VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '200325314526', 'Thidas', 'Senanayeka', 'Colombo', '0765898755', '2003-01-01', '2025-07-18 07:09:21.535', '2025-08-04 11:10:05.59889', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', '839c9a79-9f0a-4ba7-9d4c-91358f9b93b1', 'ns@gmail.com');
+INSERT INTO public.users VALUES ('780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '200135645879', 'Umaya', 'Jayasuriya', 'Jaffna', '045789866', '2004-10-10', '2025-07-18 14:04:14.712', '2025-08-04 11:10:05.60281', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'umayal@gmail.com');
+INSERT INTO public.users VALUES ('75cf1bda-3240-41c5-8235-5a0f06d51fa7', '200135645870', 'Deshan', 'Nipun', 'Galle', '045789866', '2004-10-10', '2025-07-18 14:18:45.238', '2025-08-04 11:10:05.606733', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'Sunimal@gmail.com');
+INSERT INTO public.users VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '200325314527', 'Malindu', 'Bandara', 'Nugegoda', '0765898745', '2003-01-01', '2025-07-18 07:19:23.418', '2025-08-04 11:10:05.61162', 'de9dc531-11bf-4481-882a-dc3291580f60', 'de9dc531-11bf-4481-882a-dc3291580f60', 'cse23@gmail.co');
 
 
 --
--- TOC entry 3794 (class 0 OID 31132)
--- Dependencies: 242
+-- TOC entry 3806 (class 0 OID 31132)
+-- Dependencies: 253
 -- Data for Name: users_branch; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.users_branch VALUES ('780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '57438d7f-184f-42fe-b0d6-91a2ef609beb');
 INSERT INTO public.users_branch VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '3dd6870c-e6f2-414d-9973-309ba00ce115');
+INSERT INTO public.users_branch VALUES ('75cf1bda-3240-41c5-8235-5a0f06d51fa7', '57438d7f-184f-42fe-b0d6-91a2ef609beb');
+INSERT INTO public.users_branch VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '50cf15c8-b810-4a5c-8400-79cfe791aba4');
+INSERT INTO public.users_branch VALUES ('780ba9d3-3c4d-40d6-b1a1-c0132f89df09', '3736a1a3-5fdc-455e-96be-1269df99e9a5');
 
 
 --
--- TOC entry 3795 (class 0 OID 31135)
--- Dependencies: 243
+-- TOC entry 3807 (class 0 OID 31135)
+-- Dependencies: 254
 -- Data for Name: users_role; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 INSERT INTO public.users_role VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '88e07160-2df2-4d18-ab38-9b4668267956');
 INSERT INTO public.users_role VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '05865b54-4591-4ccb-b1b8-bacf4c8771a2');
-INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '34dbe9a4-95a3-4abb-9442-5a78ea632af9');
-INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '5d8461b9-9f7d-4c8e-8306-91760ef30a9b');
+INSERT INTO public.users_role VALUES ('de9dc531-11bf-4481-882a-dc3291580f60', '6b238ef4-bce5-4c9a-85d6-795178e85ea3');
 INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '05865b54-4591-4ccb-b1b8-bacf4c8771a2');
+INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '5d8461b9-9f7d-4c8e-8306-91760ef30a9b');
 INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b116c56-efe7-45eb-883b-b3e7d5f68145');
+INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '34dbe9a4-95a3-4abb-9442-5a78ea632af9');
+INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '6b238ef4-bce5-4c9a-85d6-795178e85ea3');
+INSERT INTO public.users_role VALUES ('6b997217-9ce5-4dda-a9ae-87bf589b92a5', '17e15824-573e-4bdd-8079-1daabc0a563b');
 
 
 --
--- TOC entry 3804 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 3816 (class 0 OID 0)
+-- Dependencies: 255
 -- Name: jobid_seq; Type: SEQUENCE SET; Schema: cron; Owner: -
 --
 
@@ -2600,8 +2984,8 @@ SELECT pg_catalog.setval('cron.jobid_seq', 6, true);
 
 
 --
--- TOC entry 3805 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 3817 (class 0 OID 0)
+-- Dependencies: 257
 -- Name: runid_seq; Type: SEQUENCE SET; Schema: cron; Owner: -
 --
 
@@ -2609,7 +2993,7 @@ SELECT pg_catalog.setval('cron.runid_seq', 1, false);
 
 
 --
--- TOC entry 3507 (class 2606 OID 31139)
+-- TOC entry 3519 (class 2606 OID 31139)
 -- Name: account account_account_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2618,7 +3002,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3509 (class 2606 OID 31141)
+-- TOC entry 3521 (class 2606 OID 31141)
 -- Name: account account_no_unique; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2627,7 +3011,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3511 (class 2606 OID 31143)
+-- TOC entry 3523 (class 2606 OID 31143)
 -- Name: account account_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2636,7 +3020,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3515 (class 2606 OID 31145)
+-- TOC entry 3527 (class 2606 OID 31145)
 -- Name: accounts_owner accounts_owner_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2645,7 +3029,7 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3517 (class 2606 OID 31147)
+-- TOC entry 3529 (class 2606 OID 31147)
 -- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2654,7 +3038,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 3522 (class 2606 OID 31149)
+-- TOC entry 3534 (class 2606 OID 31149)
 -- Name: branch branch_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2663,7 +3047,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3530 (class 2606 OID 31151)
+-- TOC entry 3542 (class 2606 OID 31151)
 -- Name: customer_login customer_login_customer_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2672,7 +3056,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3532 (class 2606 OID 31153)
+-- TOC entry 3544 (class 2606 OID 31153)
 -- Name: customer_login customer_login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2681,7 +3065,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3534 (class 2606 OID 31155)
+-- TOC entry 3546 (class 2606 OID 31155)
 -- Name: customer_login customer_login_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2690,7 +3074,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3524 (class 2606 OID 31468)
+-- TOC entry 3536 (class 2606 OID 31468)
 -- Name: customer customer_nic_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2699,7 +3083,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3526 (class 2606 OID 31159)
+-- TOC entry 3538 (class 2606 OID 31159)
 -- Name: customer customer_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2708,7 +3092,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3536 (class 2606 OID 31161)
+-- TOC entry 3548 (class 2606 OID 31161)
 -- Name: fd_plan fd_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2717,7 +3101,7 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3538 (class 2606 OID 31163)
+-- TOC entry 3550 (class 2606 OID 31163)
 -- Name: fixed_deposit fixed_deposit_fd_account_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2726,7 +3110,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3540 (class 2606 OID 31165)
+-- TOC entry 3552 (class 2606 OID 31165)
 -- Name: fixed_deposit fixed_deposit_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2735,7 +3119,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3544 (class 2606 OID 31167)
+-- TOC entry 3556 (class 2606 OID 31167)
 -- Name: login login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2744,7 +3128,7 @@ ALTER TABLE ONLY public.login
 
 
 --
--- TOC entry 3546 (class 2606 OID 31169)
+-- TOC entry 3558 (class 2606 OID 31169)
 -- Name: role role_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2753,7 +3137,7 @@ ALTER TABLE ONLY public.role
 
 
 --
--- TOC entry 3548 (class 2606 OID 31171)
+-- TOC entry 3560 (class 2606 OID 31171)
 -- Name: role role_role_name_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2762,7 +3146,7 @@ ALTER TABLE ONLY public.role
 
 
 --
--- TOC entry 3550 (class 2606 OID 31173)
+-- TOC entry 3562 (class 2606 OID 31173)
 -- Name: savings_plan savings_plan_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2771,7 +3155,7 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3555 (class 2606 OID 31175)
+-- TOC entry 3567 (class 2606 OID 31175)
 -- Name: transactions transactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2780,7 +3164,7 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3557 (class 2606 OID 31177)
+-- TOC entry 3569 (class 2606 OID 31177)
 -- Name: transactions transactions_reference_no_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2789,7 +3173,7 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3559 (class 2606 OID 31179)
+-- TOC entry 3571 (class 2606 OID 31179)
 -- Name: user_login user_login_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2798,7 +3182,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3561 (class 2606 OID 31181)
+-- TOC entry 3573 (class 2606 OID 31181)
 -- Name: user_login user_login_user_id_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2807,7 +3191,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3563 (class 2606 OID 31183)
+-- TOC entry 3575 (class 2606 OID 31183)
 -- Name: user_login user_login_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2816,7 +3200,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3569 (class 2606 OID 31185)
+-- TOC entry 3581 (class 2606 OID 31185)
 -- Name: user_refresh_tokens user_refresh_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2825,7 +3209,7 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3577 (class 2606 OID 31187)
+-- TOC entry 3589 (class 2606 OID 31187)
 -- Name: users_branch users_branch_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2834,7 +3218,7 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3573 (class 2606 OID 31189)
+-- TOC entry 3585 (class 2606 OID 31189)
 -- Name: users users_nic_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2843,7 +3227,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3575 (class 2606 OID 31191)
+-- TOC entry 3587 (class 2606 OID 31191)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2852,7 +3236,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3579 (class 2606 OID 31193)
+-- TOC entry 3591 (class 2606 OID 31193)
 -- Name: users_role users_role_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2861,7 +3245,7 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3512 (class 1259 OID 31194)
+-- TOC entry 3524 (class 1259 OID 31194)
 -- Name: idx_account_account_no; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2869,7 +3253,7 @@ CREATE INDEX idx_account_account_no ON public.account USING btree (account_no);
 
 
 --
--- TOC entry 3513 (class 1259 OID 31195)
+-- TOC entry 3525 (class 1259 OID 31195)
 -- Name: idx_account_branch_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2877,7 +3261,7 @@ CREATE INDEX idx_account_branch_id ON public.account USING btree (branch_id);
 
 
 --
--- TOC entry 3518 (class 1259 OID 31196)
+-- TOC entry 3530 (class 1259 OID 31196)
 -- Name: idx_audit_log_table_record; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2885,7 +3269,7 @@ CREATE INDEX idx_audit_log_table_record ON public.audit_log USING btree (table_n
 
 
 --
--- TOC entry 3519 (class 1259 OID 31197)
+-- TOC entry 3531 (class 1259 OID 31197)
 -- Name: idx_audit_log_timestamp; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2893,7 +3277,7 @@ CREATE INDEX idx_audit_log_timestamp ON public.audit_log USING btree ("timestamp
 
 
 --
--- TOC entry 3520 (class 1259 OID 31198)
+-- TOC entry 3532 (class 1259 OID 31198)
 -- Name: idx_audit_log_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2901,7 +3285,7 @@ CREATE INDEX idx_audit_log_user_id ON public.audit_log USING btree (user_id);
 
 
 --
--- TOC entry 3527 (class 1259 OID 31199)
+-- TOC entry 3539 (class 1259 OID 31199)
 -- Name: idx_customer_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2909,7 +3293,7 @@ CREATE INDEX idx_customer_created_at ON public.customer USING btree (created_at)
 
 
 --
--- TOC entry 3528 (class 1259 OID 31469)
+-- TOC entry 3540 (class 1259 OID 31469)
 -- Name: idx_customer_nic; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2917,7 +3301,7 @@ CREATE INDEX idx_customer_nic ON public.customer USING btree (nic);
 
 
 --
--- TOC entry 3541 (class 1259 OID 31201)
+-- TOC entry 3553 (class 1259 OID 31201)
 -- Name: idx_login_time; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2925,7 +3309,7 @@ CREATE INDEX idx_login_time ON public.login USING btree (login_time);
 
 
 --
--- TOC entry 3542 (class 1259 OID 31202)
+-- TOC entry 3554 (class 1259 OID 31202)
 -- Name: idx_login_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2933,7 +3317,7 @@ CREATE INDEX idx_login_user_id ON public.login USING btree (user_id);
 
 
 --
--- TOC entry 3551 (class 1259 OID 31203)
+-- TOC entry 3563 (class 1259 OID 31203)
 -- Name: idx_transactions_acc_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2941,7 +3325,7 @@ CREATE INDEX idx_transactions_acc_id ON public.transactions USING btree (acc_id)
 
 
 --
--- TOC entry 3552 (class 1259 OID 31204)
+-- TOC entry 3564 (class 1259 OID 31204)
 -- Name: idx_transactions_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2949,7 +3333,7 @@ CREATE INDEX idx_transactions_created_at ON public.transactions USING btree (cre
 
 
 --
--- TOC entry 3553 (class 1259 OID 31205)
+-- TOC entry 3565 (class 1259 OID 31205)
 -- Name: idx_transactions_type; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2957,7 +3341,7 @@ CREATE INDEX idx_transactions_type ON public.transactions USING btree (type);
 
 
 --
--- TOC entry 3564 (class 1259 OID 31206)
+-- TOC entry 3576 (class 1259 OID 31206)
 -- Name: idx_user_refresh_tokens_expires_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2965,7 +3349,7 @@ CREATE INDEX idx_user_refresh_tokens_expires_at ON public.user_refresh_tokens US
 
 
 --
--- TOC entry 3565 (class 1259 OID 31207)
+-- TOC entry 3577 (class 1259 OID 31207)
 -- Name: idx_user_refresh_tokens_hash; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2973,7 +3357,7 @@ CREATE INDEX idx_user_refresh_tokens_hash ON public.user_refresh_tokens USING bt
 
 
 --
--- TOC entry 3566 (class 1259 OID 31208)
+-- TOC entry 3578 (class 1259 OID 31208)
 -- Name: idx_user_refresh_tokens_revoked; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2981,7 +3365,7 @@ CREATE INDEX idx_user_refresh_tokens_revoked ON public.user_refresh_tokens USING
 
 
 --
--- TOC entry 3567 (class 1259 OID 31209)
+-- TOC entry 3579 (class 1259 OID 31209)
 -- Name: idx_user_refresh_tokens_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2989,7 +3373,7 @@ CREATE INDEX idx_user_refresh_tokens_user_id ON public.user_refresh_tokens USING
 
 
 --
--- TOC entry 3570 (class 1259 OID 31210)
+-- TOC entry 3582 (class 1259 OID 31210)
 -- Name: idx_users_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2997,7 +3381,7 @@ CREATE INDEX idx_users_created_at ON public.users USING btree (created_at);
 
 
 --
--- TOC entry 3571 (class 1259 OID 31211)
+-- TOC entry 3583 (class 1259 OID 31211)
 -- Name: idx_users_nic; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3005,7 +3389,7 @@ CREATE INDEX idx_users_nic ON public.users USING btree (nic);
 
 
 --
--- TOC entry 3622 (class 2620 OID 31212)
+-- TOC entry 3634 (class 2620 OID 31212)
 -- Name: account update_account_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3013,7 +3397,7 @@ CREATE TRIGGER update_account_updated_at BEFORE UPDATE ON public.account FOR EAC
 
 
 --
--- TOC entry 3623 (class 2620 OID 31213)
+-- TOC entry 3635 (class 2620 OID 31213)
 -- Name: branch update_branch_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3021,7 +3405,7 @@ CREATE TRIGGER update_branch_updated_at BEFORE UPDATE ON public.branch FOR EACH 
 
 
 --
--- TOC entry 3625 (class 2620 OID 31214)
+-- TOC entry 3637 (class 2620 OID 31214)
 -- Name: customer_login update_customer_login_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3029,7 +3413,7 @@ CREATE TRIGGER update_customer_login_updated_at BEFORE UPDATE ON public.customer
 
 
 --
--- TOC entry 3624 (class 2620 OID 31215)
+-- TOC entry 3636 (class 2620 OID 31215)
 -- Name: customer update_customer_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3037,7 +3421,7 @@ CREATE TRIGGER update_customer_updated_at BEFORE UPDATE ON public.customer FOR E
 
 
 --
--- TOC entry 3626 (class 2620 OID 31216)
+-- TOC entry 3638 (class 2620 OID 31216)
 -- Name: fd_plan update_fd_plan_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3045,7 +3429,7 @@ CREATE TRIGGER update_fd_plan_updated_at BEFORE UPDATE ON public.fd_plan FOR EAC
 
 
 --
--- TOC entry 3627 (class 2620 OID 31217)
+-- TOC entry 3639 (class 2620 OID 31217)
 -- Name: fixed_deposit update_fixed_deposit_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3053,7 +3437,7 @@ CREATE TRIGGER update_fixed_deposit_updated_at BEFORE UPDATE ON public.fixed_dep
 
 
 --
--- TOC entry 3628 (class 2620 OID 31218)
+-- TOC entry 3640 (class 2620 OID 31218)
 -- Name: savings_plan update_savings_plan_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3061,7 +3445,7 @@ CREATE TRIGGER update_savings_plan_updated_at BEFORE UPDATE ON public.savings_pl
 
 
 --
--- TOC entry 3629 (class 2620 OID 31219)
+-- TOC entry 3641 (class 2620 OID 31219)
 -- Name: user_login update_user_login_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3069,7 +3453,7 @@ CREATE TRIGGER update_user_login_updated_at BEFORE UPDATE ON public.user_login F
 
 
 --
--- TOC entry 3631 (class 2620 OID 31220)
+-- TOC entry 3643 (class 2620 OID 31220)
 -- Name: user_refresh_tokens update_user_refresh_tokens_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3077,7 +3461,7 @@ CREATE TRIGGER update_user_refresh_tokens_updated_at BEFORE UPDATE ON public.use
 
 
 --
--- TOC entry 3632 (class 2620 OID 31221)
+-- TOC entry 3644 (class 2620 OID 31221)
 -- Name: users update_users_updated_at; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3085,7 +3469,7 @@ CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users FOR EACH RO
 
 
 --
--- TOC entry 3630 (class 2620 OID 31222)
+-- TOC entry 3642 (class 2620 OID 31222)
 -- Name: user_login user_login_update_audit; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -3093,7 +3477,7 @@ CREATE TRIGGER user_login_update_audit BEFORE UPDATE ON public.user_login FOR EA
 
 
 --
--- TOC entry 3586 (class 2606 OID 31223)
+-- TOC entry 3598 (class 2606 OID 31223)
 -- Name: account account_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3102,7 +3486,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3587 (class 2606 OID 31228)
+-- TOC entry 3599 (class 2606 OID 31228)
 -- Name: account account_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3111,7 +3495,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3588 (class 2606 OID 31233)
+-- TOC entry 3600 (class 2606 OID 31233)
 -- Name: account account_savings_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3120,7 +3504,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3589 (class 2606 OID 31238)
+-- TOC entry 3601 (class 2606 OID 31238)
 -- Name: account account_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3129,7 +3513,7 @@ ALTER TABLE ONLY public.account
 
 
 --
--- TOC entry 3590 (class 2606 OID 31243)
+-- TOC entry 3602 (class 2606 OID 31243)
 -- Name: accounts_owner accounts_owner_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3138,7 +3522,7 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3591 (class 2606 OID 31248)
+-- TOC entry 3603 (class 2606 OID 31248)
 -- Name: accounts_owner accounts_owner_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3147,7 +3531,7 @@ ALTER TABLE ONLY public.accounts_owner
 
 
 --
--- TOC entry 3592 (class 2606 OID 31253)
+-- TOC entry 3604 (class 2606 OID 31253)
 -- Name: audit_log audit_log_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3156,7 +3540,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 3593 (class 2606 OID 31258)
+-- TOC entry 3605 (class 2606 OID 31258)
 -- Name: branch branch_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3165,7 +3549,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3594 (class 2606 OID 31263)
+-- TOC entry 3606 (class 2606 OID 31263)
 -- Name: branch branch_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3174,7 +3558,7 @@ ALTER TABLE ONLY public.branch
 
 
 --
--- TOC entry 3595 (class 2606 OID 31268)
+-- TOC entry 3607 (class 2606 OID 31268)
 -- Name: customer customer_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3183,7 +3567,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3597 (class 2606 OID 31273)
+-- TOC entry 3609 (class 2606 OID 31273)
 -- Name: customer_login customer_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3192,7 +3576,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3598 (class 2606 OID 31278)
+-- TOC entry 3610 (class 2606 OID 31278)
 -- Name: customer_login customer_login_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3201,7 +3585,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3599 (class 2606 OID 31283)
+-- TOC entry 3611 (class 2606 OID 31283)
 -- Name: customer_login customer_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3210,7 +3594,7 @@ ALTER TABLE ONLY public.customer_login
 
 
 --
--- TOC entry 3596 (class 2606 OID 31288)
+-- TOC entry 3608 (class 2606 OID 31288)
 -- Name: customer customer_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3219,7 +3603,7 @@ ALTER TABLE ONLY public.customer
 
 
 --
--- TOC entry 3600 (class 2606 OID 31293)
+-- TOC entry 3612 (class 2606 OID 31293)
 -- Name: fd_plan fd_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3228,7 +3612,7 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3601 (class 2606 OID 31298)
+-- TOC entry 3613 (class 2606 OID 31298)
 -- Name: fd_plan fd_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3237,7 +3621,7 @@ ALTER TABLE ONLY public.fd_plan
 
 
 --
--- TOC entry 3602 (class 2606 OID 31303)
+-- TOC entry 3614 (class 2606 OID 31303)
 -- Name: fixed_deposit fixed_deposit_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3246,7 +3630,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3603 (class 2606 OID 31308)
+-- TOC entry 3615 (class 2606 OID 31308)
 -- Name: fixed_deposit fixed_deposit_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3255,7 +3639,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3604 (class 2606 OID 31313)
+-- TOC entry 3616 (class 2606 OID 31313)
 -- Name: fixed_deposit fixed_deposit_fd_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3264,7 +3648,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3605 (class 2606 OID 31318)
+-- TOC entry 3617 (class 2606 OID 31318)
 -- Name: fixed_deposit fixed_deposit_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3273,7 +3657,7 @@ ALTER TABLE ONLY public.fixed_deposit
 
 
 --
--- TOC entry 3606 (class 2606 OID 31323)
+-- TOC entry 3618 (class 2606 OID 31323)
 -- Name: login login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3282,7 +3666,7 @@ ALTER TABLE ONLY public.login
 
 
 --
--- TOC entry 3607 (class 2606 OID 31328)
+-- TOC entry 3619 (class 2606 OID 31328)
 -- Name: savings_plan savings_plan_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3291,7 +3675,7 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3608 (class 2606 OID 31333)
+-- TOC entry 3620 (class 2606 OID 31333)
 -- Name: savings_plan savings_plan_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3300,7 +3684,7 @@ ALTER TABLE ONLY public.savings_plan
 
 
 --
--- TOC entry 3609 (class 2606 OID 31338)
+-- TOC entry 3621 (class 2606 OID 31338)
 -- Name: transactions transactions_acc_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3309,7 +3693,7 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3610 (class 2606 OID 31343)
+-- TOC entry 3622 (class 2606 OID 31343)
 -- Name: transactions transactions_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3318,7 +3702,7 @@ ALTER TABLE ONLY public.transactions
 
 
 --
--- TOC entry 3611 (class 2606 OID 31348)
+-- TOC entry 3623 (class 2606 OID 31348)
 -- Name: user_login user_login_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3327,7 +3711,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3612 (class 2606 OID 31353)
+-- TOC entry 3624 (class 2606 OID 31353)
 -- Name: user_login user_login_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3336,7 +3720,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3613 (class 2606 OID 31358)
+-- TOC entry 3625 (class 2606 OID 31358)
 -- Name: user_login user_login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3345,7 +3729,7 @@ ALTER TABLE ONLY public.user_login
 
 
 --
--- TOC entry 3614 (class 2606 OID 31363)
+-- TOC entry 3626 (class 2606 OID 31363)
 -- Name: user_refresh_tokens user_refresh_tokens_revoked_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3354,7 +3738,7 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3615 (class 2606 OID 31368)
+-- TOC entry 3627 (class 2606 OID 31368)
 -- Name: user_refresh_tokens user_refresh_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3363,7 +3747,7 @@ ALTER TABLE ONLY public.user_refresh_tokens
 
 
 --
--- TOC entry 3618 (class 2606 OID 31373)
+-- TOC entry 3630 (class 2606 OID 31373)
 -- Name: users_branch users_branch_branch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3372,7 +3756,7 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3619 (class 2606 OID 31378)
+-- TOC entry 3631 (class 2606 OID 31378)
 -- Name: users_branch users_branch_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3381,7 +3765,7 @@ ALTER TABLE ONLY public.users_branch
 
 
 --
--- TOC entry 3616 (class 2606 OID 31383)
+-- TOC entry 3628 (class 2606 OID 31383)
 -- Name: users users_created_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3390,7 +3774,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3620 (class 2606 OID 31388)
+-- TOC entry 3632 (class 2606 OID 31388)
 -- Name: users_role users_role_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3399,7 +3783,7 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3621 (class 2606 OID 31393)
+-- TOC entry 3633 (class 2606 OID 31393)
 -- Name: users_role users_role_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3408,7 +3792,7 @@ ALTER TABLE ONLY public.users_role
 
 
 --
--- TOC entry 3617 (class 2606 OID 31398)
+-- TOC entry 3629 (class 2606 OID 31398)
 -- Name: users users_updated_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3416,10 +3800,11 @@ ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.users(user_id);
 
 
--- Completed on 2025-10-21 18:43:47 +0530
+-- Completed on 2025-10-23 08:24:06 +0530
 
 --
 -- PostgreSQL database dump complete
 --
 
+\unrestrict YdGcxqIj2VLELzQCl5jkRB1gEazuR7wcCfytcaQdETjLVTHhFAKeTmEXtOdPDfu
 
