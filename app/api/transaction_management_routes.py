@@ -335,7 +335,7 @@ def get_account_balance(
 
 # Advanced reporting endpoints
 @router.get("/report/all-transactions")
-@require_permission("admin")
+@require_permission("agent")
 def get_all_transactions_report(
     request: Request,
     page: int = Query(1, ge=1, description="Page number"),

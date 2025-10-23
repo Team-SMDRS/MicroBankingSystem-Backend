@@ -82,21 +82,21 @@ async def register_customer_with_account(
     )
 
 @router.get("/accounts/branch/{branch_id}")
-@require_permission("account-view")
+@require_permission("agent")
 async def get_accounts_by_branch(branch_id: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_accounts_by_branch(branch_id)
 
 @router.get("/account/balance/{account_no}")
-@require_permission("account-view")
+@require_permission("agent")
 async def get_account_balance(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
     return service.get_account_balance_by_account_no(account_no)
 
 @router.get("/account/{account_no}/owner")
-@require_permission("account-view")
+@require_permission("agent")
 async def get_account_owner(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     owners = repo.get_account_owner(account_no)
@@ -106,7 +106,7 @@ async def get_account_owner(account_no: str, request: Request, db=Depends(get_db
 
 # Route to get all accounts for a given NIC number
 @router.get("/accounts/by-nic/{nic}")
-@require_permission("account-view")
+@require_permission("agent")
 async def get_accounts_by_nic(nic: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_accounts_by_nic(nic)
@@ -135,14 +135,14 @@ async def update_customer(customer_id: str, update_data: UpdateCustomerInput, re
     return updated if updated else {"detail": "Customer not found or not updated."}
 
 @router.get("/accounts/all")
-@require_permission("account-view")
+@require_permission("agent")
 async def get_all_accounts(request: Request,db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     accounts = repo.get_all_accounts()
     return accounts
 
 @router.get("/account/details/{account_no}")
-@require_permission("account-view") 
+@require_permission("agent") 
 async def get_account_details(account_no: str, request: Request, db=Depends(get_db)):
     repo = AccountManagementRepository(db)
     service = AccountManagementService(repo)
