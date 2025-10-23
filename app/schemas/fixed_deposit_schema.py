@@ -1,6 +1,6 @@
 # Fixed Deposit schema - Pydantic models for fixed deposit data validation
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -20,13 +20,12 @@ class FixedDepositResponse(BaseModel):
     branch_name: str
     plan_duration: int
     plan_interest_rate: Decimal
-    status: str
-    next_interest_day: datetime
+    status: Optional[str] = Field(default=None)
+    next_interest_day: Optional[datetime] = Field(default=None)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
-
-    class Config:
-        from_attributes = True
 
 class FDPlanResponse(BaseModel):
     fd_plan_id: UUID

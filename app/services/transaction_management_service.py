@@ -33,11 +33,11 @@ class TransactionManagementService:
 
             # Check if it's a Children account - no deposits allowed (except through guardian)
             plan_name = account_details.get('plan_name', '').strip()
-            if plan_name == 'Children':
-                raise HTTPException(
-                    status_code=403, 
-                    detail="Direct deposits are not allowed for Children accounts. Please contact a guardian or bank representative."
-                )
+            # if plan_name == 'Children':
+            #     raise HTTPException(
+            #         status_code=403, 
+            #         detail="Direct deposits are not allowed for Children accounts. Please contact a guardian or bank representative."
+            #     )
 
             # Process deposit using repository (reference_no and transaction_id are auto-generated)
             result = self.transaction_repo.process_deposit_transaction(

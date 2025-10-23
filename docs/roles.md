@@ -2,9 +2,6 @@
 customer-view
 customer-update
 
-account-open
-account-view
-account-close
 
 
 
