@@ -8,6 +8,21 @@ A modern microbanking backend built with FastAPI, PostgreSQL, and JWT authentica
 
 **Watch Demo:** https://youtu.be/HFerK6FWCj8
 
+## Demo Website
+
+- [Agents Portal](https://btrust.dpdns.org) 
+- [Customers Portal](https://customer.btrust.dpdns.org)
+
+### Demo Credentials
+
+**Agent Login:**
+- Username: `agent1` | Password: `1234`
+- Username: `agent2` | Password: `1234`
+- Username: `agent3` | Password: `1234`
+
+**Customer Login:**
+- Username: `mycustomer` | Password: `1234`
+
 ## Quick Start
 
 ### Option 1: Docker (Recommended)
