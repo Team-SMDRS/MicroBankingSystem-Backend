@@ -105,6 +105,10 @@ JWT_SECRET=your_secret_key
 
 Contributions are welcome! Please follow PEP 8 style guidelines and add tests for new features.
 
+## Note
+
+This is a university project where the use of ORM (Object-Relational Mapping) frameworks is not allowed. Therefore, we use raw SQL queries for all database operations to directly interact with PostgreSQL.
+
 ---
 
 **Built with ❤️ by Team SMDRS**
