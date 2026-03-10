@@ -17,7 +17,7 @@ pydantic==2.11.7
 pydantic_core==2.33.2
 python-dotenv==1.1.1
 python-jose==3.5.0
-python-multipart==0.0.20
+python-multipart==0.0.22
 reportlab==4.0.9
 rsa==4.9.1
 six==1.17.0
